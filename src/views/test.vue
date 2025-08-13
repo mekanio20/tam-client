@@ -1,5 +1,5 @@
 <template>
-   <LoginModal v-model="showModal" />
+   <RegisterModal v-model="showModal" />
 </template>
 
 <script setup>
