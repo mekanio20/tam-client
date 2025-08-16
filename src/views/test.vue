@@ -1,7 +1,11 @@
 <template>
-   <RegisterModal v-model="showModal" />
+   <Header />
+   <Navbar />
+   <Banner />
+   <CategorySection />
+   <TopProductSection />
+   <Footer />
 </template>
 
 <script setup>
-const showModal = ref(true)
 </script>

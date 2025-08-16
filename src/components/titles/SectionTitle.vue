@@ -1,7 +1,7 @@
 <template>
-    <h1 class="text-[22px] font-medium text-[#0C1A30] mb-14">
+    <h3 class="font-semibold text-[30px] text-[#0C1A30]">
         {{ title }}
-    </h1>
+    </h3>
 </template>
 
 <script setup>

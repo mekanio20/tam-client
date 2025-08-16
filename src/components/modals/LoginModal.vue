@@ -9,7 +9,7 @@
             <!-- Close Button -->
             <button @click="closeModal"
                 class="w-[38px] h-[38px] absolute top-[30px] right-4 rounded-full bg-[#F6F7F9] flex items-center justify-center transition-colors duration-200 z-10">
-                <component :is="icons['close-icon']" />
+                <close-icon />
             </button>
 
             <!-- Background decorative element -->
@@ -34,10 +34,10 @@
                         Telefon belgi
                     </button>
                     <button :class="['flex-1 py-4 px-10 font-medium rounded-md transition-all duration-200 leading-[100%]',
-        activeTab === 'electron'
+        activeTab === 'email'
             ? 'bg-white text-[#0C1A30] shadow-sm'
             : 'text-[#838589] hover:text-[#0C1A30]'
-    ]" @click="setActiveTab('electron')">
+    ]" @click="setActiveTab('email')">
                         Elektron salgy
                     </button>
                 </div>
@@ -63,8 +63,8 @@
                             <button @click="togglePassword"
                                 class="absolute right-4 top-1/2 transform -translate-y-1/2 hover:text-[#838589] transition-colors duration-200"
                                 type="button">
-                                <component v-if="!showPassword" :is="icons['eye-icon']" />
-                                <!-- <component v-else :is="icons['eye_remove-icon']" /> -->
+                                <eye-icon v-if="!showPassword" />
+                                <eye_hide-icon v-else />
                             </button>
                         </div>
                     </FormGroup>
@@ -81,13 +81,12 @@
 
                 </FormSection>
 
-                <!-- Electron Tab Content (placeholder) -->
+                <!-- Email Tab Content (placeholder) -->
                 <FormSection v-else @submit="handleSubmit" class="space-y-6">
                     <!-- Phone Number Field -->
                     <FormGroup class="pb-3">
                         <FormTitle :id="'email'" :title="'E-poçta salgysy'" />
-                        <FormInput v-model="email" :label="'email'" :type="'email'"
-                            :placeholder="'example@.com'" />
+                        <FormInput v-model="email" :label="'email'" :type="'email'" :placeholder="'example@.com'" />
                     </FormGroup>
 
                     <!-- Password Field -->
@@ -99,21 +98,14 @@
                             <button @click="togglePassword"
                                 class="absolute right-4 top-1/2 transform -translate-y-1/2 hover:text-[#838589] transition-colors duration-200"
                                 type="button">
-                                <component v-if="!showPassword" :is="icons['eye-icon']" />
-                                <!-- <component v-else :is="icons['eye_remove-icon']" /> -->
+                                <eye-icon v-if="!showPassword" />
+                                <eye_hide-icon v-else />
                             </button>
                         </div>
                     </FormGroup>
 
                     <!-- Submit Button -->
-                    <button type="submit" :disabled="!isFormValid" :class="[
-        'w-full py-4 font-bold rounded-lg transition-all duration-200 transform',
-        isFormValid
-            ? 'bg-[#FEB918] hover:bg-yellow-500 text-white hover:scale-[1.01] active:scale-[0.98]'
-            : 'bg-gray-200 text-white cursor-not-allowed'
-    ]">
-                        Ulgama gir
-                    </button>
+                    <AuthButton :title="'Ulgama girmek'" :isFormValid="isFormValid" />
                 </FormSection>
 
                 <!-- Footer Links -->
@@ -135,9 +127,6 @@
 </template>
 
 <script setup>
-const { icons, loadIcons } = useIcons()
-onMounted(() => { loadIcons() })
-
 defineProps({
     modelValue: {
         type: Boolean,
@@ -147,7 +136,6 @@ defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 // Modal state
-const showModal = ref(true)
 const activeTab = ref('phone')
 
 // Form state
@@ -158,8 +146,13 @@ const showPassword = ref(false)
 
 // Computed properties
 const isFormValid = computed(() => {
-    return phoneNumber.value.length > 10 && password.value.length > 0
-})
+    if (!password.value) return false;
+
+    if (activeTab.value === 'phone') return phoneNumber.value.length > 10;
+    if (activeTab.value === 'email') return email.value.length > 0;
+
+    return false;
+});
 
 // Methods
 const setActiveTab = (tab) => {
