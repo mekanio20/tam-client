@@ -8,6 +8,16 @@ const routes = [
     component: () => import("@/views/test.vue"),
   },
   // PRODUCTION
+  {
+    path: "/home",
+    name: "Home",
+    component: () => import("@/views/Home.vue"),
+  },
+  {
+    path: "/product/detail/:id",
+    name: "ProductDetail",
+    component: () => import("@/views/ProductDetail.vue"),
+  },
 ];
 
 const router = createRouter({

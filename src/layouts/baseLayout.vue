@@ -1,5 +1,5 @@
 <template>
-    <main class="w-full h-full bg-[#F7F7F9]">
+    <main class="h-full max-w-[1500px] mx-auto">
         <router-view />
     </main>
 </template>
