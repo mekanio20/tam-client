@@ -1,6 +1,5 @@
 <template>
     <div class="bg-white">
-        <!-- Breadcrumb -->
         <MainContainer>
             <div class="py-6">
                 <LinkGroup :items="[{ label: 'Köp satylan harytlar', to: '/' }, { label: 'Ösümlikler', to: '/' }]" />
@@ -120,10 +119,6 @@ const product = ref({
 })
 
 const selectedImage = ref(product.value.images[0])
-
-const toggleCart = () => {
-    isInCart.value = !isInCart.value
-}
 
 const toggleFavorite = () => {
     isFavorite.value = !isFavorite.value
