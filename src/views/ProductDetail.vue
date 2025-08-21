@@ -96,7 +96,6 @@
             </div>
         </MainContainer>
         <CategorySection />
-        <Footer />
     </div>
 </template>
 

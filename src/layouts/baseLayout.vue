@@ -8,6 +8,7 @@
         <div class="bg-[#F7F7F9] mt-28" :class="sidebar ? 'blur-sm' : ''">
             <router-view />
         </div>
+        <Footer />
     </main>
 </template>
 
