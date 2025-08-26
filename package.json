@@ -9,12 +9,20 @@
     "tw:init": "tailwindcss init -p"
   },
   "dependencies": {
+    "@turf/flatten": "^7.2.0",
+    "@turf/invariant": "^7.2.0",
+    "@turf/meta": "^7.2.0",
+    "@turf/turf": "^7.2.0",
     "@vueuse/core": "^13.6.0",
+    "leaflet": "^1.9.4",
+    "maplibre-gl": "^5.7.0",
     "pinia": "^3.0.3",
     "swiper": "^11.2.10",
+    "vite-plugin-commonjs": "^0.10.4",
     "vue": "^3.5.17",
     "vue-i18n": "^11.1.11",
-    "vue-router": "^4.5.1"
+    "vue-router": "^4.5.1",
+    "vue3-leaflet": "^1.0.50"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.0",
