@@ -38,7 +38,12 @@ const routes = [
     path: "/account/basket",
     name: "Basket",
     component: () => import("@/views/Basket.vue"),
-  }
+  },
+  {
+    path: "/account/confirm/order",
+    name: "ConfirmOrder",
+    component: () => import("@/views/ConfirmOrder.vue"),
+  },
 ];
 
 const router = createRouter({

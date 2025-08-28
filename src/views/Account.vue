@@ -121,7 +121,7 @@
             </div>
         </MainContainer>
         <!-- Address Modal -->
-        <AddressModal :show="showModal" @submit="addAddress" @close="showModal = false" />
+        <AddressAddModal :show="showModal" @submit="addAddress" @close="showModal = false" />
     </div>
 </template>
 

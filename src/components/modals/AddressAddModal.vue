@@ -10,7 +10,7 @@
                 enter-from-class="translate-y-full sm:scale-95" enter-to-class="translate-y-0 sm:scale-100"
                 leave-active-class="transition-transform duration-200 ease-in"
                 leave-from-class="translate-y-0 sm:scale-100" leave-to-class="translate-y-full sm:scale-95">
-                <div v-show="show" class="bg-white w-[770px] overflow-y-auto p-4 rounded-[14px] flex flex-col relative" @click.stop>
+                <div v-show="show" class="bg-white w-[770px] overflow-y-auto px-8 py-4 rounded-[14px] flex flex-col relative" @click.stop>
                     <!-- Header -->
                     <div class="flex items-center justify-center pt-4 pb-10">
                         <h2 class="text-[22px] text-center font-medium text-[#0C1A30]">Salgy goşmak</h2>
@@ -46,7 +46,7 @@
                         </FormGroup>
                         <FormGroup class="col-span-2">
                             <CustomCheckbox v-model="formData.checked" text="Indiki sargytlarda şu salgyny ulan" />
-                            <div id="map" class="w-[700px] h-[290px] rounded-2xl shadow-lg"></div>
+                            <div id="map" class="w-full h-[290px] rounded-2xl shadow-lg"></div>
                         </FormGroup>
                     </FormSection>
 
