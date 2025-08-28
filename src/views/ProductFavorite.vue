@@ -13,7 +13,7 @@
                 Sizde halanan haryt ýok
             </h4>
         </div>
-        <ProductSection v-else :sectionTitle="'Halanan harytlar'" :products="products" @toggleFavorite="toggleFavorite"
+        <ProductSection v-else :isRedirectLink="false" :sectionTitle="'Halanan harytlar'" :products="products" @toggleFavorite="toggleFavorite"
             @addToCart="addToCart" />
     </div>
 </template>

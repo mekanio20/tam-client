@@ -3,7 +3,7 @@
         <MainContainer>
             <SectionHeaderGroup>
                 <SectionTitle :title="sectionTitle" />
-                <ViewAllLink :title="linkTitle" :to="link" />
+                <ViewAllLink v-if="isRedirectLink" :title="linkTitle" :to="link" />
             </SectionHeaderGroup>
             <Swiper :slides-per-view="slidesPerView" :breakpoints="{
                     100: { slidesPerView: 2, spaceBetween: 20 },
@@ -36,6 +36,10 @@ defineProps({
     sectionTitle: {
         type: String,
         default: 'Harytlar'
+    },
+    isRedirectLink: {
+        type: Boolean,
+        default: true
     },
     linkTitle: {
         type: String,

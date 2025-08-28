@@ -1,6 +1,6 @@
 <template>
     <main class="h-full max-w-[1500px] mx-auto">
-        <div class="w-full bg-[#F7F7F9] fixed top-0 z-20">
+        <div class="w-full bg-[#F7F7F9] fixed top-0 z-30">
             <Header />
             <Navbar @openSidebar="toggleSidebar" :isMobileMenuOpen="sidebar" />
         </div>

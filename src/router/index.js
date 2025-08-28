@@ -28,6 +28,11 @@ const routes = [
     name: "ProductFavorite",
     component: () => import("@/views/ProductFavorite.vue"),
   },
+  {
+    path: "/categories",
+    name: "Categories",
+    component: () => import("@/views/Categories.vue"),
+  },
   // ACCOUNT
   {
     path: "/account",
