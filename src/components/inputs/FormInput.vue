@@ -2,10 +2,10 @@
     <div class="relative">
         <component v-if="icon" :is="icons[icon?.name]" :size="icon.size" :color="icon.color"
             class="absolute left-4 top-1/2 -translate-y-1/2" />
-        <input :id="label" :type="type" :value="modelValue" @input="$emit('update:modelValue', $event.target.value)"
+        <input :disabled="disabled" :id="label" :type="type" :value="modelValue" @input="$emit('update:modelValue', $event.target.value)"
             :placeholder="placeholder"
             class="w-full px-5 py-4 bg-[#F6F7F9] border-0 rounded-[10px] focus:ring-1 focus:ring-[#FEB918] focus:bg-white outline-none transition-all duration-200 pr-12"
-            :class="{ 'pl-12': icon?.name }" />
+            :class="{ 'pl-12': icon?.name, 'cursor-not-allowed': disabled }" />
     </div>
 </template>
 
@@ -32,6 +32,10 @@ defineProps({
     icon: {
         type: Object,
         default: {}
+    },
+    disabled: {
+        type: Boolean,
+        default: false
     }
 })
 </script>

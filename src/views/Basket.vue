@@ -2,7 +2,7 @@
     <div class="min-h-screen">
         <!-- Header -->
         <MainContainer>
-            <div class="pt-6">
+            <div class="py-6">
                 <LinkGroup :items="[{ label: 'Sebet', to: '/account/basket' }]" />
             </div>
             <!-- Title -->

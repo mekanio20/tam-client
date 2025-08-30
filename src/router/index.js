@@ -24,9 +24,9 @@ const routes = [
     component: () => import("@/views/ProductDetail.vue"),
   },
   {
-    path: "/product/favorite",
-    name: "ProductFavorite",
-    component: () => import("@/views/ProductFavorite.vue"),
+    path: "/account/favorite",
+    name: "AccountFavorite",
+    component: () => import("@/views/AccountFavorite.vue"),
   },
   {
     path: "/categories",
@@ -49,6 +49,16 @@ const routes = [
     name: "ConfirmOrder",
     component: () => import("@/views/ConfirmOrder.vue"),
   },
+  {
+    path: "/account/orders",
+    name: "Orders",
+    component: () => import("@/views/Orders.vue"),
+  },
+  {
+    path: "/account/order/detail/:id",
+    name: "OrderDetail",
+    component: () => import("@/views/OrderDetail.vue"),
+  }
 ];
 
 const router = createRouter({

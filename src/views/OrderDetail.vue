@@ -253,7 +253,7 @@ const formData = ref({
     note: ''
 })
 const checkout = () => {
-    
+
     alert(`Sargyt tassyklandy! Jemi: 123 TMT`)
 }
 </script>
