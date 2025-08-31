@@ -3,13 +3,13 @@ import { createRouter, createWebHistory } from "vue-router";
 const routes = [
   // DEVELOPMENT
   {
-    path: "/",
+    path: "/test",
     name: "test",
     component: () => import("@/views/test.vue"),
   },
   // PRODUCTION
   {
-    path: "/home",
+    path: "/",
     name: "Home",
     component: () => import("@/views/Home.vue"),
   },
@@ -32,6 +32,11 @@ const routes = [
     path: "/categories",
     name: "Categories",
     component: () => import("@/views/Categories.vue"),
+  },
+  {
+    path: "/subcategories/:id",
+    name: "Subcategories",
+    component: () => import("@/views/Subcategories.vue"),
   },
   // ACCOUNT
   {

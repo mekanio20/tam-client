@@ -2,6 +2,7 @@
     <div class="bg-white mt-5">
         <MainContainer>
             <SectionHeaderGroup>
+                <SectionTitle v-if="sectionTitle" :title="sectionTitle" />
                 <ViewAllLink v-if="isRedirectLink" :title="linkTitle" :to="link" />
             </SectionHeaderGroup>
             <Swiper :slides-per-view="slidesPerView" :breakpoints="{
@@ -35,6 +36,10 @@ defineProps({
     isRedirectLink: {
         type: Boolean,
         default: true
+    },
+    sectionTitle: {
+        type: String,
+        default: ''
     },
     linkTitle: {
         type: String,
