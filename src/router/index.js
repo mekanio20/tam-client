@@ -59,11 +59,22 @@ const routes = [
     name: "OrderDetail",
     component: () => import("@/views/OrderDetail.vue"),
   },
+  {
+    path: "/account/coupons",
+    name: "Coupons",
+    component: () => import("@/views/Coupons.vue"),
+  },
   // FAQ
   {
     path: "/faq",
     name: "Faq",
     component: () => import("@/views/Faq.vue"),
+  },
+  // NOT FOUND
+  {
+    path: "/:catchAll(.*)",
+    name: "NotFound",
+    component: () => import("@/views/NotFound.vue"),
   }
 ];
 

@@ -3,7 +3,7 @@
         <!-- Main Content -->
         <MainContainer>
             <div class="pt-6">
-                <LinkGroup :items="[{ label: 'Hasap', to: '/account' }]" />
+                <LinkGroup :items="[{ label: 'Sorag-jogap', to: '/faq' }]" />
             </div>
             <!-- Header -->
             <div class="bg-white">
@@ -78,14 +78,14 @@
 </template>
 
 <script setup>
-const activeTab = ref('Ahlisi')
+const activeTab = ref(1)
 const openAccordion = ref(0)
 const isVisible = ref(false)
 
 const tabs = ref([
     {
         id: 1,
-        name: 'Ahlisi'
+        name: 'Ählisi'
     },
     {
         id: 2,
