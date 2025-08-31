@@ -1,1 +1,3 @@
-1. Address modal added
+1. -[] Responsive
+2. -[] Api integration
+3. -[] Seo optimization
