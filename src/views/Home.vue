@@ -10,6 +10,8 @@
         @addToCart="addToCart" />
     <ProductSection :sectionTitle="'Siziň üçin harytlar'" :products="products" @toggleFavorite="toggleFavorite"
         @addToCart="addToCart" />
+    <!-- Login -->
+    <LoginModal />
 </template>
 
 <script setup>

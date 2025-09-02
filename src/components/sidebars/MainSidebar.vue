@@ -56,7 +56,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useCategoriesStore } from '@/stores/categories'
+const categoryStore = useCategoriesStore()
+const { categories, loading, error } = storeToRefs(categoryStore)
+const { fetchCategories, addCategory, updateCategory, deleteCategory } = categoryStore
 // Reactive data
 const props = defineProps({ isMobileMenuOpen: Boolean })
 const emit = defineEmits(['toggleMobileMenu'])
@@ -68,29 +72,29 @@ const submenuItems = ref([])
 let closeSubmenuTimeoutId = null
 
 // Categories data matching the image
-const categories = ref([
-  { name: 'Мебель', children: ['Диваны', 'Стулья', 'Столы', 'Шкафы', 'Тумбы'] },
-  { name: 'Кухня и столовая', children: ['Посуда', 'Кухонная техника', 'Столовые приборы'] },
-  { name: 'Спальня', children: ['Кровати', 'Матрасы', 'Комоды'] },
-  { name: 'Ванная комната' },
-  { name: 'Гостиная' },
-  { name: 'Офис' },
-  { name: 'Детская комната' },
-  { name: 'Прихожая' },
-  { name: 'Освещение' },
-  { name: 'Текстиль и декор' },
-  { name: 'Уборка и стирка' },
-  { name: 'Освещение' },
-  { name: 'Текстиль и декор' },
-  { name: 'Уборка и стирка' },
-  { name: 'Освещение' },
-  { name: 'Текстиль и декор' },
-  { name: 'Уборка и стирка' },
-  { name: 'Кухонные принадлежности' },
-  { name: 'Сад и огород' },
-  { name: 'Инструменты и техника' },
-  { name: 'Товары для животных' }
-])
+// const categories = ref([
+//   { name: 'Мебель', children: ['Диваны', 'Стулья', 'Столы', 'Шкафы', 'Тумбы'] },
+//   { name: 'Кухня и столовая', children: ['Посуда', 'Кухонная техника', 'Столовые приборы'] },
+//   { name: 'Спальня', children: ['Кровати', 'Матрасы', 'Комоды'] },
+//   { name: 'Ванная комната' },
+//   { name: 'Гостиная' },
+//   { name: 'Офис' },
+//   { name: 'Детская комната' },
+//   { name: 'Прихожая' },
+//   { name: 'Освещение' },
+//   { name: 'Текстиль и декор' },
+//   { name: 'Уборка и стирка' },
+//   { name: 'Освещение' },
+//   { name: 'Текстиль и декор' },
+//   { name: 'Уборка и стирка' },
+//   { name: 'Освещение' },
+//   { name: 'Текстиль и декор' },
+//   { name: 'Уборка и стирка' },
+//   { name: 'Кухонные принадлежности' },
+//   { name: 'Сад и огород' },
+//   { name: 'Инструменты и техника' },
+//   { name: 'Товары для животных' }
+// ])
 
 // Methods
 const toggleMobileMenu = () => {
@@ -135,6 +139,8 @@ const cancelCloseSubmenu = () => {
 
 // Lifecycle
 onMounted(() => {
+  fetchCategories()
+  console.log(categories.value);
   isVisible.value = true
 })
 </script>

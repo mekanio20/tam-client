@@ -1,13 +1,13 @@
 <template>
     <!-- Modal Backdrop -->
-    <div v-if="modelValue" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-        @click="$emit('update:modelValue', false)">
+    <div v-if="show" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        @click="show.value = false">
         <!-- Modal Content -->
         <div class="relative bg-white rounded-[14px] w-full max-w-md mx-auto transform transition-all duration-300 ease-out"
             @click.stop>
 
             <!-- Close Button -->
-            <button @click="closeModal"
+            <button @click="show.value = false"
                 class="w-[38px] h-[38px] absolute top-[30px] right-4 rounded-full bg-[#F6F7F9] flex items-center justify-center transition-colors duration-200 z-10">
                 <close-icon />
             </button>
@@ -127,13 +127,10 @@
 </template>
 
 <script setup>
-defineProps({
-    modelValue: {
-        type: Boolean,
-        required: true
-    },
-})
-const emit = defineEmits(['update:modelValue'])
+import { useAuthStore } from '@/stores/auth'
+const auth = useAuthStore()
+const show = ref(false)
+show.value = !auth.isAuthenticated
 
 // Modal state
 const activeTab = ref('phone')
@@ -171,13 +168,19 @@ const formatPhoneNumber = (event) => {
     phoneNumber.value = value
 }
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
     console.log('Form submitted');
     if (isFormValid.value) {
         console.log('Form submitted:', {
             phone: phoneNumber.value,
             password: password.value
         })
+        try {
+            await auth.login({ username: username.value, password: password.value })
+            show.value = false
+        } catch (err) {
+            console.error(err)
+        }
     }
 }
 
@@ -189,7 +192,10 @@ const createAccount = () => {
     console.log('Create account clicked')
 }
 
-const closeModal = () => {
-    emit('update:modelValue', false)
-}
+watch(
+  () => auth.isAuthenticated,
+  (val) => {
+    if (val) show.value = false
+  }
+)
 </script>
