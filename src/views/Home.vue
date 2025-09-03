@@ -11,10 +11,65 @@
     <ProductSection :sectionTitle="'Siziň üçin harytlar'" :products="products" @toggleFavorite="toggleFavorite"
         @addToCart="addToCart" />
     <!-- Login -->
-    <LoginModal />
+    <LoginModal v-model="isLoginModal" @forgot_password="openResetPassword" @register="openRegister" />
+    <RegisterModal v-model="isRegisterModal" @send_otp="send_otp" @login="openLogin" />
+    <OtpModal v-model="isOtpModal" :data="otpData" />
+    <ResetPasswordModal v-model="isResetPasswordModal" />
 </template>
 
 <script setup>
+import { useAuthStore } from '@/stores/auth'
+const auth = useAuthStore()
+const isLoginModal = ref(false)
+const isOtpModal = ref(false)
+const isRegisterModal = ref(false)
+const isResetPasswordModal = ref(false)
+const otpData = ref({})
+
+// Ensure modal visibility reflects authentication state on load and updates
+const syncRegisterModal = () => {
+    isRegisterModal.value = !auth.isAuthenticated
+}
+
+onMounted(() => {
+    auth.loadTokens()
+    syncRegisterModal()
+})
+
+watch(() => auth.isAuthenticated, () => {
+    if (auth.isAuthenticated) {
+        isRegisterModal.value = false
+    }
+})
+
+const openLogin = () => {
+    isRegisterModal.value = false
+    isLoginModal.value = true
+}
+
+const openResetPassword = () => {
+    isLoginModal.value = false
+    isResetPasswordModal.value = true
+}
+
+const openRegister = () => {
+    isLoginModal.value = false
+    isRegisterModal.value = true
+}
+
+const send_otp = (data) => {
+    otpData.value = data
+    isRegisterModal.value = false
+    isOtpModal.value = true
+}
+const toggleFavorite = (id) => {
+    const product = products.value.find(product => product.id === id)
+    product.favorite = !product.favorite
+}
+const addToCart = (product) => {
+    console.log(product)
+}
+
 const products = ref([
     {
         id: 1,
@@ -116,12 +171,4 @@ const categories = ref([
         circle_bg_color: '#FFC107'
     }
 ])
-const toggleFavorite = (id) => {
-    const product = products.value.find(product => product.id === id)
-    product.favorite = !product.favorite
-}
-
-const addToCart = (product) => {
-    console.log(product)
-}
 </script>

@@ -1,35 +1,38 @@
 import { defineStore } from "pinia";
+import { isTokenValid } from "@/composables/jwtDecode";
 import api from "@/api/index.js";
 
 export const useAuthStore = defineStore("auth", () => {
   // --- State ---
-  const user = ref(null);
-  const accessToken = ref(null);
-  const refreshToken = ref(null);
+  let user = localStorage.getItem('user');
+  let accessToken = localStorage.getItem('accessToken');
+  let refreshToken = localStorage.getItem('refreshToken');
   const loading = ref(false);
   const error = ref(null);
 
-  const isAuthenticated = computed(() => !!accessToken.value)
+  const isAuthenticated = computed(() => {
+    return isTokenValid(accessToken)
+  })
 
   // Helper: store tokens in localStorage
-  const setTokens = (access, refresh, user) => {
-    accessToken.value = access;
-    refreshToken.value = refresh;
-    localStorage.setItem("user", JSON.stringify(user));
+  const setTokens = (access, refresh, userData) => {
+    accessToken = access;
+    refreshToken = refresh;
+    localStorage.setItem("user", JSON.stringify(userData));
     localStorage.setItem("accessToken", access);
     localStorage.setItem("refreshToken", refresh);
   };
 
   const loadTokens = () => {
-    user.value = JSON.parse(localStorage.getItem("user"));
-    accessToken.value = localStorage.getItem("accessToken");
-    refreshToken.value = localStorage.getItem("refreshToken");
+    user = JSON.parse(localStorage.getItem("user"));
+    accessToken = localStorage.getItem("accessToken");
+    refreshToken = localStorage.getItem("refreshToken");
   };
 
   const clearAuth = () => {
-    user.value = null;
-    accessToken.value = null;
-    refreshToken.value = null;
+    user = null;
+    accessToken = null;
+    refreshToken = null;
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
   };
@@ -37,16 +40,17 @@ export const useAuthStore = defineStore("auth", () => {
   // --- Actions ---
 
   // 1. Login with username & password
-  const login = async ({ username, password }) => {
+  const login = async ({ username, identifier, password }) => {
     loading.value = true;
     error.value = null;
     try {
       const { data } = await api.post("/auth/client/login/", {
         username,
+        identifier,
         password,
       });
       setTokens(data.access, data.refresh, data.user);
-      user.value = data.user || null;
+      user = data.user || null;
       return data;
     } catch (err) {
       error.value = err.message || "Login failed";
@@ -58,6 +62,8 @@ export const useAuthStore = defineStore("auth", () => {
 
   // 2. Send OTP to phone
   const sendOtp = async ({ identifier, purpose = "registration" }) => {
+    loading.value = true;
+    error.value = null;
     try {
       const { data } = await api.post("/auth/client/otp/", {
         identifier,
@@ -67,6 +73,8 @@ export const useAuthStore = defineStore("auth", () => {
     } catch (err) {
       error.value = err.message || "OTP could not be sent";
       throw err;
+    } finally {
+      loading.value = false;
     }
   };
 
@@ -79,8 +87,7 @@ export const useAuthStore = defineStore("auth", () => {
         identifier,
         otp,
       });
-      setTokens(data.access, data.refresh, data.user);
-      user.value = data.user || null;
+      user = data.user || null;
       return data;
     } catch (err) {
       error.value = err.message || "Login with OTP failed";
@@ -93,38 +100,48 @@ export const useAuthStore = defineStore("auth", () => {
   // 4. Register new user
   const register = async (payload) => {
     // payload = { otp, first_name, last_name, identifier, password }
+    loading.value = true;
+    error.value = null;
     try {
       const { data } = await api.post("/auth/client/register/", payload);
+      setTokens(data.data.access, data.data.refresh, data.data.user);
       return data;
     } catch (err) {
       error.value = err.message || "Registration failed";
       throw err;
+    } finally {
+      loading.value = false;
     }
   };
 
   // 5. Reset password
   const resetPassword = async ({ identifier, otp, new_password }) => {
+    loading.value = true;
+    error.value = null;
     try {
       const { data } = await api.post("/auth/client/reset-password/", {
         identifier,
         otp,
         new_password,
       });
+      setTokens(data.data.access, data.data.refresh, data.data.user);
       return data;
     } catch (err) {
       error.value = err.message || "Password reset failed";
       throw err;
+    } finally {
+      loading.value = false;
     }
   };
 
   // 6. Refresh access token
   const refreshAccessToken = async () => {
-    if (!refreshToken.value) throw new Error("Refresh token not found");
+    if (!refreshToken) throw new Error("Refresh token not found");
     try {
       const { data } = await api.post("/auth/refresh/", {
-        refresh: refreshToken.value,
+        refresh: refreshToken,
       });
-      accessToken.value = data.access;
+      accessToken = data.access;
       localStorage.setItem("accessToken", data.access);
       return data;
     } catch (err) {

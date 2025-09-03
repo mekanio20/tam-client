@@ -22,23 +22,45 @@
             <!-- Modal Header -->
             <div class="px-6 pt-8 pb-8 text-center">
                 <!-- Title -->
-                <ModalTitle title="Açar sözi üýtgetmek" />
+                <ModalTitle :title="step === 'request' ? 'Açar sözi üýtgetmek' : 'Tassyklama'" />
                 <!-- Subtitle -->
-                <h2 class="text-[#0C1A30] text-start font-medium">Täze açar sözi</h2>
+                <h2 class="text-[#0C1A30] text-start font-medium">
+                    {{ step === 'request' ? 'Telefon belgisi' : 'Kody we täze açar sözi giriziň' }}
+                </h2>
             </div>
 
             <!-- Modal Body -->
             <AuthContainer>
                 <FormSection @submit="handleSubmit" class="space-y-8">
-                    <!-- Phone Number Field -->
-                    <FormGroup class="pb-5">
-                        <FormTitle :id="'phone'" :title="'Telefon belgisi'" />
-                        <FormInput v-model="phoneNumber" :label="'phone'" :type="'tel'"
-                            :placeholder="'+993 ********'" />
-                    </FormGroup>
+                    <!-- Request OTP -->
+                    <template v-if="step === 'request'">
+                        <FormGroup class="pb-5">
+                            <FormTitle :id="'phone'" :title="'Telefon belgisi'" />
+                            <FormInput v-model="phoneNumber" :label="'phone'" :type="'tel'"
+                                :placeholder="'+993 ********'" />
+                        </FormGroup>
+                        <AuthButton :title="'Dowam etmek'" :isFormValid="isFormValid" :loading="auth.loading" :loadingText="'Ugradylýar'" />
+                    </template>
 
-                    <!-- Submit Button -->
-                    <AuthButton :title="'Dowam etmek'" :isFormValid="isFormValid" />
+                    <!-- Confirm OTP + New Password -->
+                    <template v-else>
+                        <FormGroup>
+                            <FormTitle :id="'code'" :title="'Kody giriziň'" />
+                            <FormInput v-model="code" :label="'code'" :type="'number'" :placeholder="'123456'" />
+                        </FormGroup>
+                        <FormGroup>
+                            <FormTitle :id="'new_password'" :title="'Täze açar sözi'" />
+                            <FormInput v-model="newPassword" :label="'new_password'" :type="showPassword ? 'text' : 'password'" :placeholder="'•••••••••'" />
+                        </FormGroup>
+                        <div class="flex items-center justify-between">
+                            <button type="button" @click="backToPhone" class="text-sm text-[#0C1A30] hover:underline">
+                                Yza
+                            </button>
+                            <div class="w-40">
+                                <AuthButton :title="'Tassyklamak'" :isFormValid="isFormValid" :loading="auth.loading" :loadingText="'Tassyklanýar'" />
+                            </div>
+                        </div>
+                    </template>
 
                 </FormSection>
             </AuthContainer>
@@ -47,6 +69,8 @@
 </template>
 
 <script setup>
+import { useAuthStore } from '@/stores/auth'
+const auth = useAuthStore()
 defineProps({
     modelValue: {
         type: Boolean,
@@ -56,24 +80,53 @@ defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 // Form state
-const phoneNumber = ref('+993 61626364')
+const phoneNumber = ref('+993 63755727')
+const code = ref('')
+const newPassword = ref('')
+const showPassword = ref(false)
+const step = ref('request') // 'request' | 'confirm'
 
 // Computed properties
 const isFormValid = computed(() => {
-    return phoneNumber.value.length > 10
+    if (step.value === 'request') {
+        return phoneNumber.value.length > 10
+    }
+    return String(code.value).length >= 4 && newPassword.value.length >= 6
 })
 
 // Methods
-const handleSubmit = () => {
-    console.log('Form submitted');
-    if (isFormValid.value) {
-        console.log('Form submitted:', {
-            phone: phoneNumber.value,
-        })
+const handleSubmit = async () => {
+    if (!isFormValid.value) return
+    try {
+        if (step.value === 'request') {
+            const res = await auth.sendOtp({ identifier: phoneNumber.value, purpose: 'reset_password' })
+            if (res.status === 'ok') {
+                step.value = 'confirm'
+            }
+        } else {
+            const res = await auth.resetPassword({ identifier: phoneNumber.value, otp: code.value, new_password: newPassword.value })
+            if (res.status === 'ok') {
+                emit('update:modelValue', false)
+                // reset state
+                step.value = 'request'
+                code.value = ''
+                newPassword.value = ''
+            }
+        }
+    } catch (e) {
+        console.error(e)
     }
+}
+
+const backToPhone = () => {
+    step.value = 'request'
 }
 
 const closeModal = () => {
     emit('update:modelValue', false)
+    // optional reset
+    step.value = 'request'
+    code.value = ''
+    newPassword.value = ''
 }
 </script>

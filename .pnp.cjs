@@ -36,6 +36,7 @@ const RAW_RUNTIME_STATE =
           ["@vueuse/core", "virtual:5b389c15d923e749166a72b6dd23cfc35f0a88940355f3be9e4cb0900baadf3e2a7c1f58dca10216d90ffd779e684ff0a98ef4e79bb9b966effc9417e4cb069d#npm:13.6.0"],\
           ["autoprefixer", "virtual:5b389c15d923e749166a72b6dd23cfc35f0a88940355f3be9e4cb0900baadf3e2a7c1f58dca10216d90ffd779e684ff0a98ef4e79bb9b966effc9417e4cb069d#npm:10.4.21"],\
           ["axios", "npm:1.11.0"],\
+          ["jwt-decode", "npm:4.0.0"],\
           ["leaflet", "npm:1.9.4"],\
           ["maplibre-gl", "npm:5.7.0"],\
           ["pinia", "virtual:5b389c15d923e749166a72b6dd23cfc35f0a88940355f3be9e4cb0900baadf3e2a7c1f58dca10216d90ffd779e684ff0a98ef4e79bb9b966effc9417e4cb069d#npm:3.0.3"],\
@@ -5554,6 +5555,15 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["jwt-decode", [\
+      ["npm:4.0.0", {\
+        "packageLocation": "../../.yarn/berry/cache/jwt-decode-npm-4.0.0-4cd8e89909-10c0.zip/node_modules/jwt-decode/",\
+        "packageDependencies": [\
+          ["jwt-decode", "npm:4.0.0"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["kdbush", [\
       ["npm:4.0.2", {\
         "packageLocation": "../../.yarn/berry/cache/kdbush-npm-4.0.2-e4894ed9f4-10c0.zip/node_modules/kdbush/",\
@@ -6978,6 +6988,7 @@ const RAW_RUNTIME_STATE =
           ["@vueuse/core", "virtual:5b389c15d923e749166a72b6dd23cfc35f0a88940355f3be9e4cb0900baadf3e2a7c1f58dca10216d90ffd779e684ff0a98ef4e79bb9b966effc9417e4cb069d#npm:13.6.0"],\
           ["autoprefixer", "virtual:5b389c15d923e749166a72b6dd23cfc35f0a88940355f3be9e4cb0900baadf3e2a7c1f58dca10216d90ffd779e684ff0a98ef4e79bb9b966effc9417e4cb069d#npm:10.4.21"],\
           ["axios", "npm:1.11.0"],\
+          ["jwt-decode", "npm:4.0.0"],\
           ["leaflet", "npm:1.9.4"],\
           ["maplibre-gl", "npm:5.7.0"],\
           ["pinia", "virtual:5b389c15d923e749166a72b6dd23cfc35f0a88940355f3be9e4cb0900baadf3e2a7c1f58dca10216d90ffd779e684ff0a98ef4e79bb9b966effc9417e4cb069d#npm:3.0.3"],\

@@ -7,7 +7,7 @@
             @click.stop>
 
             <!-- Close Button -->
-            <button @click="closeModal"
+            <button @click="$emit('update:modelValue', false)"
                 class="w-[38px] h-[38px] absolute top-[30px] right-4 rounded-full bg-[#F6F7F9] flex items-center justify-center transition-colors duration-200 z-10">
                 <close-icon />
             </button>
@@ -22,7 +22,7 @@
             <!-- Modal Header -->
             <div class="px-6 pt-8 pb-8 text-center">
                 <!-- Title -->
-                <ModalTitle title="Açar sözi üýtgetmek" />
+                <ModalTitle title="Ulanyjy tassyklamak" />
                 <!-- Subtitle -->
                 <h2 class="text-[#0C1A30] text-start font-medium">Tassyklama kody</h2>
             </div>
@@ -42,9 +42,9 @@
                                 {{ timer }}
                             </span>
                         </div>
-    
+
                         <!-- Submit Button -->
-                        <AuthButton :title="'Ulgama girmek'" :isFormValid="isFormValid" />
+                        <AuthButton :title="'Ulgama girmek'" :isFormValid="isFormValid" :loading="auth.loading" :loadingText="'Tassyklanýar'" />
                     </div>
 
                 </FormSection>
@@ -54,11 +54,17 @@
 </template>
 
 <script setup>
-defineProps({
+import { useAuthStore } from '@/stores/auth'
+const auth = useAuthStore()
+const props = defineProps({
     modelValue: {
         type: Boolean,
         required: true
     },
+    data: {
+        type: Object,
+        required: true
+    }
 })
 const emit = defineEmits(['update:modelValue'])
 
@@ -68,16 +74,20 @@ const timer = ref('01:00')
 
 // Computed properties
 const isFormValid = computed(() => {
-    return code.value >= 1000
+    return code.value >= 10000
 })
 
 // Methods
-const handleSubmit = () => {
-    console.log('Form submitted');
+const handleSubmit = async () => {
     if (isFormValid.value) {
-        console.log('Form submitted:', {
-            code: code.value,
-        })
+        try {
+            const response = await auth.register({...props.data, otp: code.value })
+            if (response.status === "ok") {
+                emit('update:modelValue', false)
+            }
+        } catch (err) {
+            console.error(err)
+        }
     }
 }
 
@@ -93,7 +103,7 @@ const startTimer = () => {
     }, 1000);
 };
 
-const closeModal = () => {
-    emit('update:modelValue', false)
-}
+onMounted(() => {
+    startTimer();
+});
 </script>

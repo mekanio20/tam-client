@@ -7,7 +7,7 @@
             @click.stop>
 
             <!-- Close Button -->
-            <button @click="closeModal"
+            <button @click="$emit('update:modelValue', false)"
                 class="w-[38px] h-[38px] absolute top-[30px] right-4 rounded-full bg-[#F6F7F9] flex items-center justify-center transition-colors duration-200 z-10">
                 <close-icon />
             </button>
@@ -30,11 +30,18 @@
             <!-- Modal Body -->
             <AuthContainer>
                 <!-- Phone Tab Content -->
-                <FormSection @submit="handleSubmit" class="space-y-8">
-                    <!-- Name Field -->
+                <FormSection @submit="handleSubmit" class="space-y-4">
+                    <!-- Firstname Field -->
                     <FormGroup>
-                        <FormTitle :id="'name'" :title="'Adyňyz'" />
-                        <FormInput v-model="name" :label="'name'"
+                        <FormTitle :id="'firstname'" :title="'Adyňyz'" />
+                        <FormInput v-model="firstname" :label="'firstname'"
+                            :placeholder="''" />
+                    </FormGroup>
+
+                    <!-- Lastname Field -->
+                    <FormGroup>
+                        <FormTitle :id="'lastname'" :title="'Familiýaňyz'" />
+                        <FormInput v-model="lastname" :label="'lastname'"
                             :placeholder="''" />
                     </FormGroup>
 
@@ -61,22 +68,19 @@
                     </FormGroup>
 
                     <!-- Submit Button -->
-                    <AuthButton :title="'Dowam etmek'" :isFormValid="isFormValid" />
+                    <AuthButton :title="'Dowam etmek'" :isFormValid="isFormValid" :loading="auth.loading" :loadingText="'Ugradylýar'" />
 
                 </FormSection>
                 
                 <!-- Footer Links -->
-                <div class="flex items-center justify-center space-x-1 pt-8">
-                    <button
-                        class="text-[#0C1A30] hover:text-gray-900 text-sm font-medium transition-colors duration-200"
-                        @click="forgotPassword">
-                        Hasabyňyz barmy?
-                    </button>
-                    <button
-                        class="text-[#037D84] hover:text-[#2d989e] text-sm font-medium transition-colors duration-200"
-                        @click="createAccount">
-                        Ulgama giriň
-                    </button>
+                <div @click="redirectLogin" class="flex items-center justify-center pt-8">
+                    <div class="flex items-center space-x-1">
+                        <span class="text-[#0C1A30] text-sm font-medium transition-colors duration-200">Hasabyňyz barmy?</span>
+                        <button
+                            class="text-[#037D84] hover:text-[#2d989e] hover:underline text-sm font-medium transition-colors duration-200">
+                            Ulgama giriň
+                        </button>
+                    </div>
                 </div>
             </AuthContainer>
         </div>
@@ -90,17 +94,20 @@ defineProps({
         required: true
     },
 })
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'send_otp', 'forgot_password'])
+import { useAuthStore } from '@/stores/auth'
+const auth = useAuthStore()
 
 // Form state
-const phoneNumber = ref('+993 61626364')
+const phoneNumber = ref('+993 63755727')
 const showPassword = ref(false)
-const password = ref('')
-const name = ref('')
+const password = ref('adminadmin')
+const firstname = ref('Mekan')
+const lastname = ref('Baylyyew')
 
 // Computed properties
 const isFormValid = computed(() => {
-    return phoneNumber.value.length > 10 && password.value.length > 0 && name.value.length > 0
+    return phoneNumber.value.length > 10 && password.value.length > 0 && firstname.value.length > 0 && lastname.value.length > 0
 })
 
 // Methods
@@ -108,25 +115,25 @@ const togglePassword = () => {
     showPassword.value = !showPassword.value
 }
 
-const handleSubmit = () => {
-    console.log('Form submitted');
+const handleSubmit = async () => {
     if (isFormValid.value) {
-        console.log('Form submitted:', {
-            phone: phoneNumber.value,
-            password: password.value
-        })
+        try {
+            const otp = await auth.sendOtp({ identifier: phoneNumber.value, purpose: "registration" })
+            if (otp.status === "ok") {
+                emit('send_otp', {
+                    first_name: firstname.value,
+                    last_name: lastname.value,
+                    identifier: phoneNumber.value,
+                    password: password.value
+                })
+            }
+        } catch (err) {
+            console.error(err)
+        }
     }
 }
 
-const forgotPassword = () => {
-    console.log('Forgot password clicked')
-}
-
-const createAccount = () => {
-    console.log('Create account clicked')
-}
-
-const closeModal = () => {
-    emit('update:modelValue', false)
+const redirectLogin = () => {
+    emit('login')
 }
 </script>

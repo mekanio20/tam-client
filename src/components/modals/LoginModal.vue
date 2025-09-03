@@ -1,13 +1,13 @@
 <template>
     <!-- Modal Backdrop -->
-    <div v-if="show" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-        @click="show.value = false">
+    <div v-if="modelValue" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        @click="$emit('update:modelValue', false)">
         <!-- Modal Content -->
         <div class="relative bg-white rounded-[14px] w-full max-w-md mx-auto transform transition-all duration-300 ease-out"
             @click.stop>
 
             <!-- Close Button -->
-            <button @click="show.value = false"
+            <button @click="$emit('update:modelValue', false)"
                 class="w-[38px] h-[38px] absolute top-[30px] right-4 rounded-full bg-[#F6F7F9] flex items-center justify-center transition-colors duration-200 z-10">
                 <close-icon />
             </button>
@@ -105,19 +105,19 @@
                     </FormGroup>
 
                     <!-- Submit Button -->
-                    <AuthButton :title="'Ulgama girmek'" :isFormValid="isFormValid" />
+                    <AuthButton :title="'Ulgama girmek'" :isFormValid="isFormValid" :loading="auth.loading" :loadingText="'Ugradylýar'" />
                 </FormSection>
 
                 <!-- Footer Links -->
                 <div class="flex items-center justify-between pt-10">
                     <button
-                        class="text-[#0C1A30] hover:text-gray-900 text-sm font-medium transition-colors duration-200"
+                        class="text-[#0C1A30] hover:text-gray-900 hover:underline text-sm font-medium transition-colors duration-200"
                         @click="forgotPassword">
                         Açar sözi unutdym
                     </button>
                     <button
-                        class="text-[#037D84] hover:text-[#2d989e] text-sm font-medium transition-colors duration-200"
-                        @click="createAccount">
+                        class="text-[#037D84] hover:text-[#2d989e] hover:underline text-sm font-medium transition-colors duration-200"
+                        @click.stop="redirectRegister">
                         Hasap döret
                     </button>
                 </div>
@@ -129,15 +129,20 @@
 <script setup>
 import { useAuthStore } from '@/stores/auth'
 const auth = useAuthStore()
-const show = ref(false)
-show.value = !auth.isAuthenticated
+const props = defineProps({
+    modelValue: {
+        type: Boolean,
+        required: true
+    }
+})
+const emit = defineEmits(['update:modelValue', 'forgot_password', 'register'])
 
 // Modal state
 const activeTab = ref('phone')
 
 // Form state
-const phoneNumber = ref('+993 61626364')
-const password = ref('')
+const phoneNumber = ref('+993 63755727')
+const password = ref('adminadmin')
 const email = ref('')
 const showPassword = ref(false)
 
@@ -171,13 +176,10 @@ const formatPhoneNumber = (event) => {
 const handleSubmit = async () => {
     console.log('Form submitted');
     if (isFormValid.value) {
-        console.log('Form submitted:', {
-            phone: phoneNumber.value,
-            password: password.value
-        })
         try {
-            await auth.login({ username: username.value, password: password.value })
-            show.value = false
+            const identifier = phoneNumber.value || email.value
+            await auth.login({ username: "mekanio20", identifier: identifier, password: password.value })
+            emit('update:modelValue', false)
         } catch (err) {
             console.error(err)
         }
@@ -185,17 +187,9 @@ const handleSubmit = async () => {
 }
 
 const forgotPassword = () => {
-    console.log('Forgot password clicked')
+    emit('forgot_password')
 }
-
-const createAccount = () => {
-    console.log('Create account clicked')
+const redirectRegister = () => {
+    emit('register')
 }
-
-watch(
-  () => auth.isAuthenticated,
-  (val) => {
-    if (val) show.value = false
-  }
-)
 </script>
