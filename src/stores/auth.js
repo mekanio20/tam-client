@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
-import { isTokenValid } from "@/composables/jwtDecode";
+import { isTokenExpired } from "@/composables/useTokens.js";
+import { useToast } from "@/composables/useToast.js";
 import api from "@/api/index.js";
 
 export const useAuthStore = defineStore("auth", () => {
@@ -9,9 +10,12 @@ export const useAuthStore = defineStore("auth", () => {
   let refreshToken = localStorage.getItem('refreshToken');
   const loading = ref(false);
   const error = ref(null);
+  
+  // Toast composable
+  const { success, error: showError, handleApiError } = useToast();
 
   const isAuthenticated = computed(() => {
-    return isTokenValid(accessToken)
+    return isTokenExpired(accessToken) ? false : true
   })
 
   // Helper: store tokens in localStorage
@@ -35,6 +39,7 @@ export const useAuthStore = defineStore("auth", () => {
     refreshToken = null;
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
+    localStorage.removeItem("user")
   };
 
   // --- Actions ---
@@ -51,9 +56,11 @@ export const useAuthStore = defineStore("auth", () => {
       });
       setTokens(data.access, data.refresh, data.user);
       user = data.user || null;
+      success("Login Successful", "You have successfully logged into your account");
       return data;
     } catch (err) {
       error.value = err.message || "Login failed";
+      handleApiError(err, "Login failed");
       throw err;
     } finally {
       loading.value = false;
@@ -69,9 +76,11 @@ export const useAuthStore = defineStore("auth", () => {
         identifier,
         purpose,
       });
+      success("OTP Sent", "Verification code has been sent to your phone");
       return data;
     } catch (err) {
       error.value = err.message || "OTP could not be sent";
+      handleApiError(err, "OTP could not be sent");
       throw err;
     } finally {
       loading.value = false;
@@ -88,9 +97,11 @@ export const useAuthStore = defineStore("auth", () => {
         otp,
       });
       user = data.user || null;
+      success("Login Successful", "You have successfully logged in with OTP.");
       return data;
     } catch (err) {
       error.value = err.message || "Login with OTP failed";
+      handleApiError(err, "Login with OTP failed");
       throw err;
     } finally {
       loading.value = false;
@@ -105,9 +116,11 @@ export const useAuthStore = defineStore("auth", () => {
     try {
       const { data } = await api.post("/auth/client/register/", payload);
       setTokens(data.data.access, data.data.refresh, data.data.user);
+      success("Registration Successful", "Your account has been created successfully");
       return data;
     } catch (err) {
       error.value = err.message || "Registration failed";
+      handleApiError(err, "Registration failed");
       throw err;
     } finally {
       loading.value = false;
@@ -125,9 +138,11 @@ export const useAuthStore = defineStore("auth", () => {
         new_password,
       });
       setTokens(data.data.access, data.data.refresh, data.data.user);
+      success("Password Reset", "Your password has been successfully reset");
       return data;
     } catch (err) {
       error.value = err.message || "Password reset failed";
+      handleApiError(err, "Password reset failed");
       throw err;
     } finally {
       loading.value = false;
@@ -146,6 +161,7 @@ export const useAuthStore = defineStore("auth", () => {
       return data;
     } catch (err) {
       error.value = err.message || "Token refresh failed";
+      handleApiError(err, "Token refresh failed");
       throw err;
     }
   };

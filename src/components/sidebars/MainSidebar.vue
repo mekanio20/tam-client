@@ -13,21 +13,24 @@
       <!-- Menu Categories -->
       <div class="flex-1 py-4 overflow-y-auto sidebar-scroll">
         <div class="space-y-1 px-3">
-          <div v-for="(category, index) in categories" :key="category.name"
+          <div v-for="(category, index) in categories" :key="category.id"
             class="transform transition-all duration-300 ease-out" :style="{
         transitionDelay: `${index * 50}ms`,
         opacity: isVisible ? 1 : 0,
         transform: isVisible ? 'translateX(0)' : 'translateX(-20px)'
       }">
-            <a href="#" @click.prevent="selectCategory(category.name)" @mouseenter="onCategoryMouseEnter(category)"
+            <router-link :to="`/subcategories/${category.id}`" @click.prevent="selectCategory(category.id)" @mouseenter="onCategoryMouseEnter(category)"
               class="group flex items-center px-4 py-3 text-[#0C1A30] rounded-lg hover:bg-gray-50 transition-all duration-200 ease-in-out transform hover:scale-[1.02] hover:shadow-sm"
               :class="{
-        'bg-[#FEB9181F] text-[#FFBA19]': selectedCategory === category.name
+        'bg-[#FEB9181F] text-[#FFBA19]': selectedCategory === category.id
       }">
+              <div v-if="category?.image?.path" class="w-[20px] h-[20px] mr-2">
+                <img class="w-full h-full object-cover" :src="category.image.path">
+              </div> 
               <span class="font-medium group-hover:translate-x-1 transition-transform duration-200">
                 {{ category.name }}
               </span>
-            </a>
+            </router-link>
           </div>
         </div>
       </div>
@@ -70,31 +73,6 @@ const isSubmenuOpen = ref(false)
 const activeParentCategory = ref(null)
 const submenuItems = ref([])
 let closeSubmenuTimeoutId = null
-
-// Categories data matching the image
-// const categories = ref([
-//   { name: 'Мебель', children: ['Диваны', 'Стулья', 'Столы', 'Шкафы', 'Тумбы'] },
-//   { name: 'Кухня и столовая', children: ['Посуда', 'Кухонная техника', 'Столовые приборы'] },
-//   { name: 'Спальня', children: ['Кровати', 'Матрасы', 'Комоды'] },
-//   { name: 'Ванная комната' },
-//   { name: 'Гостиная' },
-//   { name: 'Офис' },
-//   { name: 'Детская комната' },
-//   { name: 'Прихожая' },
-//   { name: 'Освещение' },
-//   { name: 'Текстиль и декор' },
-//   { name: 'Уборка и стирка' },
-//   { name: 'Освещение' },
-//   { name: 'Текстиль и декор' },
-//   { name: 'Уборка и стирка' },
-//   { name: 'Освещение' },
-//   { name: 'Текстиль и декор' },
-//   { name: 'Уборка и стирка' },
-//   { name: 'Кухонные принадлежности' },
-//   { name: 'Сад и огород' },
-//   { name: 'Инструменты и техника' },
-//   { name: 'Товары для животных' }
-// ])
 
 // Methods
 const toggleMobileMenu = () => {
@@ -140,7 +118,6 @@ const cancelCloseSubmenu = () => {
 // Lifecycle
 onMounted(() => {
   fetchCategories()
-  console.log(categories.value);
   isVisible.value = true
 })
 </script>

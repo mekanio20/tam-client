@@ -94,7 +94,7 @@ defineProps({
         required: true
     },
 })
-const emit = defineEmits(['update:modelValue', 'send_otp', 'forgot_password'])
+const emit = defineEmits(['update:modelValue', 'login', 'send_otp', 'forgot_password'])
 import { useAuthStore } from '@/stores/auth'
 const auth = useAuthStore()
 

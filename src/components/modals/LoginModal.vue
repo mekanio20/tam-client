@@ -70,14 +70,8 @@
                     </FormGroup>
 
                     <!-- Submit Button -->
-                    <button type="submit" :disabled="!isFormValid" :class="[
-        'w-full py-4 font-bold rounded-lg transition-all duration-200 transform',
-        isFormValid
-            ? 'bg-[#FEB918] hover:bg-yellow-500 text-white hover:scale-[1.01] active:scale-[0.98]'
-            : 'bg-gray-200 text-white cursor-not-allowed'
-    ]">
-                        Ulgama gir
-                    </button>
+                    <AuthButton :title="'Ulgama girmek'" :isFormValid="isFormValid" :loading="auth.loading"
+                        :loadingText="'Ugradylýar'" />
 
                 </FormSection>
 
@@ -105,7 +99,8 @@
                     </FormGroup>
 
                     <!-- Submit Button -->
-                    <AuthButton :title="'Ulgama girmek'" :isFormValid="isFormValid" :loading="auth.loading" :loadingText="'Ugradylýar'" />
+                    <AuthButton :title="'Ulgama girmek'" :isFormValid="isFormValid" :loading="auth.loading"
+                        :loadingText="'Ugradylýar'" />
                 </FormSection>
 
                 <!-- Footer Links -->
@@ -174,11 +169,10 @@ const formatPhoneNumber = (event) => {
 }
 
 const handleSubmit = async () => {
-    console.log('Form submitted');
     if (isFormValid.value) {
         try {
             const identifier = phoneNumber.value || email.value
-            await auth.login({ username: "mekanio20", identifier: identifier, password: password.value })
+            await auth.login({ username: identifier, password: password.value })
             emit('update:modelValue', false)
         } catch (err) {
             console.error(err)

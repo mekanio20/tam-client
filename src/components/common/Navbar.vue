@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white overflow-x-auto no-scrollbar rounded-b-3xl">
+    <div class="bg-white overflow-visible no-scrollbar rounded-b-3xl relative">
         <MainContainer class="flex items-center justify-between">
             <div class="w-[180px] flex-shrink-0">
                 <logo-icon />

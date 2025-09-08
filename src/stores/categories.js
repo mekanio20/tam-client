@@ -7,6 +7,9 @@ export const useCategoriesStore = defineStore("categories", () => {
   const loading = ref(false);
   const error = ref(null);
 
+  const bgColors = ["#E2FFF4", "#FFF6E2", "#FFEFE9", "#EEFFCA", "#93E6FF", "#FFEAF5"];
+  const circleBgColors = ["#C1FFDC", "#FFE29E", "#FFC8B5", "#DCFB96", "#93E6FF", "#FFC8E5"];
+
   // --- Actions ---
 
   // 1. (GET /categories)
@@ -14,50 +17,19 @@ export const useCategoriesStore = defineStore("categories", () => {
     loading.value = true;
     error.value = null;
     try {
-      const { data } = await api.get("/categories");
-      categories.value = data;
+      const { data } = await api.get("/categories/");
+      categories.value = await data.results.map((cat, index) => {
+        const colorIndex = index % 6;
+        return {
+          ...cat,
+          bg_color: bgColors[colorIndex],
+          circle_bg_color: circleBgColors[colorIndex],
+        };
+      });
     } catch (err) {
       error.value = err.message || "Category not found";
     } finally {
       loading.value = false;
-    }
-  };
-
-  // 2. (POST /categories)
-  const addCategory = async (payload) => {
-    try {
-      const { data } = await api.post("/categories", payload);
-      categories.value.push(data);
-      return data;
-    } catch (err) {
-      error.value = err.message || "Category not created";
-      throw err;
-    }
-  };
-
-  // 3. (PUT /categories/:id)
-  const updateCategory = async (id, payload) => {
-    try {
-      const { data } = await api.put(`/categories/${id}`, payload);
-      const index = categories.value.findIndex((c) => c.id === id);
-      if (index !== -1) {
-        categories.value[index] = data;
-      }
-      return data;
-    } catch (err) {
-      error.value = err.message || "Category not updated";
-      throw err;
-    }
-  };
-
-  // 4. (DELETE /categories/:id)
-  const deleteCategory = async (id) => {
-    try {
-      await api.delete(`/categories/${id}`);
-      categories.value = categories.value.filter((c) => c.id !== id);
-    } catch (err) {
-      error.value = err.message || "Category not deleted";
-      throw err;
     }
   };
 
@@ -66,8 +38,5 @@ export const useCategoriesStore = defineStore("categories", () => {
     loading,
     error,
     fetchCategories,
-    addCategory,
-    updateCategory,
-    deleteCategory,
   };
 });
