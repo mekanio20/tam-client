@@ -3,7 +3,7 @@
         <div class="bg-[#F6F7F9] group-hover:bg-[#DCE7FF] rounded-[10px] overflow-hidden duration-300 h-[310px]">
             <div class="relative w-full h-full flex items-center justify-center">
                 <!-- Product Image -->
-                <img v-if="product.image" :src="product.image" class="object-contain pb-5">
+                <img v-if="product?.preview?.path" :src="product.preview.path" class="object-contain pb-5">
 
                 <!-- Favorite -->
                 <button type="button" @click="$emit('toggleFavorite', product.id)" class="absolute right-2 top-2">
@@ -34,7 +34,7 @@
                     product.currency || 'TMT' }}</p>
             </div>
             <h3 class="font-medium text-[#0C1A30] sm:text-base text-sm tracking-[0.2px]">
-                {{ product.title }}
+                {{ product.name }}
             </h3>
         </div>
 

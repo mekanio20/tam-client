@@ -1,9 +1,9 @@
-import { defineStore } from "pinia";
 import api from "@/api/index.js";
 
 export const useCategoriesStore = defineStore("categories", () => {
   // --- State ---
   const categories = ref([]);
+  const category_info = ref({});
   const loading = ref(false);
   const error = ref(null);
 
@@ -17,8 +17,8 @@ export const useCategoriesStore = defineStore("categories", () => {
     loading.value = true;
     error.value = null;
     try {
-      const { data } = await api.get("/categories/");
-      categories.value = await data.results.map((cat, index) => {
+      const { data } = await api.get("/categories/with_children/");
+      categories.value = await data.map((cat, index) => {
         const colorIndex = index % 6;
         return {
           ...cat,
@@ -33,10 +33,26 @@ export const useCategoriesStore = defineStore("categories", () => {
     }
   };
 
+  const fetchCategoryDetails = async (id) => {
+    loading.value = true;
+    error.value = null;
+    try {
+      const { data } = await api.get(`/categories/${id}/`);
+      category_info.value = data;
+    } catch (err) {
+      error.value = err.message || "Category not found";
+      throw err;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     categories,
+    category_info,
     loading,
     error,
     fetchCategories,
+    fetchCategoryDetails
   };
 });

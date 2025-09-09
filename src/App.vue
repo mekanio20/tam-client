@@ -14,9 +14,6 @@
 
 <script setup>
 import baseLayout from '@/layouts/baseLayout.vue';
-import Toast from '@/components/common/Toast.vue';
-import { useToast } from '@/composables/useToast.js';
-
 const route = useRoute()
 const { toasts, removeToast } = useToast()
 

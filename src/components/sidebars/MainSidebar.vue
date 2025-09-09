@@ -6,9 +6,7 @@
       :class="[
         isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full',
         'w-64 md:w-72'
-      ]"
-      @mouseleave="scheduleCloseSubmenu"
-      @mouseenter="cancelCloseSubmenu">
+      ]" @mouseleave="scheduleCloseSubmenu" @mouseenter="cancelCloseSubmenu">
 
       <!-- Menu Categories -->
       <div class="flex-1 py-4 overflow-y-auto sidebar-scroll">
@@ -19,14 +17,15 @@
         opacity: isVisible ? 1 : 0,
         transform: isVisible ? 'translateX(0)' : 'translateX(-20px)'
       }">
-            <router-link :to="`/subcategories/${category.id}`" @click.prevent="selectCategory(category.id)" @mouseenter="onCategoryMouseEnter(category)"
+            <router-link :to="`/product/list?category=${category.id}`" @click.prevent="selectCategory(category.id)"
+              @mouseenter="onCategoryMouseEnter(category)"
               class="group flex items-center px-4 py-3 text-[#0C1A30] rounded-lg hover:bg-gray-50 transition-all duration-200 ease-in-out transform hover:scale-[1.02] hover:shadow-sm"
               :class="{
         'bg-[#FEB9181F] text-[#FFBA19]': selectedCategory === category.id
       }">
               <div v-if="category?.image?.path" class="w-[20px] h-[20px] mr-2">
                 <img class="w-full h-full object-cover" :src="category.image.path">
-              </div> 
+              </div>
               <span class="font-medium group-hover:translate-x-1 transition-transform duration-200">
                 {{ category.name }}
               </span>
@@ -37,16 +36,22 @@
     </div>
 
     <!-- Right Submenu (desktop only) -->
-    <div v-if="isMobileMenuOpen && isSubmenuOpen" class="fixed left-64 md:left-72 top-[112px] w-64 h-[calc(100vh-112px)] bg-white shadow-lg border-l border-[#EDEDED] z-40 hidden md:flex flex-col"
+    <div v-if="isMobileMenuOpen && isSubmenuOpen && submenuItems.length > 0"
+      class="fixed left-64 md:left-72 top-[112px] w-64 h-[calc(100vh-112px)] bg-white shadow-lg border-l border-[#EDEDED] z-40 hidden md:flex flex-col"
       @mouseenter="cancelCloseSubmenu" @mouseleave="scheduleCloseSubmenu">
       <div class="flex-1 py-4 overflow-y-auto sidebar-scroll">
         <div class="space-y-1 px-3">
-          <div v-for="(item, index) in submenuItems" :key="`${activeParentCategory}-${index}-${item}`" class="transform transition-all duration-300 ease-out">
-            <a href="#" class="group flex items-center px-4 py-3 text-[#0C1A30] rounded-lg hover:bg-gray-50 transition-all duration-200 ease-in-out transform hover:scale-[1.02] hover:shadow-sm">
+          <div v-for="(item, index) in submenuItems" :key="`${activeParentCategory}-${index}-${item.id}`"
+            class="transform transition-all duration-300 ease-out">
+            <router-link :to="`/product/list?subcategory=${item.id}`" @click="selectSubcategory(item.id)"
+              class="group flex items-center px-4 py-3 text-[#0C1A30] rounded-lg hover:bg-gray-50 transition-all duration-200 ease-in-out transform hover:scale-[1.02] hover:shadow-sm">
+              <div v-if="item?.image?.path" class="w-[20px] h-[20px] mr-2">
+                <img class="w-full h-full object-cover" :src="item.image.path">
+              </div>
               <span class="font-medium group-hover:translate-x-1 transition-transform duration-200">
-                {{ item }}
+                {{ item.name }}
               </span>
-            </a>
+            </router-link>
           </div>
         </div>
       </div>
@@ -67,7 +72,7 @@ const { fetchCategories, addCategory, updateCategory, deleteCategory } = categor
 // Reactive data
 const props = defineProps({ isMobileMenuOpen: Boolean })
 const emit = defineEmits(['toggleMobileMenu'])
-const selectedCategory = ref('Мебель')
+const selectedCategory = ref(null)
 const isVisible = ref(false)
 const isSubmenuOpen = ref(false)
 const activeParentCategory = ref(null)
@@ -79,15 +84,22 @@ const toggleMobileMenu = () => {
   emit('toggleMobileMenu')
 }
 
-const selectCategory = (categoryName) => {
-  selectedCategory.value = categoryName
-  if (window.innerWidth < 768) {
-    emit('toggleMobileMenu', false)
-  }
+const selectCategory = (categoryId) => {
+  selectedCategory.value = categoryId
+  emit('toggleMobileMenu', false)
+}
+
+const selectSubcategory = (subcategoryId) => {
+  selectedCategory.value = subcategoryId
+  emit('toggleMobileMenu', false)
+  // Close submenu after selection
+  isSubmenuOpen.value = false
+  activeParentCategory.value = null
+  submenuItems.value = []
 }
 
 const onCategoryMouseEnter = (category) => {
-  if (category && category.children && category.children.length) {
+  if (category && category.children && category.children.length > 0) {
     activeParentCategory.value = category.name
     submenuItems.value = category.children
     isSubmenuOpen.value = true
@@ -134,7 +146,8 @@ onMounted(() => {
 
 .sidebar-scroll::-webkit-scrollbar-thumb {
   background: #FEBD24;
-  border-radius: 9999px; /* rounded-full */
+  border-radius: 9999px;
+  /* rounded-full */
 }
 
 .sidebar-scroll::-webkit-scrollbar-thumb:hover {

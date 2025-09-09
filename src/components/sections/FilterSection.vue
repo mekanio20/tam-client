@@ -2,11 +2,11 @@
     <!-- Filter Controls -->
     <section class="flex flex-wrap items-center gap-3 mb-6 mt-5">
         <!-- Offer Button -->
-        <button
+        <!-- <button
             class="bg-gradient-to-r from-[#FF6F00] to-[#FEB918] hover:bg-orange-600 px-6 py-3 rounded-lg transition-all duration-300 flex items-center gap-3 group">
             <span class="text-white font-semibold">Arzanladyş</span>
             <offer-icon />
-        </button>
+        </button> -->
 
         <!-- Filter Dropdown -->
         <div class="relative" ref="filterRef">
@@ -23,7 +23,7 @@
                 class="bg-[#F6F7F9] px-4 py-3 rounded-lg transition-all duration-300 flex items-center justify-between gap-3 min-w-[215px]">
                 <div class="flex items-center gap-3">
                     <sort-icon />
-                    <span class="text-[#0C1A30]"> {{ selectedSort }}</span>
+                    <span class="text-[#0C1A30]"> {{ selectedSort.name }}</span>
                 </div>
                 <dropdown-icon :isRotate="isSortOpen" />
             </button>
@@ -36,7 +36,7 @@
                         class="flex items-center px-4 py-3 cursor-pointer transition-all duration-200 hover:bg-gray-50">
                         <!-- Radio Button -->
                         <div class="flex items-center justify-center mr-4">
-                            <div v-if="selectedSort === option"
+                            <div v-if="selectedSort.id === option.id"
                                 class="w-5 h-5 bg-[#037D84] rounded-full flex items-center justify-center">
                                 <check-icon />
                             </div>
@@ -45,22 +45,21 @@
 
                         <!-- Option Text -->
                         <span class="text-[#0C1A30] font-normal">
-                            {{ option }}
+                            {{ option.name }}
                         </span>
                     </div>
                 </div>
             </Transition>
         </div>
 
-        <div class="relative" ref="categoryRef">
-            <!-- Category Dropdown -->
+        <!-- Category Dropdown -->
+        <!-- <div class="relative" ref="categoryRef">
             <button @click="toggleCategory"
                 class="bg-[#F6F7F9] px-4 py-3 rounded-lg transition-all duration-300 flex items-center justify-between gap-3 min-w-[215px]">
                 <span class="text-[#0C1A30]">{{ selectedCategory }}</span>
                 <dropdown-icon :isRotate="isCategoryOpen" />
             </button>
 
-            <!-- Category Options Menu -->
             <Transition name="dropdown">
                 <div v-if="isCategoryOpen"
                     class="absolute top-full left-0 mt-2 w-full max-h-[200px] overflow-y-auto bg-white shadow-xl border border-[#F6F7F9] rounded-lg z-50">
@@ -74,105 +73,70 @@
                     </button>
                 </div>
             </Transition>
-        </div>
+        </div> -->
 
     </section>
 </template>
 
 <script setup>
-defineEmits(['openFilter'])
+const emit = defineEmits(['openFilter', 'applySort'])
 // Refs
 const filterRef = ref(null)
 const sortRef = ref(null)
-const categoryRef = ref(null)
 
 // State
 const isSortOpen = ref(false)
-const isCategoryOpen = ref(false)
-const selectedSort = ref('Köne harytlar')
-const selectedCategory = ref('Kiçi kategoriya')
+const selectedSort = ref({
+    id: 1,
+    name: 'Adaty',
+})
 
 // Options
 const options = [
-    'Täze harytlar',
-    'Köne harytlar',
-    'Arzandan gymmada',
-    'Gymmatdan arzana',
-    'Köp satylanlar'
-]
-
-const categories = [
-    'Kiçi kategoriya',
-    'Uly kategoriya',
-    'Orta kategoriya',
-    'Premium kategoriya'
-]
-
-// Products data
-const products = ref([
     {
         id: 1,
-        name: 'Tabak doly',
-        description: 'Ýaşyl reňkli keramika tabaklar',
-        price: 45.00,
-        image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop',
-        favorite: false
+        name: 'Adaty',
     },
     {
         id: 2,
-        name: 'Pletka sebetler',
-        description: 'Tebigy materiallardan sebetler',
-        price: 32.50,
-        image: 'https://images.unsplash.com/photo-1586083702768-190ae093d34d?w=400&h=300&fit=crop',
-        favorite: false
+        name: 'Täze harytlar',
     },
     {
         id: 3,
-        name: 'Aşhana gurallary',
-        description: 'Premium hil gurallary',
-        price: 89.90,
-        image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop',
-        favorite: true
+        name: 'Köne harytlar',
     },
     {
         id: 4,
-        name: 'Keramika çanaklar',
-        description: 'Dürli ölçegdäki çanaklar',
-        price: 28.75,
-        image: 'https://images.unsplash.com/photo-1584054062862-90577b7b8eff?w=400&h=300&fit=crop',
-        favorite: false
-    }
-])
-
-// Methods
+        name: 'Arzandan gymmada',
+    },
+    {
+        id: 5,
+        name: 'Gymmatdan arzana',
+    },
+    {
+        id: 6,
+        name: 'Köp satylanlar',
+    },
+    {
+        id: 7,
+        name: 'Köp halalanlar',
+    },
+]
 
 const toggleSort = () => {
     isSortOpen.value = !isSortOpen.value
-    isCategoryOpen.value = false
-}
-
-const toggleCategory = () => {
-    isCategoryOpen.value = !isCategoryOpen.value
-    isSortOpen.value = false
 }
 
 const selectSort = (option) => {
     selectedSort.value = option
     isSortOpen.value = false
-}
-
-const selectCategory = (category) => {
-    selectedCategory.value = category
-    isCategoryOpen.value = false
+    emit('applySort', selectedSort.value)
 }
 
 // Click outside handler
 const handleClickOutside = (event) => {
     if (sortRef.value && !sortRef.value.contains(event.target)) {
         isSortOpen.value = false
-    }
-    if (categoryRef.value && !categoryRef.value.contains(event.target)) {
-        isCategoryOpen.value = false
     }
 }
 
