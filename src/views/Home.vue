@@ -1,13 +1,16 @@
 <template>
     <Banner />
-    <CategorySection :sectionTitle="'Meşhur bölümlerimiz'" :categories="categories.categories.slice(0, 4)" />
-    <TopProductSection />
-    <ProductSection :sectionTitle="'Ýagtylandyryş'" :products="products" @toggleFavorite="toggleFavorite"
-        @addToCart="addToCart" />
-    <ProductSection :sectionTitle="'Gap-gaçlar'" :products="products" @toggleFavorite="toggleFavorite"
-        @addToCart="addToCart" />
-    <ProductSection :sectionTitle="'Siziň üçin harytlar'" :products="products" @toggleFavorite="toggleFavorite"
-        @addToCart="addToCart" />
+    <CategorySection :sectionTitle="'Meşhur bölümlerimiz'" :categories="categories" />
+    <TopProductSection :products="mostPurchasedProducts" />
+    <ProductSection 
+        v-for="category in categoriesWithProducts" 
+        :key="category.id"
+        :sectionTitle="category.name" 
+        :products="categoryProducts[category?.id] || []" 
+        :link="`/product/list?category=${category.id}`"
+        @toggleFavorite="toggleFavorite"
+        @addToCart="addToCart" 
+    />
     <!-- Login -->
     <LoginModal v-model="isLoginModal" @forgot_password="openResetPassword" @register="openRegister" />
     <RegisterModal v-model="isRegisterModal" @send_otp="send_otp" @login="openLogin" />
@@ -16,13 +19,32 @@
 </template>
 
 <script setup>
-const categories = useCategoriesStore()
 const auth = useAuthStore()
+const categoryStore = useCategoriesStore()
 const isLoginModal = ref(false)
 const isOtpModal = ref(false)
 const isRegisterModal = ref(false)
 const isResetPasswordModal = ref(false)
 const otpData = ref({})
+
+const productStore = useProductsStore()
+const { fetchMostPurchasedProducts } = productStore
+const { categories } = storeToRefs(categoryStore)
+const { fetchCategories, fetchCategoryProducts } = categoryStore
+const mostPurchasedProducts = ref([])
+const categoryProducts = ref({})
+
+// Computed property to filter categories that have products and limit to max 3
+const categoriesWithProducts = computed(() => {
+    if (!categories.value) return []
+    
+    return categories.value
+        .filter(category => {
+            const products = categoryProducts.value[category.id]
+            return products && products.length > 0
+        })
+        .slice(0, 3) // Limit to maximum 3 categories
+})
 
 // Ensure modal visibility reflects authentication state on load and updates
 const syncRegisterModal = () => {
@@ -30,9 +52,29 @@ const syncRegisterModal = () => {
     isRegisterModal.value = !auth.isAuthenticated
 }
 
-onMounted(() => {
+onMounted(async () => {
     auth.loadTokens()
     syncRegisterModal()
+    mostPurchasedProducts.value = await fetchMostPurchasedProducts()
+    
+    // Fetch categories and their products
+    await fetchCategories()
+    
+    // Fetch products for each category
+    if (categories.value && categories.value.length > 0) {
+        let counter = 0
+        for (const category of categories.value) {
+            try {
+                const products = await fetchCategoryProducts(category.id)
+                if (products.length > 0) counter++
+                categoryProducts.value[category.id] = products
+                if (counter > 2) break
+            } catch (error) {
+                console.error(`Error fetching products for category ${category.id}:`, error)
+                categoryProducts.value[category.id] = []
+            }
+        }
+    }
 })
 
 watch(() => auth.isAuthenticated, () => {
@@ -62,112 +104,16 @@ const send_otp = (data) => {
     isOtpModal.value = true
 }
 const toggleFavorite = (id) => {
-    const product = products.value.find(product => product.id === id)
-    product.favorite = !product.favorite
+    // Find the product in any category and toggle its favorite status
+    for (const categoryId in categoryProducts.value) {
+        const product = categoryProducts.value[categoryId].find(product => product.id === id)
+        if (product) {
+            product.favorite = !product.favorite
+            break
+        }
+    }
 }
 const addToCart = (product) => {
     console.log(product)
 }
-
-const products = ref([
-    {
-        id: 1,
-        title: 'Щетка для уборки с совком для уборки',
-        image: '/images/product-1.png',
-        price: 2300,
-        old_price: 3000,
-        currency: 'TMT',
-        favorite: false
-    },
-    {
-        id: 2,
-        title: 'Щетка для уборки с совком для уборки',
-        image: '/images/product-1.png',
-        price: 2300,
-        old_price: 3000,
-        currency: 'TMT',
-        favorite: false
-    },
-    {
-        id: 3,
-        title: 'Щетка для уборки с совком для уборки',
-        image: '/images/product-1.png',
-        price: 2300,
-        old_price: 3000,
-        currency: 'TMT',
-        favorite: false
-    },
-    {
-        id: 4,
-        title: 'Щетка для уборки с совком для уборки',
-        image: '/images/product-1.png',
-        price: 2300,
-        old_price: 3000,
-        currency: 'TMT',
-        favorite: false
-    },
-    {
-        id: 5,
-        title: 'Щетка для уборки с совком для уборки',
-        image: '/images/product-1.png',
-        price: 2300,
-        old_price: 3000,
-        currency: 'TMT',
-        favorite: false
-    },
-    {
-        id: 6,
-        title: 'Щетка для уборки с совком для уборки',
-        image: '/images/product-1.png',
-        price: 2300,
-        old_price: 3000,
-        currency: 'TMT',
-        favorite: false
-    }
-])
-
-// const categories = ref([
-//     {
-//         id: 1,
-//         title: 'Ösümlikler',
-//         image: '/images/com-5.webp',
-//         bg_color: '#037D841F',
-//         circle_bg_color: '#037D84',
-//     },
-//     {
-//         id: 2,
-//         title: 'Ösümlikler',
-//         image: '/images/com-6.webp',
-//         bg_color: '#FFC1071F',
-//         circle_bg_color: '#FFC107'
-//     },
-//     {
-//         id: 3,
-//         title: 'Ösümlikler',
-//         image: '/images/com-7.webp',
-//         bg_color: '#FFC1071F',
-//         circle_bg_color: '#FFC107'
-//     },
-//     {
-//         id: 4,
-//         title: 'Ösümlikler',
-//         image: '/images/com-8.webp',
-//         bg_color: '#FFC1071F',
-//         circle_bg_color: '#FFC107'
-//     },
-//     {
-//         id: 5,
-//         title: 'Ösümlikler',
-//         image: '/images/com-9.webp',
-//         bg_color: '#FFC1071F',
-//         circle_bg_color: '#FFC107'
-//     },
-//     {
-//         id: 6,
-//         title: 'Ösümlikler',
-//         image: '/images/com-10.webp',
-//         bg_color: '#FFC1071F',
-//         circle_bg_color: '#FFC107'
-//     }
-// ])
 </script>

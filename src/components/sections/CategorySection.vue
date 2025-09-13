@@ -23,7 +23,7 @@
 <script setup>
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/css'
-defineProps({
+const props = defineProps({
     categories: {
         type: Array,
         required: true
@@ -40,5 +40,8 @@ defineProps({
         type: String,
         default: '/'
     }
+})
+onMounted(() => {
+    console.log('Categories -> ', props.categories);
 })
 </script>

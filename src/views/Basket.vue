@@ -164,6 +164,13 @@
 </template>
 
 <script setup>
+const basketStore = useBasketStore()
+const authStore = useAuthStore()
+
+onMounted(async () => {
+    const response = await basketStore.fetchCustomerCards(authStore.user.id)
+    console.log('Response:', response);
+})
 // Cart items data
 const cartItems = ref([
     {

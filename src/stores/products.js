@@ -17,6 +17,7 @@ export const useProductsStore = defineStore("products", () => {
         params: { ...queryParams, is_available: true },
       });
       products.value = data.results;
+      return data.results;
     } catch (err) {
       error.value = err.message || "Product not found";
     } finally {
@@ -31,6 +32,7 @@ export const useProductsStore = defineStore("products", () => {
     try {
       const { data } = await api.get("/catalog/client/newest/");
       products.value = data.results;
+      return data.results;
     } catch (err) {
       error.value = err.message || "Product not found";
     } finally {
@@ -45,6 +47,7 @@ export const useProductsStore = defineStore("products", () => {
     try {
       const { data } = await api.get("/catalog/client/oldest/");
       products.value = data.results;
+      return data.results;
     } catch (err) {
       error.value = err.message || "Product not found";
     } finally {
@@ -59,6 +62,7 @@ export const useProductsStore = defineStore("products", () => {
     try {
       const { data } = await api.get("/catalog/client/most_liked/");
       products.value = data.results;
+      return data.results;
     } catch (err) {
       error.value = err.message || "Product not found";
     } finally {
@@ -73,6 +77,7 @@ export const useProductsStore = defineStore("products", () => {
     try {
       const { data } = await api.get("/catalog/client/most_purchased/");
       products.value = data.results;
+      return data.results;
     } catch (err) {
       error.value = err.message || "Product not found";
     } finally {
@@ -81,10 +86,11 @@ export const useProductsStore = defineStore("products", () => {
   };
 
   // 6. (GET /catalog/client/:id/)
-  const fetchProduct = async (id) => {
+  const fetchProductDetail = async (id) => {
     try {
       const { data } = await api.get(`/catalog/client/${id}/`);
       product_info.value = data;
+      return data;
     } catch (err) {
       error.value = err.message || "Product not found";
       throw err;
@@ -93,6 +99,7 @@ export const useProductsStore = defineStore("products", () => {
 
   return {
     products,
+    product_info,
     loading,
     error,
     fetchProducts,
@@ -100,6 +107,6 @@ export const useProductsStore = defineStore("products", () => {
     fetchOldestProducts,
     fetchMostLikedProducts,
     fetchMostPurchasedProducts,
-    fetchProduct,
+    fetchProductDetail,
   };
 });

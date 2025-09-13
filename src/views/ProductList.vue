@@ -34,8 +34,10 @@ const { products } = storeToRefs(productsStore)
 const { category_info } = storeToRefs(categoryStore)
 
 onMounted(() => {
-    productsStore.fetchProducts()
-    categoryStore.fetchCategoryDetails(route.query.category)
+    let query = null
+    if (route.query.category) query = { category: route.query.category }
+    if (route.query.subcategory) query = { subcategory: route.query.subcategory }
+    productsStore.fetchProducts(query)
 })
 
 const openFilter = () => {

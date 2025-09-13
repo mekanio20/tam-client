@@ -13,7 +13,7 @@ export default defineConfig({
       dirs: ["src/components", "src/layouts", "src/composables", "src/stores"],
     }),
     Components({
-      dirs: ['src/components', 'src/composables', 'src/stores'],
+      dirs: ['src/components', 'src/views', 'src/composables', 'src/stores'],
       deep: true
     })
   ],

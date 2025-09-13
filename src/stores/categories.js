@@ -47,12 +47,29 @@ export const useCategoriesStore = defineStore("categories", () => {
     }
   };
 
+  const fetchCategoryProducts = async (categoryId) => {
+    loading.value = true;
+    error.value = null;
+    try {
+      const { data } = await api.get("/catalog/client/", {
+        params: { category: categoryId, is_available: true }
+      });
+      return data.results;
+    } catch (err) {
+      error.value = err.message || "Category products not found";
+      throw err;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     categories,
     category_info,
     loading,
     error,
     fetchCategories,
-    fetchCategoryDetails
+    fetchCategoryDetails,
+    fetchCategoryProducts
   };
 });
