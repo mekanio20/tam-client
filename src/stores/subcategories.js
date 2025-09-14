@@ -23,11 +23,27 @@ export const useSubcategoriesStore = defineStore("subcategories", () => {
     }
   };
 
+  // 2. (GET /subcategories/{id}/)
+  const fetchSubcategoryDetails = async (id) => {
+    loading.value = true;
+    error.value = null;
+    try {
+      const { data } = await api.get(`/subcategories/${id}/`);
+      console.log('Subcategory details', data);
+      subcategory_info.value = data;
+    } catch (err) {
+      error.value = err.message || "Subcategory not found";
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     subcategories,
     subcategory_info,
     loading,
     error,
     fetchSubcategories,
+    fetchSubcategoryDetails
   };
 });

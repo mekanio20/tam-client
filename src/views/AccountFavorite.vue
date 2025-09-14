@@ -12,25 +12,14 @@
 
 <script setup>
 const likesStore = useLikesStore()
-const { fetchLikes } = likesStore
-const { likes } = storeToRefs(likesStore)
+const { fetchLikedProducts } = likesStore
+const likedProducts = ref([])
 
-// Extract products from likes
-const likedProducts = computed(() => {
-    return likes.value.map(like => ({
-        ...like.product,
-        is_liked: true
-    }))
-})
-
-// Fetch likes on component mount
 onMounted(async () => {
     try {
-        await fetchLikes()
+        likedProducts.value = await fetchLikedProducts()
     } catch (error) {
         console.error('Error fetching likes:', error)
     }
 })
-
-// addToCart is now handled directly in ProductCard component
 </script>

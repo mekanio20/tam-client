@@ -4,8 +4,10 @@ export const useProductsStore = defineStore("products", () => {
   // --- State ---
   const products = ref([]);
   const product_info = ref({});
+  const productsCount = ref(0);
   const loading = ref(false);
   const error = ref(null);
+
   // --- Actions ---
 
   // 1. (GET /catalog/client/)
@@ -16,6 +18,7 @@ export const useProductsStore = defineStore("products", () => {
       const { data } = await api.get("/catalog/client/", {
         params: { ...queryParams, is_available: true },
       });
+      productsCount.value = data.count;
       products.value = data.results;
       return data.results;
     } catch (err) {
@@ -31,6 +34,7 @@ export const useProductsStore = defineStore("products", () => {
     error.value = null;
     try {
       const { data } = await api.get("/catalog/client/newest/");
+      productsCount.value = data.count;
       products.value = data.results;
       return data.results;
     } catch (err) {
@@ -46,6 +50,7 @@ export const useProductsStore = defineStore("products", () => {
     error.value = null;
     try {
       const { data } = await api.get("/catalog/client/oldest/");
+      productsCount.value = data.count;
       products.value = data.results;
       return data.results;
     } catch (err) {
@@ -61,6 +66,7 @@ export const useProductsStore = defineStore("products", () => {
     error.value = null;
     try {
       const { data } = await api.get("/catalog/client/most_liked/");
+      productsCount.value = data.count;
       products.value = data.results;
       return data.results;
     } catch (err) {
@@ -76,6 +82,7 @@ export const useProductsStore = defineStore("products", () => {
     error.value = null;
     try {
       const { data } = await api.get("/catalog/client/most_purchased/");
+      productsCount.value = data.count;
       products.value = data.results;
       return data.results;
     } catch (err) {
@@ -100,6 +107,7 @@ export const useProductsStore = defineStore("products", () => {
   return {
     products,
     product_info,
+    productsCount,
     loading,
     error,
     fetchProducts,

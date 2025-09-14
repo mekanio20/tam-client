@@ -33,11 +33,13 @@ export const useCategoriesStore = defineStore("categories", () => {
     }
   };
 
+  // 2. (GET /categories/{id}/)
   const fetchCategoryDetails = async (id) => {
     loading.value = true;
     error.value = null;
     try {
       const { data } = await api.get(`/categories/${id}/`);
+      console.log('Category details', data);
       category_info.value = data;
     } catch (err) {
       error.value = err.message || "Category not found";
@@ -47,6 +49,7 @@ export const useCategoriesStore = defineStore("categories", () => {
     }
   };
 
+  // 3. (GET /catalog/client/?category={id})
   const fetchCategoryProducts = async (categoryId) => {
     loading.value = true;
     error.value = null;

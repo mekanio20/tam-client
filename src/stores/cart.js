@@ -49,7 +49,7 @@ export const useCartStore = defineStore("cart", () => {
     try {
       const { data } = await api.post("/cart/add_item/", {
         product_id: productId,
-        city: city,
+        city: "mary",
         quantity: quantity
       });
       await fetchCart(); // Refresh cart data

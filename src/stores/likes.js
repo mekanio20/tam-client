@@ -49,7 +49,23 @@ export const useLikesStore = defineStore("likes", () => {
     }
   };
 
-  // 3) Like detail (GET /likes/{id}/)
+  // 3) Liked products (GET /likes/liked_products/)
+  const fetchLikedProducts = async () => {
+    loading.value = true;
+    error.value = null;
+    try {
+      const { data } = await api.get("/likes/liked_products/");
+      return data.results;
+    } catch (err) {
+      error.value = err.message || "Failed to fetch liked products";
+      handleApiError(err, "Failed to fetch liked products");
+      throw err;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  // 4) Like detail (GET /likes/{id}/)
   const fetchLikeDetail = async (id) => {
     loading.value = true;
     error.value = null;
@@ -66,7 +82,7 @@ export const useLikesStore = defineStore("likes", () => {
     }
   };
 
-  // 4) Delete like (DELETE /likes/{id}/)
+  // 5) Delete like (DELETE /likes/{id}/)
   const deleteLike = async (id) => {
     loading.value = true;
     error.value = null;
@@ -99,6 +115,7 @@ export const useLikesStore = defineStore("likes", () => {
     // Actions
     createLike,
     fetchLikes,
+    fetchLikedProducts,
     fetchLikeDetail,
     deleteLike,
     // Helpers

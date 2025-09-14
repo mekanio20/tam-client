@@ -104,5 +104,4 @@ const send_otp = (data) => {
     isRegisterModal.value = false
     isOtpModal.value = true
 }
-// addToCart is now handled directly in ProductCard component
 </script>
