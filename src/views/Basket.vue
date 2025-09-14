@@ -10,7 +10,7 @@
                 <div class="flex items-center justify-between">
                     <div class="flex items-end space-x-5">
                         <h1 class="text-[30px] font-semibold text-[#0C1A30]">Sebet</h1>
-                        <span class="text-[#838589] text-sm pb-2">{{ cartItems.length }} haryt</span>
+                        <span class="text-[#838589] text-sm pb-2">{{ cartStore.getItemCount() }} haryt</span>
                     </div>
                     <button @click="clearCart"
                         class="flex items-center space-x-2 bg-[#FA004C] text-white px-4 py-2 rounded-lg font-medium hover:opacity-60 transition-opacity duration-300">
@@ -43,7 +43,7 @@
                                 <div class="flex-1 flex items-center space-x-8 min-w-0 pr-6">
                                     <div class="w-[238px] h-[105px] flex flex-col justify-between flex-shrink-0">
                                         <h3 class="text-base font-medium text-[#0C1A30] mb-1">
-                                            {{ item.name }}
+                                            {{ item.product_name }}
                                         </h3>
                                         <div class="flex items-center space-x-4">
                                             <button @click="toggleFavorite(item.id)"
@@ -61,7 +61,7 @@
                                     <div class="w-full flex items-center justify-between">
                                         <!-- Price -->
                                         <div class="font-semibold text-[#0C1A30]">
-                                            {{ item.price }} TMT
+                                            {{ item.unit_price }} TMT
                                         </div>
 
                                         <!-- Quantity Controls -->
@@ -83,7 +83,7 @@
 
                                         <!-- Total Price -->
                                         <div class="font-semibold text-[#0C1A30] ml-4">
-                                            {{ item.price * item.quantity }} TMT
+                                            {{ item.total_price }} TMT
                                         </div>
                                     </div>
                                 </div>
@@ -92,7 +92,7 @@
                     </TransitionGroup>
 
                     <!-- Empty Cart State -->
-                    <div v-if="cartItems.length === 0" class="text-center py-12">
+                    <div v-if="cartStore.cartItems.length === 0" class="text-center py-12">
                         <svg class="mx-auto h-16 w-16 text-gray-300" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
@@ -107,18 +107,42 @@
                 <div class="lg:w-[370px] w-full py-6 p-8 bg-white rounded-xl sticky top-32">
                     <!-- Promo Code Section -->
                     <div class="mb-4">
-                        <div class="flex items-center space-x-2 p-3 bg-[#F6F7F9] rounded-lg mb-4">
+                        <!-- Gift Card -->
+                        <div v-if="!cartStore.giftCard" class="flex items-center space-x-2 p-3 bg-[#F6F7F9] rounded-lg mb-4 cursor-pointer hover:bg-[#E8F4F8] transition-colors" @click="showGiftCardModal = true">
                             <div class="w-7 h-7 bg-[#037D841F] rounded-full flex items-center justify-center">
                                 <discount_circle-icon />
                             </div>
                             <span class="text-sm text-[#838589]">Promokod giriziň</span>
                         </div>
+                        <div v-else class="flex items-center justify-between p-3 bg-[#E8F4F8] rounded-lg mb-4">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-7 h-7 bg-[#037D841F] rounded-full flex items-center justify-center">
+                                    <discount_circle-icon />
+                                </div>
+                                <span class="text-sm text-[#0C1A30]">Gift Card: {{ cartStore.giftCard.number }}</span>
+                            </div>
+                            <button @click="removeGiftCard" class="text-red-500 hover:text-red-700">
+                                <close-icon :size="16" />
+                            </button>
+                        </div>
 
-                        <div class="flex items-center space-x-2 p-3 bg-[#F6F7F9] rounded-lg mb-4">
+                        <!-- Loyalty Card -->
+                        <div v-if="!cartStore.loyaltyCard" class="flex items-center space-x-2 p-3 bg-[#F6F7F9] rounded-lg mb-4 cursor-pointer hover:bg-[#FEF3E2] transition-colors" @click="showLoyaltyCardModal = true">
                             <div class="w-7 h-7 bg-[#FEB91826] rounded-full flex items-center justify-center">
                                 <star-icon />
                             </div>
                             <span class="text-sm text-[#0C1A30]">Arzanladyş kartyny ulan</span>
+                        </div>
+                        <div v-else class="flex items-center justify-between p-3 bg-[#FEF3E2] rounded-lg mb-4">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-7 h-7 bg-[#FEB91826] rounded-full flex items-center justify-center">
+                                    <star-icon />
+                                </div>
+                                <span class="text-sm text-[#0C1A30]">Loyalty Card: {{ cartStore.loyaltyCard.number }}</span>
+                            </div>
+                            <button @click="removeLoyaltyCard" class="text-red-500 hover:text-red-700">
+                                <close-icon :size="16" />
+                            </button>
                         </div>
                     </div>
 
@@ -127,30 +151,30 @@
                         <div class="py-6 space-y-3">
                             <div class="flex justify-between items-center">
                                 <span class="text-[#0C1A30]">Jemi:</span>
-                                <span class="font-medium text-[#0C1A30]">{{ subtotal }} TMT</span>
+                                <span class="font-medium text-[#0C1A30]">{{ cartStore.subtotal }} TMT</span>
                             </div>
 
                             <div class="flex justify-between items-center">
                                 <span class="text-[#0C1A30]">Arzanladyş:</span>
-                                <span class="font-medium text-[#FA004C]">-{{ discount }} TMT</span>
+                                <span class="font-medium text-[#FA004C]">-{{ cartStore.discount }} TMT</span>
                             </div>
 
                             <div class="flex justify-between items-center">
                                 <span class="text-[#0C1A30]">Arzanladyş kupony:</span>
-                                <span class="font-medium text-[#FEB918]">-{{ couponDiscount }} TMT</span>
+                                <span class="font-medium text-[#FEB918]">-{{ cartStore.couponDiscount }} TMT</span>
                             </div>
                         </div>
 
                         <div class="border-t border-[#EDEDED] pt-3">
                             <div class="flex justify-between items-center pt-4">
                                 <span class="font-medium text-[#0C1A30]">Jemi:</span>
-                                <span class="font-bold text-[#037D84]">{{ total }} TMT</span>
+                                <span class="font-bold text-[#037D84]">{{ cartStore.total }} TMT</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Checkout Button -->
-                    <button @click="checkout" :disabled="cartItems.length === 0"
+                    <button @click="checkout" :disabled="cartStore.cartItems.length === 0"
                         class="w-full bg-[#FEB918] text-white font-semibold py-3 px-4 rounded-lg hover:bg-yellow-500 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors transform hover:scale-[1.02] active:scale-[0.98]">
                         Sargyt etmek
                     </button>
@@ -158,173 +182,172 @@
             </div>
         </MainContainer>
         <!--  -->
-        <ProductSection :sectionTitle="'Siziň üçin harytlar'" :products="products" @toggleFavorite="_toggleFavorite"
-            @addToCart="addToCart" />
+        <ProductSection :sectionTitle="'Siziň üçin harytlar'" :products="products" />
+        
+        <!-- Gift Card Modal -->
+        <div v-if="showGiftCardModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" @click="showGiftCardModal = false">
+            <div class="bg-white rounded-lg p-6 w-96 max-w-md mx-4" @click.stop>
+                <h3 class="text-lg font-semibold mb-4">Gift Card Giriziň</h3>
+                <input 
+                    v-model="giftCardNumber" 
+                    type="text" 
+                    placeholder="Gift card number"
+                    class="w-full p-3 border border-gray-300 rounded-lg mb-4"
+                />
+                <div class="flex space-x-3">
+                    <button @click="applyGiftCard" class="flex-1 bg-[#037D84] text-white py-2 px-4 rounded-lg hover:bg-[#036A70] transition-colors">
+                        Ulan
+                    </button>
+                    <button @click="showGiftCardModal = false" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors">
+                        Ýatyrmak
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loyalty Card Modal -->
+        <div v-if="showLoyaltyCardModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" @click="showLoyaltyCardModal = false">
+            <div class="bg-white rounded-lg p-6 w-96 max-w-md mx-4" @click.stop>
+                <h3 class="text-lg font-semibold mb-4">Loyalty Card Giriziň</h3>
+                <input 
+                    v-model="loyaltyCardId" 
+                    type="number" 
+                    placeholder="Loyalty card ID"
+                    class="w-full p-3 border border-gray-300 rounded-lg mb-4"
+                />
+                <div class="flex space-x-3">
+                    <button @click="applyLoyaltyCard" class="flex-1 bg-[#FEB918] text-white py-2 px-4 rounded-lg hover:bg-[#E6A500] transition-colors">
+                        Ulan
+                    </button>
+                    <button @click="showLoyaltyCardModal = false" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors">
+                        Ýatyrmak
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script setup>
-const basketStore = useBasketStore()
-const authStore = useAuthStore()
+const cartStore = useCartStore()
+const productStore = useProductsStore()
+const { products } = storeToRefs(productStore)
+const { fetchNewestProducts } = productStore
+const { cartItems } = storeToRefs(cartStore)
 
+// Modal states
+const showGiftCardModal = ref(false)
+const showLoyaltyCardModal = ref(false)
+const giftCardNumber = ref('')
+const loyaltyCardId = ref(null)
+
+// Fetch cart data on component mount
 onMounted(async () => {
-    const response = await basketStore.fetchCustomerCards(authStore.user.id)
-    console.log('Response:', response);
-})
-// Cart items data
-const cartItems = ref([
-    {
-        id: 1,
-        name: 'Щетка для уборки с совком для уборки',
-        description: 'Arassaçylyk üçin enjam',
-        price: 2500,
-        quantity: 5,
-        isFavorite: false
-    },
-    {
-        id: 2,
-        name: 'Щетка для уборки с совком для уборки',
-        description: 'Arassaçylyk üçin enjam',
-        price: 2500,
-        quantity: 5,
-        isFavorite: true
-    },
-    {
-        id: 3,
-        name: 'Щетка для уборки с совком для уборки',
-        description: 'Arassaçylyk üçin enjam',
-        price: 2500,
-        quantity: 5,
-        isFavorite: false
-    },
-    {
-        id: 4,
-        name: 'Щетка для уборки с совком для уборки',
-        description: 'Arassaçylyk üçin enjam',
-        price: 2500,
-        quantity: 5,
-        isFavorite: false
+    try {
+        await cartStore.fetchCart()
+        // Fetch recommended products
+        await fetchNewestProducts()
+    } catch (error) {
+        console.error('Error loading cart:', error)
     }
-])
-const products = ref([
-    {
-        id: 1,
-        title: 'Щетка для уборки с совком для уборки',
-        image: '/images/product-1.png',
-        price: 2300,
-        old_price: 3000,
-        currency: 'TMT',
-        favorite: false
-    },
-    {
-        id: 2,
-        title: 'Щетка для уборки с совком для уборки',
-        image: '/images/product-1.png',
-        price: 2300,
-        old_price: 3000,
-        currency: 'TMT',
-        favorite: false
-    },
-    {
-        id: 3,
-        title: 'Щетка для уборки с совком для уборки',
-        image: '/images/product-1.png',
-        price: 2300,
-        old_price: 3000,
-        currency: 'TMT',
-        favorite: false
-    },
-    {
-        id: 4,
-        title: 'Щетка для уборки с совком для уборки',
-        image: '/images/product-1.png',
-        price: 2300,
-        old_price: 3000,
-        currency: 'TMT',
-        favorite: false
-    },
-    {
-        id: 5,
-        title: 'Щетка для уборки с совком для уборки',
-        image: '/images/product-1.png',
-        price: 2300,
-        old_price: 3000,
-        currency: 'TMT',
-        favorite: false
-    },
-    {
-        id: 6,
-        title: 'Щетка для уборки с совком для уборки',
-        image: '/images/product-1.png',
-        price: 2300,
-        old_price: 3000,
-        currency: 'TMT',
-        favorite: false
-    }
-])
-
-// Computed properties for pricing
-const subtotal = computed(() => {
-    return cartItems.value.reduce((sum, item) => sum + (item.price * item.quantity), 0)
-})
-
-const discount = computed(() => 250)
-const couponDiscount = computed(() => 250)
-
-const total = computed(() => {
-    return subtotal.value - discount.value - couponDiscount.value
 })
 
 // Methods
-const increaseQuantity = (id) => {
-    const item = cartItems.value.find(item => item.id === id)
-    if (item) {
-        item.quantity++
+const increaseQuantity = async (id) => {
+    try {
+        await cartStore.increaseQuantity(id)
+    } catch (error) {
+        console.error('Error increasing quantity:', error)
     }
 }
 
-const decreaseQuantity = (id) => {
-    const item = cartItems.value.find(item => item.id === id)
-    if (item && item.quantity > 1) {
-        item.quantity--
+const decreaseQuantity = async (id) => {
+    try {
+        await cartStore.decreaseQuantity(id)
+    } catch (error) {
+        console.error('Error decreasing quantity:', error)
     }
 }
 
-const toggleFavorite = (id) => {
-    const item = cartItems.value.find(item => item.id === id)
-    if (item) {
-        item.isFavorite = !item.isFavorite
+const removeItem = async (id) => {
+    try {
+        await cartStore.removeItem(id)
+    } catch (error) {
+        console.error('Error removing item:', error)
     }
 }
 
-const _toggleFavorite = (id) => {
-    const product = products.value.find(product => product.id === id)
-    product.favorite = !product.favorite
-}
-
-const removeItem = (id) => {
-    const index = cartItems.value.findIndex(item => item.id === id)
-    if (index !== -1) {
-        cartItems.value.splice(index, 1)
+const clearCart = async () => {
+    try {
+        await cartStore.clearCart()
+    } catch (error) {
+        console.error('Error clearing cart:', error)
     }
 }
 
-const clearCart = () => {
-    cartItems.value = []
+const checkout = async () => {
+    if (cartStore.cartItems.length === 0) return
+
+    try {
+        // Basic checkout data - you can expand this with a form
+        const checkoutData = {
+            deliveryAddress: "Default address", // This should come from user input
+            deliveryNote: "",
+            paymentMethod: "cash",
+            notes: "",
+            deliveryMethodId: 1,
+            selectedTimeSlot: 1,
+            preferredDeliveryDate: new Date().toISOString().split('T')[0]
+        }
+        
+        await cartStore.checkout(checkoutData)
+        // Navigate to order confirmation or success page
+        // router.push('/orders')
+    } catch (error) {
+        console.error('Error during checkout:', error)
+    }
 }
 
-const checkout = () => {
-    if (cartItems.value.length === 0) return
+// addToCart is now handled directly in ProductCard component
 
-    // Handle checkout logic
-    console.log('Checkout initiated with items:', cartItems.value)
-    console.log('Total amount:', total.value, 'TMT')
-
-    // You can emit an event or navigate to checkout page
-    alert(`Sargyt tassyklandy! Jemi: ${total.value} TMT`)
+// Gift Card and Loyalty Card methods
+const applyGiftCard = async () => {
+    if (!giftCardNumber.value.trim()) return
+    
+    try {
+        await cartStore.applyGiftCard(giftCardNumber.value)
+        showGiftCardModal.value = false
+        giftCardNumber.value = ''
+    } catch (error) {
+        console.error('Error applying gift card:', error)
+    }
 }
 
-const addToCart = (product) => {
-    console.log(product)
+const applyLoyaltyCard = async () => {
+    if (!loyaltyCardId.value) return
+    
+    try {
+        await cartStore.applyLoyaltyCard(loyaltyCardId.value)
+        showLoyaltyCardModal.value = false
+        loyaltyCardId.value = null
+    } catch (error) {
+        console.error('Error applying loyalty card:', error)
+    }
+}
+
+const removeGiftCard = async () => {
+    try {
+        await cartStore.removeGiftCard()
+    } catch (error) {
+        console.error('Error removing gift card:', error)
+    }
+}
+
+const removeLoyaltyCard = async () => {
+    try {
+        await cartStore.removeLoyaltyCard()
+    } catch (error) {
+        console.error('Error removing loyalty card:', error)
+    }
 }
 </script>

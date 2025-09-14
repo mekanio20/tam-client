@@ -9,8 +9,7 @@
         <div class="h-full flex items-center space-x-4">
             <!-- Product Image -->
             <div class="w-[40%] h-full bg-pink-100 rounded-md flex items-center justify-center shrink-0">
-                <img :src="product?.image_urls[0] || '/images/box.png'"
-                    class="w-full h-full object-contain" />
+                <img :src="product?.image_urls[0] || '/images/box.png'" class="w-full h-full object-contain" />
             </div>
 
             <!-- Content -->
@@ -26,9 +25,10 @@
                 </p>
 
                 <!-- Button -->
-                <button @click.stop="$emit('addToCart', product)"
+                <button @click.stop="addToCart" :disabled="isAddingToCart"
                     class="w-full border border-[#FEB918] text-[#FFA100] rounded-md py-2 text-sm font-medium hover:bg-orange-50 transition">
-                    Sebede goş
+                    <span v-if="isAddingToCart">Goşulýar...</span>
+                    <span v-else>Sebede goş</span>
                 </button>
             </div>
         </div>
@@ -36,6 +36,9 @@
 </template>
 
 <script setup>
+const cartStore = useCartStore()
+const { addItem } = cartStore
+const isAddingToCart = ref(false)
 const props = defineProps({
     product: {
         type: Object,
@@ -46,4 +49,17 @@ const router = useRouter()
 const goToDetail = () => {
     router.push({ name: "ProductDetail", params: { id: props.product.id } })
 };
+
+const addToCart = async () => {
+    if (isAddingToCart.value) return
+
+    isAddingToCart.value = true
+    try {
+        await addItem(props.product.id)
+    } catch (error) {
+        console.error('Error adding to cart:', error)
+    } finally {
+        isAddingToCart.value = false
+    }
+}
 </script>

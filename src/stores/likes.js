@@ -37,7 +37,7 @@ export const useLikesStore = defineStore("likes", () => {
     loading.value = true;
     error.value = null;
     try {
-      const { data } = await api.get("/likes/", { params: queryParams });
+      const { data } = await api.get("/likes/", { params: {...queryParams, page_size: 1000 } });
       likes.value = data.results;
       return data.results;
     } catch (err) {
@@ -87,7 +87,7 @@ export const useLikesStore = defineStore("likes", () => {
 
   // Helpers
   const isProductLiked = (productId) => {
-    return likes.value.some((item) => item.product === productId || item.product?.id === productId);
+    return likes.value.some((item) => item.product === productId);
   };
 
   return {

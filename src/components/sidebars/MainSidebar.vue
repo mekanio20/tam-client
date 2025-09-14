@@ -2,24 +2,27 @@
   <div class="flex">
     <!-- Sidebar -->
     <div
-      class="fixed left-0 top-[112px] h-[calc(100vh-112px)] bg-white shadow-lg border-r border-gray-200 transition-transform duration-300 ease-in-out z-40 flex flex-col"
+      class="fixed left-0 sm:top-[112px] top-[95px] sm:h-[calc(100vh-112px)] h-[calc(100vh-95px)] bg-white shadow-lg border-r border-gray-200 transition-transform duration-300 ease-in-out z-40 flex flex-col"
       :class="[
         isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full',
-        'w-64 md:w-72'
+        'w-full md:w-72'
       ]" @mouseleave="scheduleCloseSubmenu" @mouseenter="cancelCloseSubmenu">
 
       <!-- Menu Categories -->
       <div class="flex-1 py-4 overflow-y-auto sidebar-scroll">
         <div class="space-y-1 px-3">
+          <!-- Search -->
+          <SearchBar v-model="searchQuery" :placeholder="'Haryt ady boýunça gözle...'" @search="handleSearch" />
+          <!-- Categories -->
           <div v-for="(category, index) in categories" :key="category.id"
             class="transform transition-all duration-300 ease-out" :style="{
         transitionDelay: `${index * 50}ms`,
         opacity: isVisible ? 1 : 0,
         transform: isVisible ? 'translateX(0)' : 'translateX(-20px)'
       }">
-            <router-link :to="`/product/list?category=${category.id}`" @click.prevent="selectCategory(category.id)"
+            <div @click="handleCategoryClick(category)"
               @mouseenter="onCategoryMouseEnter(category)"
-              class="group flex items-center px-4 py-3 text-[#0C1A30] rounded-lg hover:bg-gray-50 transition-all duration-200 ease-in-out transform hover:scale-[1.02] hover:shadow-sm"
+              class="group flex items-center px-4 py-3 text-[#0C1A30] rounded-lg hover:bg-gray-50 transition-all duration-200 ease-in-out transform hover:scale-[1.02] hover:shadow-sm cursor-pointer"
               :class="{
         'bg-[#FEB9181F] text-[#FFBA19]': selectedCategory === category.id
       }">
@@ -29,7 +32,7 @@
               <span class="font-medium group-hover:translate-x-1 transition-transform duration-200">
                 {{ category.name }}
               </span>
-            </router-link>
+            </div>
           </div>
         </div>
       </div>
@@ -37,8 +40,17 @@
 
     <!-- Right Submenu (desktop only) -->
     <div v-if="isMobileMenuOpen && isSubmenuOpen && submenuItems.length > 0"
-      class="fixed left-64 md:left-72 top-[112px] w-64 h-[calc(100vh-112px)] bg-white shadow-lg border-l border-[#EDEDED] z-40 hidden md:flex flex-col"
+      class="fixed left-0 md:left-72 top-[112px] w-full md:w-64 h-[calc(100vh-112px)] bg-white  z-40 flex flex-col"
       @mouseenter="cancelCloseSubmenu" @mouseleave="scheduleCloseSubmenu">
+      <!-- Back button for mobile -->
+      <div class="md:hidden flex items-center px-4 py-3 border-b border-gray-200">
+        <button @click="goBackToCategories" class="flex items-center text-[#0C1A30] hover:text-[#FEB918] transition-colors">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+          <span class="font-medium">{{ activeParentCategory }}</span>
+        </button>
+      </div>
       <div class="flex-1 py-4 overflow-y-auto sidebar-scroll">
         <div class="space-y-1 px-3">
           <div v-for="(item, index) in submenuItems" :key="`${activeParentCategory}-${index}-${item.id}`"
@@ -66,9 +78,12 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useCategoriesStore } from '@/stores/categories'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 const categoryStore = useCategoriesStore()
-const { categories, loading, error } = storeToRefs(categoryStore)
-const { fetchCategories, addCategory, updateCategory, deleteCategory } = categoryStore
+const { categories } = storeToRefs(categoryStore)
+const { fetchCategories } = categoryStore
 // Reactive data
 const props = defineProps({ isMobileMenuOpen: Boolean })
 const emit = defineEmits(['toggleMobileMenu'])
@@ -77,9 +92,15 @@ const isVisible = ref(false)
 const isSubmenuOpen = ref(false)
 const activeParentCategory = ref(null)
 const submenuItems = ref([])
+const searchQuery = ref('');
 let closeSubmenuTimeoutId = null
 
 // Methods
+
+const handleSearch = () => {
+    console.log(searchQuery.value);
+};
+
 const toggleMobileMenu = () => {
   emit('toggleMobileMenu')
 }
@@ -87,6 +108,25 @@ const toggleMobileMenu = () => {
 const selectCategory = (categoryId) => {
   selectedCategory.value = categoryId
   emit('toggleMobileMenu', false)
+}
+
+const handleCategoryClick = (category) => {
+  if (category && category.children && category.children.length > 0) {
+    // If category has subcategories, show them on mobile
+    if (window.innerWidth < 768) {
+      activeParentCategory.value = category.name
+      submenuItems.value = category.children
+      isSubmenuOpen.value = true
+    } else {
+      // On desktop, navigate to category page even if it has subcategories
+      selectCategory(category.id)
+      router.push(`/product/list?category=${category.id}`)
+    }
+  } else {
+    // If no subcategories, navigate directly on both mobile and desktop
+    selectCategory(category.id)
+    router.push(`/product/list?category=${category.id}`)
+  }
 }
 
 const selectSubcategory = (subcategoryId) => {
@@ -99,13 +139,16 @@ const selectSubcategory = (subcategoryId) => {
 }
 
 const onCategoryMouseEnter = (category) => {
-  if (category && category.children && category.children.length > 0) {
-    activeParentCategory.value = category.name
-    submenuItems.value = category.children
-    isSubmenuOpen.value = true
-    cancelCloseSubmenu()
-  } else {
-    scheduleCloseSubmenu()
+  // Only show submenu on hover for desktop (md and above)
+  if (window.innerWidth >= 768) {
+    if (category && category.children && category.children.length > 0) {
+      activeParentCategory.value = category.name
+      submenuItems.value = category.children
+      isSubmenuOpen.value = true
+      cancelCloseSubmenu()
+    } else {
+      scheduleCloseSubmenu()
+    }
   }
 }
 
@@ -125,6 +168,12 @@ const cancelCloseSubmenu = () => {
     clearTimeout(closeSubmenuTimeoutId)
     closeSubmenuTimeoutId = null
   }
+}
+
+const goBackToCategories = () => {
+  isSubmenuOpen.value = false
+  activeParentCategory.value = null
+  submenuItems.value = []
 }
 
 // Lifecycle

@@ -13,28 +13,24 @@
             <div class="space-y-5">
                 <!-- Subcategory 1 -->
                 <ProductSection :sectionTitle="'Ösümlikler'" :products="subcategory1Products" :isRedirectLink="true"
-                    :linkTitle="'Ählisini görmek'" :link="'/product/list'" @toggleFavorite="toggleFavorite"
-                    @addToCart="addToCart" />
+                    :linkTitle="'Ählisini görmek'" :link="'/product/list'" @toggleFavorite="toggleFavorite" />
 
                 <!-- Subcategory 2 -->
                 <ProductSection :sectionTitle="'Elektronika'" :products="subcategory2Products" :isRedirectLink="true"
-                    :linkTitle="'Ählisini görmek'" :link="'/product/list'" @toggleFavorite="toggleFavorite"
-                    @addToCart="addToCart" />
+                    :linkTitle="'Ählisini görmek'" :link="'/product/list'" @toggleFavorite="toggleFavorite" />
 
                 <!-- Subcategory 3 -->
                 <ProductSection :sectionTitle="'Geyimler'" :products="subcategory3Products" :isRedirectLink="true"
-                    :linkTitle="'Ählisini görmek'" :link="'/product/list'" @toggleFavorite="toggleFavorite"
-                    @addToCart="addToCart" />
+                    :linkTitle="'Ählisini görmek'" :link="'/product/list'" @toggleFavorite="toggleFavorite" />
 
                 <!-- Subcategory 4 -->
                 <ProductSection :sectionTitle="'Uly ýaşlylar üçin'" :products="subcategory4Products"
                     :isRedirectLink="true" :linkTitle="'Ählisini görmek'" :link="'/product/list'"
-                    @toggleFavorite="toggleFavorite" @addToCart="addToCart" />
+                    @toggleFavorite="toggleFavorite" />
 
                 <!-- Subcategory 5 -->
                 <ProductSection :sectionTitle="'Çaga harytlary'" :products="subcategory5Products" :isRedirectLink="true"
-                    :linkTitle="'Ählisini görmek'" :link="'/product/list'" @toggleFavorite="toggleFavorite"
-                    @addToCart="addToCart" />
+                    :linkTitle="'Ählisini görmek'" :link="'/product/list'" @toggleFavorite="toggleFavorite" />
             </div>
         </div>
     </div>
@@ -311,7 +307,5 @@ const toggleFavorite = (productId) => {
     console.log('Toggle favorite for product:', productId)
 }
 
-const addToCart = (product) => {
-    console.log('Add to cart:', product)
-}
+// addToCart is now handled directly in ProductCard component
 </script>

@@ -13,7 +13,7 @@
                     1280: { slidesPerView: 5, spaceBetween: 30 }
                 }">
                 <SwiperSlide v-for="(item, index) in products" :key="index" class="py-6">
-                    <ProductCard :product="item" @toggleFavorite="toggleFavorite" @addToCart="addToCart" />
+                    <ProductCard :product="item" />
                 </SwiperSlide>
             </Swiper>
         </MainContainer>
@@ -50,12 +50,5 @@ defineProps({
         default: '/'
     }
 })
-const emit = defineEmits(['toggleFavorite', 'addToCart'])
-const toggleFavorite = (productId) => {
-    emit('toggleFavorite', productId)
-}
-
-const addToCart = (product) => {
-    emit('addToCart', product)
-}
+// No longer needed since ProductCard handles addToCart directly
 </script>

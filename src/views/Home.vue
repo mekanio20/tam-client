@@ -8,8 +8,6 @@
         :sectionTitle="category.name" 
         :products="categoryProducts[category?.id] || []" 
         :link="`/product/list?category=${category.id}`"
-        @toggleFavorite="toggleFavorite"
-        @addToCart="addToCart" 
     />
     <!-- Login -->
     <LoginModal v-model="isLoginModal" @forgot_password="openResetPassword" @register="openRegister" />
@@ -31,6 +29,8 @@ const productStore = useProductsStore()
 const { fetchMostPurchasedProducts } = productStore
 const { categories } = storeToRefs(categoryStore)
 const { fetchCategories, fetchCategoryProducts } = categoryStore
+const likesStore = useLikesStore()
+const { fetchLikes } = likesStore
 const mostPurchasedProducts = ref([])
 const categoryProducts = ref({})
 
@@ -59,6 +59,7 @@ onMounted(async () => {
     
     // Fetch categories and their products
     await fetchCategories()
+    await fetchLikes()
     
     // Fetch products for each category
     if (categories.value && categories.value.length > 0) {
@@ -103,17 +104,5 @@ const send_otp = (data) => {
     isRegisterModal.value = false
     isOtpModal.value = true
 }
-const toggleFavorite = (id) => {
-    // Find the product in any category and toggle its favorite status
-    for (const categoryId in categoryProducts.value) {
-        const product = categoryProducts.value[categoryId].find(product => product.id === id)
-        if (product) {
-            product.favorite = !product.favorite
-            break
-        }
-    }
-}
-const addToCart = (product) => {
-    console.log(product)
-}
+// addToCart is now handled directly in ProductCard component
 </script>

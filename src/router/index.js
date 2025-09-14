@@ -24,7 +24,7 @@ const routes = [
     component: () => import("@/views/ProductDetail.vue"),
   },
   {
-    path: "/account/favorite",
+    path: "/account/favorites",
     name: "AccountFavorite",
     component: () => import("@/views/AccountFavorite.vue"),
   },

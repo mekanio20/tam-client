@@ -127,8 +127,7 @@
             </div>
         </MainContainer>
         <!-- Product Section -->
-        <ProductSection :sectionTitle="'Siziň üçin harytlar'" :products="products" @toggleFavorite="_toggleFavorite"
-            @addToCart="addToCart" />
+        <ProductSection :sectionTitle="'Siziň üçin harytlar'" :products="products" @toggleFavorite="_toggleFavorite" />
     </div>
     <!-- Address Select Modal -->
     <AddressSelectModal :show="showAddressAddModal" @submit="handleAddressSelect" @addAddress="addAddress"
@@ -293,9 +292,7 @@ const checkout = () => {
     alert(`Sargyt tassyklandy! Jemi: ${total.value} TMT`)
 }
 
-const addToCart = (product) => {
-    console.log(product)
-}
+// addToCart is now handled directly in ProductCard component
 
 const handleAddressSelect = (addressData) => {
     formData.value.address = addressData.display_name || ''

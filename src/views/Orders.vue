@@ -7,8 +7,7 @@
             <SectionTitle title="Sargytlar" />
         </MainContainer>
         <NoDataSection v-if="!products.length" image="/images/box.png" desc="Sargytlaryňyzyň sanawy boş" />
-        <ProductSection v-if="!products.length" :products="_products" @toggleFavorite="toggleFavorite"
-            @addToCart="addToCart" />
+        <ProductSection v-if="!products.length" :products="_products" @toggleFavorite="toggleFavorite" />
         <!-- Orders Table -->
         <MainContainer v-else class="mt-5">
             <OrdersTable />

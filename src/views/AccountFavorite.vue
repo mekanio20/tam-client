@@ -4,37 +4,33 @@
             <div class="pt-6">
                 <LinkGroup :items="[{ label: 'Halananlar', to: '/account/favorite' }]" />
             </div>
-            <SectionTitle title="Halanan harytlar" />
         </MainContainer>
-        <NoDataSection v-if="!products.length" image="/images/favorite.png" desc="Sizde halanan haryt ýok" />
-        <ProductSection v-else :isRedirectLink="false" :sectionTitle="'Halanan harytlar'" :products="products" @toggleFavorite="toggleFavorite"
-            @addToCart="addToCart" />
+        <NoDataSection v-if="!likedProducts.length" image="/images/favorite.png" desc="Sizde halanan haryt ýok" />
+        <ProductSection v-else :isRedirectLink="false" :sectionTitle="'Halanan harytlar'" :products="likedProducts" />
     </div>
 </template>
 
 <script setup>
-const products = ref([
-    {
-        id: 1,
-        title: 'Щетка для уборки с совком для уборки',
-        image: '/images/product-1.png',
-        price: 2300,
-        old_price: 3000,
-        currency: 'TMT',
-        favorite: true
-    },
-    {
-        id: 2,
-        title: 'Щетка для уборки с совком для уборки',
-        image: '/images/product-1.png',
-        price: 2300,
-        old_price: 3000,
-        currency: 'TMT',
-        favorite: true
+const likesStore = useLikesStore()
+const { fetchLikes } = likesStore
+const { likes } = storeToRefs(likesStore)
+
+// Extract products from likes
+const likedProducts = computed(() => {
+    return likes.value.map(like => ({
+        ...like.product,
+        is_liked: true
+    }))
+})
+
+// Fetch likes on component mount
+onMounted(async () => {
+    try {
+        await fetchLikes()
+    } catch (error) {
+        console.error('Error fetching likes:', error)
     }
-])
-const toggleFavorite = (id) => {
-    const product = products.value.find(product => product.id === id)
-    product.favorite = !product.favorite
-}
+})
+
+// addToCart is now handled directly in ProductCard component
 </script>

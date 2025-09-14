@@ -8,7 +8,7 @@
         </div>
         <MainContainer>
             <div class="relative z-10">
-                <div class="w-full flex lg:flex-row flex-col gap-8 items-start justify-between">
+                <div class="w-full flex lg:flex-row flex-col-reverse gap-8 items-start justify-between">
 
                     <div class="space-y-10">
                         <!-- TamRahat Logo -->
@@ -35,13 +35,13 @@
                         </div>
                     </div>
 
-                    <div class="grid gap-4 text-nowrap lg:grid-cols-4 md:grid-cols-3 grid-cols-2">
+                    <div class="grid lg:gap-4 gap-8 text-nowrap lg:grid-cols-4 md:grid-cols-3 grid-cols-2">
 
                         <div class="space-y-4">
                             <FooterLinkTitle title="Market" />
                             <ul class="space-y-3">
                                 <li>
-                                    <FooterLink to="#" title="Kategoriýa" />
+                                    <FooterLink to="#" title="Kategoriýalar" />
                                 </li>
                                 <li>
                                     <FooterLink to="#" title="Brandler" />
@@ -93,8 +93,8 @@
 
                 <div
                     class="mt-12 py-8 border-t border-white flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <div class="text-sm text-[#838589] order-2 sm:order-1">
-                        Made by <span class="text-teal-600 font-medium">ParlakNesil</span>
+                    <div class="text-[5px] text-[#8afd8e] order-2 sm:order-1">
+                        Made by <a href="https://parlaknesil.com" target="_blank" class="text-[#9cfec2] font-medium cursor-pointer">ParlakNesil</a>
                     </div>
                     <div class="text-sm text-[#838589] order-1 sm:order-2">
                         © 2025 TamRahat. Ähli hukuklar goragly.

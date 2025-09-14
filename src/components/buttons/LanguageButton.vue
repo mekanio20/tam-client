@@ -2,7 +2,7 @@
     <button ref="dropDownContainer" @click="toggleDropDown" class="relative flex items-center gap-2 py-0 rounded-l ">
         <div class="bg-pos-white p-2 flex flex-col items-center space-y-1 rounded-lg">
             <globe-icon />
-            <span class="text-[12px] text-[#0C1A30] uppercase">{{ $i18n.locale }}</span>
+            <span class="text-[12px] text-[#0C1A30] uppercase sm:block hidden">{{ $i18n.locale }}</span>
         </div>
         <div v-show="dropDown === true"
             class="absolute rounded-lg top-full left-0 right-0 z-50 bg-white shadow-sm flex flex-col item-center justify-center max-lg:right-0 max-lg:left-auto">

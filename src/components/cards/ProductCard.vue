@@ -1,14 +1,14 @@
 <template>
     <div class="group cursor-pointer flex flex-col space-y-3" @click="goToDetail(product.id)">
-        <div class="bg-[#F6F7F9] group-hover:bg-[#DCE7FF] rounded-[10px] overflow-hidden duration-300 h-[310px]">
+        <div class="bg-[#F6F7F9] group-hover:bg-[#DCE7FF] rounded-[10px] overflow-hidden duration-300 sm:h-[310px] h-[220px]">
             <div class="relative w-full h-full flex items-center justify-center">
                 <!-- Product Image -->
                 <img v-if="product?.preview?.path" :src="product.preview.path" class="object-contain pb-5">
 
                 <!-- Favorite -->
-                <button type="button" @click.stop="$emit('toggleFavorite', product.id)" class="absolute right-2 top-2">
+                <button type="button" @click.stop="toggleLike" class="absolute right-2 top-2">
                     <div class="w-[40px] h-[40px] rounded-full bg-white flex items-center justify-center">
-                        <favorite-icon v-if="!product.favorite" color="#A9A9A9" :size="19" />
+                        <favorite-icon v-if="!isLiked" color="#A9A9A9" :size="19" />
                         <favorite-icon v-else color="#FA004C" fill="#FA004C" :size="19" />
                     </div>
                 </button>
@@ -16,9 +16,10 @@
                 <!-- Add to Cart -->
                 <div
                     class="absolute w-full px-4 bottom-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <button @click.stop="$emit('addToCart', product)"
-                        class="w-full py-3 text-center sm:text-base text-sm bg-white text-[#FFA100] text-[13px] font-semibold rounded-[6px]">
-                        Sebede goş
+                    <button @click.stop="addToCart" :disabled="isAddingToCart"
+                        class="w-full py-3 text-center sm:text-base text-sm bg-white text-[#FFA100] text-[13px] font-semibold rounded-[6px] disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span v-if="isAddingToCart">Goşulýar...</span>
+                        <span v-else>Sebede goş</span>
                     </button>
                 </div>
             </div>
@@ -44,7 +45,12 @@
 
 <script setup>
 const router = useRouter()
-defineEmits(['toggleFavorite'])
+const likesStore = useLikesStore()
+const cartStore = useCartStore()
+const { likes } = storeToRefs(likesStore)
+const { createLike, deleteLike } = likesStore
+const { addItem } = cartStore
+
 const props = defineProps({
     product: {
         type: Object,
@@ -52,7 +58,40 @@ const props = defineProps({
     }
 })
 
+const isLiked = ref(props.product.is_liked)
+const isAddingToCart = ref(false)
+
 const goToDetail = (id) => {
     router.push({ name: "ProductDetail", params: { id } })
+}
+
+const toggleLike = async () => {
+    try {
+        if (isLiked.value) {
+            const likeItem = likes.value.find(item =>  item.product === props.product.id)
+            if (likeItem) {
+                await deleteLike(likeItem.id)
+                isLiked.value = false
+            }
+        } else {
+            await createLike(props.product.id)
+            isLiked.value = true
+        }
+    } catch (error) {
+        console.error('Error toggling like:', error)
+    }
+}
+
+const addToCart = async () => {
+    if (isAddingToCart.value) return
+    
+    isAddingToCart.value = true
+    try {
+        await addItem(props.product.id)
+    } catch (error) {
+        console.error('Error adding to cart:', error)
+    } finally {
+        isAddingToCart.value = false
+    }
 }
 </script>

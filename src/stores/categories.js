@@ -7,7 +7,7 @@ export const useCategoriesStore = defineStore("categories", () => {
   const loading = ref(false);
   const error = ref(null);
 
-  const bgColors = ["#E2FFF4", "#FFF6E2", "#FFEFE9", "#EEFFCA", "#93E6FF", "#FFEAF5"];
+  const bgColors = ["#E2FFF4", "#FFF6E2", "#FFEFE9", "#EEFFCA", "#D8F6FF", "#FFEAF5"];
   const circleBgColors = ["#C1FFDC", "#FFE29E", "#FFC8B5", "#DCFB96", "#93E6FF", "#FFC8E5"];
 
   // --- Actions ---

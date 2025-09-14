@@ -1,9 +1,9 @@
 <template>
     <form @submit.prevent="onSearch"
-    class="h-[44px] flex items-center border-[#FEB918] border-[1px] bg-[#FEB918] rounded-lg overflow-hidden w-full">
+    class="sm:h-[44px] h-[42px] flex items-center border-[#FEB918] border-[1px] bg-[#FEB918] rounded-lg overflow-hidden w-full">
       <!-- Input -->
       <input v-model="modelValueLocal" type="text" :placeholder="placeholder"
-        class="flex-1 px-6 bg-white text-[#0C1A30] placeholder-[#838589] rounded-r-lg focus:outline-none h-full text-sm"
+        class="flex-1 px-6 bg-white text-[#0C1A30] placeholder-[#838589] rounded-r-lg focus:outline-none h-full sm:text-sm text-xs"
         @input="emitInput" @focus="$emit('focus')" @blur="$emit('blur')" />
       <!-- Button -->
       <button @click="onSearch" type="submit"

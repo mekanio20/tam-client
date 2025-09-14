@@ -41,7 +41,4 @@ const props = defineProps({
         default: '/'
     }
 })
-onMounted(() => {
-    console.log('Categories -> ', props.categories);
-})
 </script>
