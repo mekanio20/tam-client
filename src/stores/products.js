@@ -104,6 +104,18 @@ export const useProductsStore = defineStore("products", () => {
     }
   };
 
+  // 7. (GET /catalog/client/available_cities/)
+  const fetchAvailableCities = async () => {
+    try {
+      const { data } = await api.get("/catalog/client/available_cities/");
+      return data.cities;
+    } catch (err) {
+      error.value = err.message || "Product not found";
+      throw err;
+    }
+  };
+  
+
   return {
     products,
     product_info,
@@ -116,5 +128,6 @@ export const useProductsStore = defineStore("products", () => {
     fetchMostLikedProducts,
     fetchMostPurchasedProducts,
     fetchProductDetail,
+    fetchAvailableCities
   };
 });
