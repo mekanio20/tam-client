@@ -26,10 +26,10 @@ export const useCartStore = defineStore("cart", () => {
     try {
       const { data } = await api.get("/cart/");
       cartItems.value = data.items || [];
-      subtotal.value = data.subtotal || 0;
+      subtotal.value = data.subtotal_amount || 0;
       discount.value = data.discount || 0;
       couponDiscount.value = data.coupon_discount || 0;
-      total.value = data.total || 0;
+      total.value = data.total_amount || 0;
       giftCard.value = data.gift_card || null;
       loyaltyCard.value = data.loyalty_card || null;
       return data;
@@ -43,13 +43,13 @@ export const useCartStore = defineStore("cart", () => {
   };
 
   // 2) Add item to cart (POST /cart/add_item/)
-  const addItem = async (productId, city = "ashgabat", quantity = 1) => {
+  const addItem = async (productId, quantity = 1) => {
     loading.value = true;
     error.value = null;
     try {
       const { data } = await api.post("/cart/add_item/", {
         product_id: productId,
-        city: "mary",
+        city: localStorage.getItem("city"),
         quantity: quantity
       });
       await fetchCart(); // Refresh cart data

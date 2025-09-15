@@ -24,7 +24,7 @@
                                 <label for="fullname" class="text-[13px] text-[#838589]">
                                     Adyňyz
                                 </label>
-                                <input id="fullname" type="text" v-model="formData.fullname"
+                                <input id="fullname" type="text" v-model="account.first_name"
                                     class="border-none outline-none p-3 sm:text-base text-sm bg-[#F6F7F9] rounded-md">
                             </div>
                             <!-- Phone Field -->
@@ -32,7 +32,7 @@
                                 <label for="phone" class="text-[13px] text-[#838589]">
                                     Telefon belgiňiz
                                 </label>
-                                <input id="phone" type="text" v-model="formData.phone"
+                                <input id="phone" type="text" v-model="account.phone_number"
                                     class="border-none outline-none p-3 sm:text-base text-sm bg-[#F6F7F9] rounded-md">
                             </div>
                         </div>
@@ -43,7 +43,7 @@
                                 <label for="email" class="text-[13px] text-[#838589]">
                                     Elektron salgyňyz
                                 </label>
-                                <input id="email" type="email" v-model="formData.email"
+                                <input id="email" type="email" v-model="account.email"
                                     class="border-none outline-none p-3 sm:text-base text-sm bg-[#F6F7F9] rounded-md">
                             </div>
                         </div>
@@ -126,13 +126,12 @@
 </template>
 
 <script setup>
+const clientStore = useClientStore()
+const { account } = storeToRefs(clientStore)
+const { fetchAccount } = clientStore
 const showModal = ref(false)
 const isMobile = ref(false)
-const formData = ref({
-    fullname: 'Ataýewa Aýbibi',
-    phone: '+993 61616161',
-    email: ''
-})
+const formData = ref({})
 const addresses = ref([])
 
 const avtiveAddress = computed(() => {
@@ -166,7 +165,8 @@ const checkScreenSize = () => {
     isMobile.value = window.innerWidth < 640
 }
 
-onMounted(() => {
+onMounted(async () => {
+    formData.value = await fetchAccount()
     checkScreenSize()
     window.addEventListener('resize', checkScreenSize)
 })

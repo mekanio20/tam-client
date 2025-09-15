@@ -1,6 +1,6 @@
 <template>
-    <svg :width="size" :height="size" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path :stroke="color" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+    <svg class="mx-auto h-16 w-16 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
             d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
     </svg>
 </template>
@@ -9,7 +9,7 @@
 defineProps({
     size: {
         type: Number,
-        default: 64
+        default: 10
     },
     color: {
         type: String,
