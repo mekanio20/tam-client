@@ -54,7 +54,7 @@
           <div class="ml-4 flex-shrink-0 flex">
             <button
               @click="closeToast"
-              class="bg-white rounded-md inline-flex text-[#838589] hover:text-[#0C1A30] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FEB918] transition-colors duration-200"
+              class="bg-white rounded-md inline-flex text-[#838589] hover:text-[#0C1A30] focus:outline-none transition-colors duration-200"
             >
               <span class="sr-only">Close</span>
               <close-icon class="h-5 w-5" />

@@ -6,6 +6,7 @@ import {
   setRefreshToken,
   clearTokens,
 } from "@/composables/useTokens";
+import router from "@/router/index.js";
 
 const api = axios.create({
   baseURL: "https://tamrahat.com.tm:8000/api/v1/",
@@ -78,8 +79,7 @@ api.interceptors.response.use(
       } catch (err) {
         processQueue(err, null);
         clearTokens();
-        // redirect to login
-        router.push("/");
+        router.push({ name: "Home", query: { refresh: true } });
         return Promise.reject(err);
       } finally {
         isRefreshing = false;

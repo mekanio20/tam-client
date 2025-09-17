@@ -17,13 +17,14 @@
 </template>
 
 <script setup>
-const auth = useAuthStore()
+const authStore = useAuthStore()
 const categoryStore = useCategoriesStore()
 const isLoginModal = ref(false)
 const isOtpModal = ref(false)
 const isRegisterModal = ref(false)
 const isResetPasswordModal = ref(false)
 const otpData = ref({})
+const route = useRoute();
 
 const productStore = useProductsStore()
 const { fetchMostPurchasedProducts } = productStore
@@ -48,18 +49,24 @@ const categoriesWithProducts = computed(() => {
 
 // Ensure modal visibility reflects authentication state on load and updates
 const syncRegisterModal = () => {
-    console.log('Auth', auth.isAuthenticated);
-    isRegisterModal.value = !auth.isAuthenticated
+    console.log('Auth', authStore.isAuthenticated);
+    isRegisterModal.value = !authStore.isAuthenticated
 }
 
 onMounted(async () => {
-    auth.loadTokens()
+    if (route.query.refresh) {
+        authStore.loadTokens()
+        syncRegisterModal()
+    }
+
+    // Load tokens
+    authStore.loadTokens()
     syncRegisterModal()
-    mostPurchasedProducts.value = await fetchMostPurchasedProducts()
-    
+
     // Fetch categories and their products
     await fetchCategories()
     await fetchLikes()
+    mostPurchasedProducts.value = await fetchMostPurchasedProducts()
     
     // Fetch products for each category
     if (categories.value && categories.value.length > 0) {
@@ -78,8 +85,8 @@ onMounted(async () => {
     }
 })
 
-watch(() => auth.isAuthenticated, () => {
-    if (auth.isAuthenticated) {
+watch(() => authStore.isAuthenticated, () => {
+    if (authStore.isAuthenticated) {
         isRegisterModal.value = false
     }
 })

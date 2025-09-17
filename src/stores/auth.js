@@ -166,6 +166,25 @@ export const useAuthStore = defineStore("auth", () => {
     }
   };
 
+  // 7. Logout
+  const logout = async () => {
+    loading.value = true;
+    error.value = null;
+    try {
+      await api.post("/auth/logout/", {
+        refresh: refreshToken,
+      });
+      clearAuth();
+      success("Logout Successful", "You have successfully logged out");
+    } catch (err) {
+      error.value = err.message || "Logout failed";
+      handleApiError(err, "Logout failed");
+      throw err;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     // State
     user,
@@ -184,5 +203,6 @@ export const useAuthStore = defineStore("auth", () => {
     register,
     resetPassword,
     refreshAccessToken,
+    logout
   };
 });

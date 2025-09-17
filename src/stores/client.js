@@ -23,7 +23,7 @@ export const useClientStore = defineStore("client", () => {
       loading.value = false;
     }
   };
-  // (PATCH /clients/:id/)
+  // (PUT /clients/:id/)
   const updateAccount = async (id, updateData) => {
     loading.value = true;
     error.value = null;

@@ -31,7 +31,7 @@
                         <tr v-for="(row, rowIndex) in filteredData" :key="rowIndex"
                             class="hover:bg-gray-50 transition-colors duration-150 group">
                             <td class="px-6 py-4">
-                                <span :class="getStatusClass(row.status)" class="px-5 py-2 text-sm rounded-full">
+                                <span :class="getStatusClass(row.status)" class="px-5 py-2 text-sm rounded-full text-nowrap">
                                     {{ row.status }}
                                 </span>
                             </td>
@@ -121,6 +121,12 @@
 </template>
 
 <script setup>
+const props = defineProps({
+    rows: {
+        type: Array,
+        default: () => []
+    }
+})
 // Reactive data
 const activeTab = ref(1)
 
@@ -209,12 +215,14 @@ const data = ref([
 ])
 
 // Computed properties
+const sourceRows = computed(() => props.rows && props.rows.length ? props.rows : data.value)
+
 const filteredData = computed(() => {
-    if (activeTab.value === 'ahlisi') return data.value
-    if (activeTab.value === 'garasiylanlar') return data.value.filter(item => item.status === 'Garaşylýar')
-    if (activeTab.value === 'kabul') return data.value.filter(item => item.status === 'Kabul edildi')
-    if (activeTab.value === 'goybolsun') return data.value.filter(item => item.status === 'Goýbolsun edildi')
-    return data.value
+    if (activeTab.value === 'ahlisi') return sourceRows.value
+    if (activeTab.value === 'garasiylanlar') return sourceRows.value.filter(item => item.status === 'Garaşylýar')
+    if (activeTab.value === 'kabul') return sourceRows.value.filter(item => item.status === 'Kabul edildi')
+    if (activeTab.value === 'goybolsun') return sourceRows.value.filter(item => item.status === 'Goýbolsun edildi')
+    return sourceRows.value
 })
 
 // Methods
