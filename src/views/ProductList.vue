@@ -2,19 +2,19 @@
     <div class="bg-white">
         <FilterSidebar :showSidebar="showSidebar" @close="showSidebar = false" @applyFilters="applyFilters">
             <MainContainer>
-                <div class="py-6">
+                <div class="sm:py-6 pt-6">
                     <LinkGroup :items="[{ label: categoryName, to: `/product/list` }]" />
                 </div>
-                <div class="py-6 flex items-end space-x-5">
-                    <h1 class="font-semibold text-[30px] leading-[25px] text-[#0C1A30]">
+                <div class="py-8 flex sm:flex-row flex-col sm:items-end sm:space-x-5 sm:space-y-0 space-y-4">
+                    <h1 class="font-semibold sm:text-[30px] text-xl leading-[25px] text-[#0C1A30]">
                         {{ categoryName }}
                     </h1>
-                    <p class="text-[14px] leading-[14px] text-[#838589]">
+                    <p class="sm:text-sm text-xs leading-[14px] text-[#838589]">
                         {{ productsCount }} haryt
                     </p>
                 </div>
                 <FilterSection @openFilter="openFilter" @applySort="applySort" />
-                <div class="pt-4 pb-10 grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 grid-cols-2 gap-4">
+                <div class="pt-4 pb-10 grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 grid-cols-2 gap-x-4 gap-y-8">
                     <ProductCard v-for="(item, index) in products" :key="index" :product="item" />
                 </div>
             </MainContainer>

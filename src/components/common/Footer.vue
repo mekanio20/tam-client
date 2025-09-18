@@ -18,7 +18,7 @@
 
                         <!-- Description -->
                         <div class="space-y-3">
-                            <p class="text-[#0C1A30]">
+                            <p class="text-[#0C1A30] sm:text-sm">
                                 Biziň telefon üçin <br>
                                 programmamyzdan peýdalanyp bilersiňiz!
                             </p>
@@ -96,7 +96,7 @@
                     <div class="text-[5px] text-[#8afd8e] order-2 sm:order-1">
                         Made by <a href="https://parlaknesil.com" target="_blank" class="text-[#9cfec2] font-medium cursor-pointer">ParlakNesil</a>
                     </div>
-                    <div class="text-sm text-[#838589] order-1 sm:order-2">
+                    <div class="sm:text-sm text-xs text-[#838589] order-1 sm:order-2">
                         © 2025 TamRahat. Ähli hukuklar goragly.
                     </div>
                 </div>

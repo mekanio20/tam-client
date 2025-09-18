@@ -13,17 +13,17 @@
             <button @click="$emit('openFilter')"
                 class="bg-[#F6F7F9] px-4 py-3 rounded-lg transition-all duration-300 flex items-center gap-3">
                 <filter-icon />
-                <span class="text-[#0C1A30]">Filter</span>
+                <span class="text-[#0C1A30] sm:text-base text-sm">Filter</span>
             </button>
         </div>
 
         <!-- Sort Dropdown -->
         <div class="relative" ref="sortRef">
             <button @click="toggleSort"
-                class="bg-[#F6F7F9] px-4 py-3 rounded-lg transition-all duration-300 flex items-center justify-between gap-3 min-w-[215px]">
+                class="bg-[#F6F7F9] px-4 py-3 rounded-lg transition-all duration-300 flex items-center justify-between gap-3 sm:min-w-[215px] min-w-[180px]">
                 <div class="flex items-center gap-3">
                     <sort-icon />
-                    <span class="text-[#0C1A30]"> {{ selectedSort.name }}</span>
+                    <span class="text-[#0C1A30] sm:text-base text-sm"> {{ selectedSort.name }}</span>
                 </div>
                 <dropdown-icon :isRotate="isSortOpen" />
             </button>

@@ -3,7 +3,7 @@
         <MainContainer>
             <SectionHeaderGroup>
                 <SectionTitle title="Meşhur bölümlerimiz" />
-                <ViewAllLink title="Ählisini görmek" :to="'/'" />
+                <ViewAllLink title="Ählisini görmek" :to="'/categories'" />
             </SectionHeaderGroup>
             <Swiper :slides-per-view="6" :breakpoints="{
                     100: { slidesPerView: 2, spaceBetween: 10 },

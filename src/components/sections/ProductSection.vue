@@ -12,7 +12,7 @@
                     1024: { slidesPerView: 4, spaceBetween: 30 },
                     1280: { slidesPerView: 5, spaceBetween: 30 }
                 }">
-                <SwiperSlide v-for="(item, index) in products" :key="index" class="py-6">
+                <SwiperSlide v-for="(item, index) in products" :key="index" class="sm:py-6 py-2">
                     <ProductCard :product="item" />
                 </SwiperSlide>
             </Swiper>

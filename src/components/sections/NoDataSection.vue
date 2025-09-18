@@ -3,7 +3,7 @@
         <div class="w-[250px] h-[250px]">
             <img class="w-full h-full" :src="image" />
         </div>
-        <h4 class="font-semibold text-[30px] text-[#838589]">
+        <h4 class="font-semibold sm:text-[30px] text-xl text-[#838589]">
             {{ desc }}
         </h4>
     </div>

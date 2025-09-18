@@ -1,15 +1,17 @@
 <template>
-    <div class="group cursor-pointer flex flex-col space-y-3" @click="goToDetail(product.id)">
-        <div class="bg-[#F6F7F9] group-hover:bg-[#DCE7FF] rounded-[10px] overflow-hidden duration-300 sm:h-[310px] h-[220px]">
+    <div class="group cursor-pointer flex flex-col sm:space-y-3 space-y-2" @click="goToDetail(product.id)">
+        <div
+            class="bg-[#F6F7F9] group-hover:bg-[#DCE7FF] rounded-[10px] overflow-hidden duration-300 sm:h-[300px] h-[220px]">
             <div class="relative w-full h-full flex items-center justify-center">
                 <!-- Product Image -->
-                <img v-if="product?.preview?.path" :src="product.preview.path" class="object-contain pb-5">
+                <img v-if="product?.preview?.path" :src="product.preview.path" class="w-full h-full object-cover">
 
                 <!-- Favorite -->
                 <button type="button" @click.stop="toggleLike" class="absolute right-2 top-2">
-                    <div class="w-[40px] h-[40px] rounded-full bg-white flex items-center justify-center">
-                        <favorite-icon v-if="!isLiked" color="#A9A9A9" :size="19" />
-                        <favorite-icon v-else color="#FA004C" fill="#FA004C" :size="19" />
+                    <div
+                        class="sm:w-[40px] sm:h-[40px] w-[35px] h-[35px] rounded-full bg-white flex items-center justify-center">
+                        <favorite-icon v-if="!isLiked" color="#A9A9A9" :size="16" />
+                        <favorite-icon v-else color="#FA004C" fill="#FA004C" :size="16" />
                     </div>
                 </button>
 
@@ -25,8 +27,7 @@
             </div>
         </div>
 
-
-        <div class="flex flex-col space-y-3">
+        <div class="flex flex-col sm:space-y-2 space-y-1">
             <div class="flex items-center sm:space-x-8 space-x-3">
                 <p class="sm:text-[18px] font-semibold text-nowrap"
                     :class="[product.old_price ? 'text-[#FA004C] ' : 'text-[#0C1A30]']">{{ product.price }} {{
@@ -68,7 +69,7 @@ const goToDetail = (id) => {
 const toggleLike = async () => {
     try {
         if (isLiked.value) {
-            const likeItem = likes.value.find(item =>  item.product === props.product.id)
+            const likeItem = likes.value.find(item => item.product === props.product.id)
             if (likeItem) {
                 await deleteLike(likeItem.id)
                 isLiked.value = false
@@ -84,7 +85,7 @@ const toggleLike = async () => {
 
 const addToCart = async () => {
     if (isAddingToCart.value) return
-    
+
     isAddingToCart.value = true
     try {
         await addItem(props.product.id)

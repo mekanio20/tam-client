@@ -1,11 +1,11 @@
 <template>
     <div class="bg-white">
         <MainContainer class="-mb-5">
-            <div class="pt-6">
+            <div class="sm:py-6 pt-6">
                 <LinkGroup :items="[{ label: 'Halananlar', to: '/account/favorite' }]" />
             </div>
         </MainContainer>
-        <NoDataSection v-if="!likedProducts.length" image="/images/favorite.png" desc="Sizde halanan haryt ýok" />
+        <NoDataSection v-if="!likedProducts.length" image="/icons/favorite.png" desc="Sizde halanan haryt ýok" />
         <ProductSection v-else :isRedirectLink="false" :sectionTitle="'Halanan harytlar'" :products="likedProducts" />
     </div>
 </template>

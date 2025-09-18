@@ -1,6 +1,6 @@
 <template>
     <div class="bg-white">
-        <MainContainer class="-mt-5">
+        <MainContainer>
             <div class="py-6">
                 <LinkGroup :items="[{ label: 'Sargytlar', to: '/account/orders' }]" />
             </div>

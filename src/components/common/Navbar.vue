@@ -39,18 +39,18 @@
 
         <!-- Mobile Bottom Navigation -->
         <div class="sm:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
-            <div class="flex items-center justify-around py-2">
-                <button type="button" @click="toggleMobileMenu"
-                    class="flex flex-col items-center space-y-1 py-2 px-3 rounded-lg group">
-                    <grid-icon color="#0C1A30" :size="24" />
+            <div class="flex items-center justify-evenly py-2">
+                <button type="button" @click="toggleMobileMenu" @mouseenter="hovered = 'categories'" @mouseleave="hovered = null"
+                    class="flex flex-col items-center space-y-1 py-2 px-3 rounded-lg group transition-colors duration-300">
+                    <grid-icon :color="hovered === 'categories' ? '#FEB918' : '#0C1A30'" :size="24" />
                     <span
-                        class="text-[10px] text-[#0C1A30] group-hover:text-[#FEB918] transition-colors duration-200">Bölümler</span>
+                        class="text-[10px] text-[#0C1A30] group-hover:text-[#FEB918]">Bölümler</span>
                 </button>
-                <router-link v-for="item in items" :key="item.id" :to="item.link"
-                    class="flex flex-col items-center space-y-1 py-2 px-3 rounded-lg group">
-                    <component :is="icons[item?.icon]" />
+                <router-link v-for="item in items" :key="item.id" :to="item.link" @mouseenter="hovered = item.id" @mouseleave="hovered = null"
+                    class="flex flex-col items-center space-y-1 py-2 px-3 rounded-lg group transition-colors duration-300">
+                    <component :is="icons[item?.icon]" :color="hovered === item.id ? '#FEB918' : '#0C1A30'" />
                     <span
-                        class="text-[10px] text-[#0C1A30] group-hover:text-[#FEB918] transition-colors duration-200">{{
+                        class="text-[10px] text-[#0C1A30] group-hover:text-[#FEB918]">{{
                     item.name }}</span>
                 </router-link>
             </div>
@@ -64,15 +64,22 @@ const props = defineProps({ isMobileMenuOpen: Boolean })
 const { icons, loadIcons } = useIcons()
 onMounted(() => { loadIcons() })
 
+const router = useRouter()
 const searchQuery = ref('');
+const hovered = ref(null)
 const items = ref([
     { id: 1, link: '/account', name: 'Hasap', icon: 'user-icon' },
     { id: 2, link: '/account/basket', name: 'Sebet', icon: 'shopping_cart-icon' },
     { id: 3, link: '/account/favorites', name: 'Halananlar', icon: 'favorite-icon' },
     { id: 4, link: '/account/orders', name: 'Sargytlar', icon: 'order-icon' },
 ]);
-const handleSearch = () => {
-    console.log(searchQuery.value);
+const handleSearch = (value) => {
+    if (typeof value === 'string') {
+        searchQuery.value = value
+    }
+    if (searchQuery.value && searchQuery.value.trim().length > 0) {
+        router.push({ name: 'SearchResults', query: { q: searchQuery.value.trim() } })
+    }
 };
 const toggleMobileMenu = () => {
     emit('openSidebar')

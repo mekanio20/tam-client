@@ -1,7 +1,7 @@
 <template>
-    <svg :width="size" :height="size" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path :stroke="color" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+    <svg :width="size" :height="size" viewBox="0 0 10 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8.70428 1.22217L3.61169 6.31476L1.29688 3.99995" :stroke="color" stroke-linecap="round"
+            stroke-linejoin="round" />
     </svg>
 </template>
 
@@ -9,11 +9,11 @@
 defineProps({
     size: {
         type: Number,
-        default: 64
+        default: 10
     },
     color: {
         type: String,
-        default: '#d1d5db'
+        default: 'white'
     }
 })
 </script>

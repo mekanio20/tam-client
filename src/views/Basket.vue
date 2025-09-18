@@ -2,20 +2,20 @@
     <div class="min-h-screen">
         <!-- Header -->
         <MainContainer>
-            <div class="py-6">
+            <div class="sm:py-6 pt-6">
                 <LinkGroup :items="[{ label: 'Sebet', to: '/account/basket' }]" />
             </div>
             <!-- Title -->
             <div class="py-8 lg:w-[950px]">
                 <div class="flex items-center justify-between">
                     <div class="flex items-end space-x-5">
-                        <h1 class="text-[30px] font-semibold text-[#0C1A30]">Sebet</h1>
-                        <span class="text-[#838589] text-sm pb-2">{{ cartStore.getItemCount() }} haryt</span>
+                        <h1 class="sm:text-[30px] text-[26px] leading-[100%] font-semibold text-[#0C1A30]">Sebet</h1>
+                        <span class="text-[#838589] text-sm">{{ cartStore.getItemCount() }} haryt</span>
                     </div>
                     <button @click="clearCart"
                         class="flex items-center space-x-2 bg-[#FA004C] text-white px-4 py-2 rounded-lg font-medium hover:opacity-60 transition-opacity duration-300">
                         <delete-icon :size="18" color="white" />
-                        <span>Arassala</span>
+                        <span class="sm:text-base text-sm">Arassala</span>
                     </button>
                 </div>
             </div>

@@ -12,7 +12,8 @@
       <div class="flex-1 py-4 overflow-y-auto sidebar-scroll">
         <div class="space-y-1 px-3">
           <!-- Search -->
-          <SearchBar v-model="searchQuery" :placeholder="'Haryt ady boýunça gözle...'" @search="handleSearch" />
+          <SearchBar class="mb-6" v-if="isMobile" v-model="searchQuery" :placeholder="'Haryt ady boýunça gözle...'"
+            @search="handleSearch" />
           <!-- Categories -->
           <div v-for="(category, index) in categories" :key="category.id"
             class="transform transition-all duration-300 ease-out" :style="{
@@ -20,18 +21,22 @@
         opacity: isVisible ? 1 : 0,
         transform: isVisible ? 'translateX(0)' : 'translateX(-20px)'
       }">
-            <div @click="handleCategoryClick(category)"
-              @mouseenter="onCategoryMouseEnter(category)"
-              class="group flex items-center px-4 py-3 text-[#0C1A30] rounded-lg hover:bg-gray-50 transition-all duration-200 ease-in-out transform hover:scale-[1.02] hover:shadow-sm cursor-pointer"
+            <div @click="handleCategoryClick(category)" @mouseenter="onCategoryMouseEnter(category)"
+              class="group flex items-center justify-between px-4 py-3 text-[#0C1A30] rounded-lg hover:bg-gray-50 transition-all duration-200 ease-in-out transform hover:scale-[1.02] hover:shadow-sm cursor-pointer"
               :class="{
         'bg-[#FEB9181F] text-[#FFBA19]': selectedCategory === category.id
       }">
-              <div v-if="category?.image?.path" class="w-[20px] h-[20px] mr-2">
-                <img class="w-full h-full object-cover" :src="category.image.path">
+              <div class="">
+                <div v-if="category?.image?.path" class="w-[20px] h-[20px] mr-2">
+                  <img class="w-full h-full object-cover" :src="category.image.path">
+                </div>
+                <span class="font-medium group-hover:translate-x-1 transition-transform duration-200 sm:text-base text-sm">
+                  {{ category.name }}
+                </span>
               </div>
-              <span class="font-medium group-hover:translate-x-1 transition-transform duration-200">
-                {{ category.name }}
-              </span>
+              <div v-if="category.children.length > 0">
+                <chevron_right-icon />
+              </div>
             </div>
           </div>
         </div>
@@ -40,11 +45,12 @@
 
     <!-- Right Submenu (desktop only) -->
     <div v-if="isMobileMenuOpen && isSubmenuOpen && submenuItems.length > 0"
-      class="fixed left-0 md:left-72 top-[112px] w-full md:w-64 h-[calc(100vh-112px)] bg-white  z-40 flex flex-col"
+      class="fixed left-0 md:left-72 top-[95px] w-full md:w-64 h-[calc(100vh-95px)] bg-white  z-40 flex flex-col"
       @mouseenter="cancelCloseSubmenu" @mouseleave="scheduleCloseSubmenu">
       <!-- Back button for mobile -->
       <div class="md:hidden flex items-center px-4 py-3 border-b border-gray-200">
-        <button @click="goBackToCategories" class="flex items-center text-[#0C1A30] hover:text-[#FEB918] transition-colors">
+        <button @click="goBackToCategories"
+          class="flex items-center text-[#0C1A30] hover:text-[#FEB918] transition-colors">
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
           </svg>
@@ -60,7 +66,7 @@
               <div v-if="item?.image?.path" class="w-[20px] h-[20px] mr-2">
                 <img class="w-full h-full object-cover" :src="item.image.path">
               </div>
-              <span class="font-medium group-hover:translate-x-1 transition-transform duration-200">
+              <span class="font-medium group-hover:translate-x-1 transition-transform duration-200 sm:text-base text-sm">
                 {{ item.name }}
               </span>
             </router-link>
@@ -93,12 +99,18 @@ const isSubmenuOpen = ref(false)
 const activeParentCategory = ref(null)
 const submenuItems = ref([])
 const searchQuery = ref('');
+const isMobile = ref(false)
 let closeSubmenuTimeoutId = null
 
 // Methods
 
-const handleSearch = () => {
-    console.log(searchQuery.value);
+const handleSearch = (value) => {
+  if (typeof value === 'string') {
+    searchQuery.value = value
+  }
+  if (searchQuery.value && searchQuery.value.trim().length > 0) {
+    router.push({ name: 'SearchResults', query: { q: searchQuery.value.trim() } })
+  }
 };
 
 const toggleMobileMenu = () => {
@@ -176,10 +188,20 @@ const goBackToCategories = () => {
   submenuItems.value = []
 }
 
+const checkScreenSize = () => {
+  isMobile.value = window.innerWidth < 1024
+}
+
 // Lifecycle
 onMounted(() => {
   fetchCategories()
+  checkScreenSize()
   isVisible.value = true
+  window.addEventListener('resize', checkScreenSize)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', checkScreenSize)
 })
 </script>
 

@@ -1,11 +1,11 @@
 <template>
-    <div class="flex items-center space-x-4">
+    <div class="flex items-center sm:space-x-4 space-x-2">
         <router-link to="/">
             <home-icon />
         </router-link>
-        <router-link v-for="(item, index) in items" :key="index" :to="item.to" class="flex items-center space-x-4">
+        <router-link v-for="(item, index) in items" :key="index" :to="item.to" class="flex items-center sm:space-x-4 space-x-2 mt-1">
             <arrow_small-icon />
-            <span class="text-sm text-[#838589]">{{ item.label }}</span>
+            <span class="sm:text-sm text-xs text-[#838589]">{{ item.label }}</span>
         </router-link>
     </div>
 </template>
