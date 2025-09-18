@@ -10,10 +10,10 @@
         :link="`/product/list?category=${category.id}`"
     />
     <!-- Login -->
-    <LoginModal v-model="isLoginModal" @forgot_password="openResetPassword" @register="openRegister" />
+    <LoginModal v-model="isLoginModal" @forgot_password="openResetPassword" @register="openRegister" @success="fetchData" />
     <RegisterModal v-model="isRegisterModal" @send_otp="send_otp" @login="openLogin" />
-    <OtpModal v-model="isOtpModal" :data="otpData" />
-    <ResetPasswordModal v-model="isResetPasswordModal" />
+    <OtpModal v-model="isOtpModal" :data="otpData" @success="fetchData" />
+    <ResetPasswordModal v-model="isResetPasswordModal" @success="fetchData" />
 </template>
 
 <script setup>
@@ -49,43 +49,43 @@ const categoriesWithProducts = computed(() => {
 
 // Ensure modal visibility reflects authentication state on load and updates
 const syncRegisterModal = () => {
-    console.log('Auth', authStore.isAuthenticated);
     isRegisterModal.value = !authStore.isAuthenticated
 }
 
-onMounted(async () => {
-    if (route.query.refresh) {
-        authStore.loadTokens()
-        syncRegisterModal()
-    }
-
-    // Load tokens
-    authStore.loadTokens()
-    syncRegisterModal()
-
-    // Fetch categories and their products
-    await fetchCategories()
-    await fetchLikes()
-    mostPurchasedProducts.value = await fetchMostPurchasedProducts()
-    
-    // Fetch products for each category
-    if (categories.value && categories.value.length > 0) {
-        let counter = 0
-        for (const category of categories.value) {
-            try {
-                const products = await fetchCategoryProducts(category.id)
-                if (products.length > 0) counter++
-                categoryProducts.value[category.id] = products
-                if (counter > 2) break
-            } catch (error) {
-                console.error(`Error fetching products for category ${category.id}:`, error)
-                categoryProducts.value[category.id] = []
+const fetchData = async (isTrue) => {
+    if (isTrue) {
+        // Fetch categories and their products
+        await fetchCategories()
+        await fetchLikes()
+        mostPurchasedProducts.value = await fetchMostPurchasedProducts()
+        
+        // Fetch products for each category
+        if (categories.value && categories.value.length > 0) {
+            let counter = 0
+            for (const category of categories.value) {
+                try {
+                    const products = await fetchCategoryProducts(category.id)
+                    if (products.length > 0) counter++
+                    categoryProducts.value[category.id] = products
+                    if (counter > 2) break
+                } catch (error) {
+                    console.error(`Error fetching products for category ${category.id}:`, error)
+                    categoryProducts.value[category.id] = []
+                }
             }
         }
     }
+}
+
+onMounted(async () => {
+    // Load tokens
+    authStore.loadTokens()
+    syncRegisterModal()
+    // Fetch data
+    await fetchData(true)
 })
 
-watch(() => authStore.isAuthenticated, () => {
+watch(() => [authStore.isAuthenticated, route.query.refresh], () => {
     if (authStore.isAuthenticated) {
         isRegisterModal.value = false
     }

@@ -130,7 +130,7 @@ const props = defineProps({
         required: true
     }
 })
-const emit = defineEmits(['update:modelValue', 'forgot_password', 'register'])
+const emit = defineEmits(['update:modelValue', 'success', 'forgot_password', 'register'])
 
 // Modal state
 const activeTab = ref('phone')
@@ -174,8 +174,10 @@ const handleSubmit = async () => {
             const identifier = phoneNumber.value || email.value
             await auth.login({ username: identifier, password: password.value })
             emit('update:modelValue', false)
+            emit('success', true)
         } catch (err) {
             console.error(err)
+            emit('success', false)
         }
     }
 }

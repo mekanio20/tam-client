@@ -66,7 +66,7 @@ const props = defineProps({
         required: true
     }
 })
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'success'])
 
 // Form state
 const code = ref()
@@ -84,9 +84,11 @@ const handleSubmit = async () => {
             const response = await auth.register({...props.data, otp: code.value })
             if (response.status === "ok") {
                 emit('update:modelValue', false)
+                emit('success', true)
             }
         } catch (err) {
             console.error(err)
+            emit('success', false)
         }
     }
 }

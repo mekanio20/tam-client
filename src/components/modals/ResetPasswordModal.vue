@@ -77,7 +77,7 @@ defineProps({
         required: true
     },
 })
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'success'])
 
 // Form state
 const phoneNumber = ref('+993 63755727')
@@ -99,14 +99,17 @@ const handleSubmit = async () => {
     if (!isFormValid.value) return
     try {
         if (step.value === 'request') {
+            console.log('Step request -> ', step.value);
             const res = await auth.sendOtp({ identifier: phoneNumber.value, purpose: 'reset_password' })
             if (res.status === 'ok') {
                 step.value = 'confirm'
             }
         } else {
+            console.log('Step request -> ', step.value);
             const res = await auth.resetPassword({ identifier: phoneNumber.value, otp: code.value, new_password: newPassword.value })
             if (res.status === 'ok') {
                 emit('update:modelValue', false)
+                emit('success', true)
                 // reset state
                 step.value = 'request'
                 code.value = ''
@@ -115,6 +118,7 @@ const handleSubmit = async () => {
         }
     } catch (e) {
         console.error(e)
+        emit('success', false)
     }
 }
 
