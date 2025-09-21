@@ -17,9 +17,9 @@
 
                 <!-- Add to Cart -->
                 <div
-                    class="absolute w-full px-4 bottom-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    class="absolute w-full px-4 bottom-4 sm:opacity-0 sm:group-hover:opacity-100 sm:transition-opacity sm:duration-300">
                     <button @click.stop="addToCart" :disabled="isAddingToCart"
-                        class="w-full py-3 text-center sm:text-base text-sm bg-white text-[#FFA100] text-[13px] font-semibold rounded-[6px] disabled:opacity-50 disabled:cursor-not-allowed">
+                        class="w-full sm:py-3 py-2 text-center sm:text-base text-sm bg-white text-[#FFA100] text-[13px] font-semibold rounded-[6px] disabled:opacity-50 disabled:cursor-not-allowed">
                         <span v-if="isAddingToCart">Goşulýar...</span>
                         <span v-else>Sebede goş</span>
                     </button>
@@ -85,7 +85,6 @@ const toggleLike = async () => {
 
 const addToCart = async () => {
     if (isAddingToCart.value) return
-
     isAddingToCart.value = true
     try {
         await addItem(props.product.id)

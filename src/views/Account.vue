@@ -80,9 +80,9 @@
                             <label :for="`address` + index" class="text-[13px] text-[#838589]">
                                 Salgy
                             </label>
-                            <input :id="`address` + index" type="text" v-model="item.display_name"
+                            <input :id="`address` + index" type="text" v-model="item.address"
                                 class="border-none outline-none p-3 pr-10 sm:text-base text-sm bg-[#F6F7F9] rounded-md">
-                            <delete-icon @click="removeAddress(index)" class="absolute right-3 top-[43px] transform -translate-y-1/2 cursor-pointer" />
+                            <delete-icon @click="removeAddress(item.id)" class="absolute right-3 top-[43px] transform -translate-y-1/2 cursor-pointer" />
                         </div>
                     </div>
 
@@ -124,24 +124,30 @@
         </MainContainer>
         <!-- Address Modal -->
         <AddressAddModal :show="showModal" @submit="addAddress" @close="showModal = false" />
+        
+        <!-- Password Update Modal -->
+        <PasswordUpdateModal :show="showPasswordModal" @submit="updatePassword" @close="showPasswordModal = false" />
     </div>
 </template>
 
 <script setup>
 const clientStore = useClientStore()
 const authStore = useAuthStore()
+const addressesStore = useClientAddressesStore()
 const { account } = storeToRefs(clientStore)
+const { addresses, loading: addressesLoading } = storeToRefs(addressesStore)
 const { fetchAccount, updateAccount } = clientStore
-const { logout } = authStore
+const { fetchAddresses, createAddress, updateAddress, deleteAddress } = addressesStore
+const { logout, resetPassword } = authStore
 const showModal = ref(false)
+const showPasswordModal = ref(false)
 const isMobile = ref(false)
-const addresses = ref([])
 const router = useRouter()
 const { success, error: toastError } = useToast()
 
 const avtiveAddress = computed(() => {
-    const active = addresses.value.find(address => address.checked)
-    return active ? active.display_name : ''
+    const active = addresses.value.find(address => address.is_primary)
+    return active ? active.address : ''
 })
 
 const saveAccount = async () => {
@@ -157,17 +163,36 @@ const saveAccount = async () => {
     }
 }
 
-const addAddress = (addressData) => {
-    addresses.value.push(addressData)
-    showModal.value = false
+const addAddress = async (addressData) => {
+    try {
+        await createAddress(addressData)
+        success('Üstünlikli', 'Salgy üstünlikli goşuldy')
+        showModal.value = false
+    } catch (e) {
+        toastError('Şowsuz boldy', e?.response?.data?.message || e?.message || 'Salgy goşulmady')
+    }
 }
 
-const removeAddress = (index) => {
-    addresses.value.splice(index, 1)
+const removeAddress = async (addressId) => {
+    try {
+        await deleteAddress(addressId)
+        success('Üstünlikli', 'Salgy üstünlikli pozuldy')
+    } catch (e) {
+        toastError('Şowsuz boldy', e?.response?.data?.message || e?.message || 'Salgy pozulmady')
+    }
 }
 
 const openDictionary = () => {
-    console.log('Opening dictionary')
+    showPasswordModal.value = true
+}
+
+const updatePassword = async (success) => {
+    if (success) {
+        success('Üstünlikli', 'Açar sözlük üstünlikli täzelendi')
+        showPasswordModal.value = false
+    } else {
+        toastError('Şowsuz boldy', 'Açar sözlük täzelenmedi')
+    }
 }
 
 const logoutUser = async() => {
@@ -181,6 +206,7 @@ const checkScreenSize = () => {
 
 onMounted(async () => {
     await fetchAccount()
+    await fetchAddresses()
     checkScreenSize()
     window.addEventListener('resize', checkScreenSize)
 })

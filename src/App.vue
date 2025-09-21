@@ -43,6 +43,7 @@ onMounted(async () => {
 
 const fetchCities = async () => {
   cities.value = await fetchAvailableCities()
+  console.log('Available cities -> ', cities.value);
   const storedCity = localStorage.getItem('city')
   if (!storedCity && isAuthenticated) {
     showCityModal.value = true
@@ -57,7 +58,6 @@ const handleCitySelect = (selected) => {
     if (!code) return
     localStorage.setItem('city', String(code))
   } catch (e) {
-    // Fallback to storing raw string if stringify fails
     localStorage.setItem('city', String(selected))
   }
 }

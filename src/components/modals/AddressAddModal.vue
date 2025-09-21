@@ -12,7 +12,7 @@
                 leave-from-class="translate-y-0 sm:scale-100" leave-to-class="translate-y-full sm:scale-95">
                 <div v-show="show" class="bg-white w-[770px] overflow-y-auto px-8 py-4 rounded-[14px] flex flex-col relative" @click.stop>
                     <!-- Header -->
-                    <div class="flex items-center justify-center pt-4 pb-10">
+                    <div class="flex items-center justify-center pt-4 pb-5">
                         <h2 class="text-[22px] text-center font-medium text-[#0C1A30]">Salgy goşmak</h2>
                         <button @click="$emit('close')"
                             class="absolute top-8 right-5 flex items-center justify-center bg-[#F6F7F9] rounded-full hover:bg-gray-100">
@@ -21,31 +21,61 @@
                     </div>
 
                     <!-- Content -->
-                    <FormSection @submit="handleSubmit" class="grid grid-cols-2 gap-6">
+                    <FormSection @submit="handleSubmit" class="grid grid-cols-2 gap-2">
+                        <!-- Region Selector -->
                         <FormGroup>
-                            <FormTitle :id="'borough'" :title="'Welaýat'" />
-                            <FormInput v-model="formData.borough" :label="'borough'" :icon="{ name: 'map-icon' }" />
+                            <FormTitle :id="'region'" :title="'Welaýat'" />
+                            <select v-model="formData.region" id="region" 
+                                class="w-full px-5 py-4 bg-[#F6F7F9] border-0 rounded-[10px] focus:ring-1 focus:ring-[#FEB918] focus:bg-white outline-none transition-all duration-200 pr-12">
+                                <option value="">Welaýat saýlaň</option>
+                                <option v-for="region in regions" :key="region.id" :value="region.id">
+                                    {{ region.name }}
+                                </option>
+                            </select>
                         </FormGroup>
-                        <!-- <FormGroup v-if="formData.village">
-                            <FormTitle :id="'village'" :title="'Oba'" />
-                            <FormInput v-model="formData.village" :label="'village'" :icon="{ name: 'map-icon' }" />
-                        </FormGroup> -->
+
+                        <!-- Street -->
                         <FormGroup>
-                            <FormTitle :id="'road'" :title="'Köçe'" />
-                            <FormInput v-model="formData.road" :label="'road'"
-                                :icon="{ name: 'map_pin-icon', size: 18, color: '#DF3DFF' }" />
+                            <FormTitle :id="'street'" :title="'Köçe'" />
+                            <FormInput v-model="formData.street" :label="'street'"
+                                :icon="{ name: 'map_pin-icon', size: 14, color: '#DF3DFF' }" />
                         </FormGroup>
+
+                        <!-- Building Number -->
                         <FormGroup>
-                            <FormTitle :id="'Jaý'" :title="'Jaý'" />
-                            <FormInput v-model="formData.building" :label="'Jaý'"
-                                :icon="{ name: 'home-icon', color: '#FF3A44' }" />
+                            <FormTitle :id="'building_number'" :title="'Jaý belgisi'" />
+                            <FormInput v-model="formData.building_number" :label="'building_number'"
+                                :icon="{ name: 'home-icon', size: 14, color: '#FF3A44' }" />
                         </FormGroup>
+
+                        <!-- House Number -->
                         <FormGroup>
-                            <FormTitle :id="'house_number'" :title="'Öý'" />
-                            <FormInput v-model="formData.house_number" :label="'house_number'" :icon="{ name: 'door-icon' }" />
+                            <FormTitle :id="'house_number'" :title="'Öý belgisi'" />
+                            <FormInput v-model="formData.house_number" :label="'house_number'" :icon="{ name: 'door-icon', size: 14 }" />
                         </FormGroup>
+
+                        <!-- Floor -->
+                        <FormGroup>
+                            <FormTitle :id="'floor'" :title="'Gat'" />
+                            <FormInput v-model="formData.floor" :label="'floor'" :icon="{ name: 'home-icon', size: 14, }" />
+                        </FormGroup>
+
+                        <!-- Note -->
+                        <FormGroup>
+                            <FormTitle :id="'note'" :title="'Bellik'" />
+                            <FormInput v-model="formData.note" :label="'note'" />
+                        </FormGroup>
+                        <!-- Is Primary -->
                         <FormGroup class="col-span-2">
-                            <CustomCheckbox v-model="formData.checked" text="Indiki sargytlarda şu salgyny ulan" />
+                            <FormTitle :id="'is_primary'" :title="'Esasy salgy'" />
+                            <select v-model="formData.is_primary" id="is_primary" 
+                                class="w-full p-3 border-none outline-none bg-[#F6F7F9] rounded-md text-[#0C0C0C]">
+                                <option :value="true">Hawa</option>
+                                <option :value="false">Ýok</option>
+                            </select>
+                        </FormGroup>
+                        <!-- Map -->
+                        <FormGroup class="col-span-2">
                             <div id="map" class="w-full h-[290px] rounded-2xl shadow-lg"></div>
                         </FormGroup>
                     </FormSection>
@@ -66,16 +96,22 @@
 <script setup>
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
+
+const regionsStore = useRegionsStore()
+const { regions } = storeToRefs(regionsStore)
+const { fetchRegions } = regionsStore
+
 const formData = ref({
-    borough: '',
-    road: '',
-    building: '',
-    village: '',
+    address: '',
+    street: '',
+    building_number: '',
     house_number: '',
-    display_name: '',
-    lat: '',
-    lon: '',
-    checked: true
+    floor: '',
+    region: '',
+    note: '',
+    longitude: '',
+    latitude: '',
+    is_primary: true
 })
 const selectedCoords = ref(null);
 const props = defineProps({ show: Boolean })
@@ -92,13 +128,15 @@ const fetchAddress = async (lat, lng) => {
         );
         const data = await res.json();
         formData.value = {
-            borough: data.address.borough || data.address.city_district || data.address.state || data.address.city || '',
-            building: data.address.building || data.address.shop || '',
-            ...data.address,
-            display_name: data.display_name,
-            lat: data.lat,
-            lon: data.lon,
-            checked: true
+            ...formData.value,
+            address: data.display_name || '',
+            street: data.address.road || data.address.street || '',
+            building_number: data.address.building || data.address.house_number || '',
+            house_number: data.address.house_number || '',
+            floor: data.address.floor || '',
+            note: data.address.note || '',
+            longitude: lng.toString(),
+            latitude: lat.toString()
         }
         console.log(formData.value);
     } catch (err) {
@@ -107,6 +145,9 @@ const fetchAddress = async (lat, lng) => {
 }
 
 onMounted(async () => {
+    // Load regions
+    await fetchRegions()
+    
     let marker;
     const center = [58.38, 37.95];
 

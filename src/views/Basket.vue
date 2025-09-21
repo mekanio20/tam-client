@@ -31,7 +31,7 @@
                         leave-to-class="opacity-0 transform translate-x-8"
                         move-class="transition-transform duration-300 ease-out">
                         <div v-for="(item, index) in cartItems" :key="index"
-                            class="bg-white rounded-xl py-6 border-b border-[#EDEDED]"
+                            class="bg-white rounded-xl border-b border-[#EDEDED]"
                             :class="{ 'border-b-0 pb-0': index === cartItems.length - 1 }">
                             <div class="flex items-start space-x-4">
                                 <!-- Product Image -->
@@ -119,7 +119,7 @@
                                 </div>
                                 <span class="text-sm text-[#0C1A30]">Gift Card: {{ cartStore.giftCard.number }}</span>
                             </div>
-                            <button @click="removeGiftCard" class="text-red-500 hover:text-red-700">
+                            <button @click="handleRemoveGiftCard" class="text-red-500 hover:text-red-700">
                                 <close-icon :size="16" />
                             </button>
                         </div>
@@ -141,7 +141,7 @@
                                 <span class="text-sm text-[#0C1A30]">Loyalty Card: {{ cartStore.loyaltyCard.number
                                     }}</span>
                             </div>
-                            <button @click="removeLoyaltyCard" class="text-red-500 hover:text-red-700">
+                            <button @click="handleRemoveLoyaltyCard" class="text-red-500 hover:text-red-700">
                                 <close-icon :size="16" />
                             </button>
                         </div>
@@ -188,9 +188,9 @@
                 <input v-model="giftCardNumber" type="text" placeholder="Gift card number"
                     class="w-full p-3 border border-gray-300 rounded-lg mb-4" />
                 <div class="flex space-x-3">
-                    <button @click="applyGiftCard"
-                        class="flex-1 bg-[#037D84] text-white py-2 px-4 rounded-lg hover:bg-[#036A70] transition-colors">
-                        Ulan
+                    <button @click="handleApplyGiftCard" :disabled="cartStore.loading"
+                        class="flex-1 bg-[#037D84] text-white py-2 px-4 rounded-lg hover:bg-[#036A70] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                        {{ cartStore.loading ? 'Ulanýar...' : 'Ulan' }}
                     </button>
                     <button @click="showGiftCardModal = false"
                         class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors">
@@ -209,9 +209,9 @@
                 <input v-model="loyaltyCardId" type="number" placeholder="Loyalty card ID"
                     class="w-full p-3 border border-gray-300 rounded-lg mb-4" />
                 <div class="flex space-x-3">
-                    <button @click="applyLoyaltyCard"
-                        class="flex-1 bg-[#FEB918] text-white py-2 px-4 rounded-lg hover:bg-[#E6A500] transition-colors">
-                        Ulan
+                    <button @click="handleApplyLoyaltyCard" :disabled="cartStore.loading"
+                        class="flex-1 bg-[#FEB918] text-white py-2 px-4 rounded-lg hover:bg-[#E6A500] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                        {{ cartStore.loading ? 'Ulanýar...' : 'Ulan' }}
                     </button>
                     <button @click="showLoyaltyCardModal = false"
                         class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors">
@@ -229,9 +229,11 @@ const productStore = useProductsStore()
 const likesStore = useLikesStore()
 const { products } = storeToRefs(productStore)
 const { fetchNewestProducts } = productStore
-const { cartItems, total, subtotal, couponDiscount } = storeToRefs(cartStore)
-const { likes } = storeToRefs(likesStore)
+const { cartItems, total, subtotal, couponDiscount, loading } = storeToRefs(cartStore)
 const { fetchLikes, createLike, deleteLike } = likesStore
+const { likes } = storeToRefs(likesStore)
+const { applyGiftCard, applyLoyaltyCard, removeGiftCard, removeLoyaltyCard } = cartStore
+const router = useRouter()
 
 // Modal states
 const showGiftCardModal = ref(false)
@@ -286,36 +288,16 @@ const clearCart = async () => {
 }
 
 const checkout = async () => {
-    if (cartStore.cartItems.length === 0) return
-
-    try {
-        // Basic checkout data - you can expand this with a form
-        const checkoutData = {
-            deliveryAddress: "Default address", // This should come from user input
-            deliveryNote: "",
-            paymentMethod: "cash",
-            notes: "",
-            deliveryMethodId: 1,
-            selectedTimeSlot: 1,
-            preferredDeliveryDate: new Date().toISOString().split('T')[0]
-        }
-
-        await cartStore.checkout(checkoutData)
-        // Navigate to order confirmation or success page
-        // router.push('/orders')
-    } catch (error) {
-        console.error('Error during checkout:', error)
-    }
+    if (cartItems.length === 0) return
+    router.push({ name: 'ConfirmOrder' })
 }
 
-// addToCart is now handled directly in ProductCard component
-
 // Gift Card and Loyalty Card methods
-const applyGiftCard = async () => {
+const handleApplyGiftCard = async () => {
     if (!giftCardNumber.value.trim()) return
 
     try {
-        await cartStore.applyGiftCard(giftCardNumber.value)
+        await applyGiftCard(giftCardNumber.value)
         showGiftCardModal.value = false
         giftCardNumber.value = ''
     } catch (error) {
@@ -323,11 +305,11 @@ const applyGiftCard = async () => {
     }
 }
 
-const applyLoyaltyCard = async () => {
+const handleApplyLoyaltyCard = async () => {
     if (!loyaltyCardId.value) return
 
     try {
-        await cartStore.applyLoyaltyCard(loyaltyCardId.value)
+        await applyLoyaltyCard(loyaltyCardId.value)
         showLoyaltyCardModal.value = false
         loyaltyCardId.value = null
     } catch (error) {
@@ -335,17 +317,17 @@ const applyLoyaltyCard = async () => {
     }
 }
 
-const removeGiftCard = async () => {
+const handleRemoveGiftCard = async () => {
     try {
-        await cartStore.removeGiftCard()
+        await removeGiftCard()
     } catch (error) {
         console.error('Error removing gift card:', error)
     }
 }
 
-const removeLoyaltyCard = async () => {
+const handleRemoveLoyaltyCard = async () => {
     try {
-        await cartStore.removeLoyaltyCard()
+        await removeLoyaltyCard()
     } catch (error) {
         console.error('Error removing loyalty card:', error)
     }

@@ -58,6 +58,7 @@ const fetchData = async (isTrue) => {
         await fetchCategories()
         await fetchLikes()
         mostPurchasedProducts.value = await fetchMostPurchasedProducts()
+        console.log('Most Purchased Products:', mostPurchasedProducts.value);
         
         // Fetch products for each category
         if (categories.value && categories.value.length > 0) {

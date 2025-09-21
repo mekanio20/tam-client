@@ -76,9 +76,12 @@
 
                         <!-- Add to Cart Button -->
                         <div class="flex space-x-3">
-                            <button @click="addToCart"
-                                class="flex-1 bg-[#FEB918] hover:bg-[#ffcf5f] text-white py-4 px-8 rounded-[10px] transition-all duration-200 font-semibold text-[20px]">
-                                Sebede goş
+                            <button 
+                                @click="addToCart"
+                                :disabled="cartLoading"
+                                class="flex-1 bg-[#FEB918] hover:bg-[#ffcf5f] text-white py-4 px-8 rounded-[10px] transition-all duration-200 font-semibold text-[20px] disabled:opacity-60 disabled:cursor-not-allowed"
+                                :class="{ 'bg-green-500 hover:bg-green-600': isInCart }">
+                                {{ cartLoading ? 'Goşulýar...' : isInCart ? 'Goşuldy!' : 'Sebede goş' }}
                             </button>
                             <button @click="toggleFavorite(product_info.id)"
                                 class="p-4 bg-[#FEB91829] rounded-[10px] transition-all duration-200">
@@ -106,9 +109,11 @@ const isInCart = ref(false)
 const route = useRoute()
 const likesStore = useLikesStore()
 const productsStore = useProductsStore()
+const cartStore = useCartStore()
 const { fetchProductDetail } = productsStore
 const { product_info } = storeToRefs(productsStore)
 const { createLike, deleteLike, fetchLikes } = likesStore
+const { addItem, loading: cartLoading } = cartStore
 const selectedImage = ref(null)
 const isLiked = ref(false)
 
@@ -129,10 +134,17 @@ const toggleFavorite = async (id) => {
     }
 }
 
-const addToCart = () => {
-    isInCart.value = true
-    setTimeout(() => {
-    }, 200)
+const addToCart = async () => {
+    try {
+        await addItem(product_info.value.id, 1)
+        isInCart.value = true
+        // Reset button state after a short delay
+        setTimeout(() => {
+            isInCart.value = false
+        }, 2000)
+    } catch (error) {
+        console.error('Failed to add to cart:', error)
+    }
 }
 
 onMounted(async () => {

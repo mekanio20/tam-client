@@ -23,12 +23,21 @@
                 <h2 class="sm:text-base text-sm bg-gradient-to-r from-[#FF6F00] to-[#FEB918] bg-clip-text text-transparent font-semibold">
                     {{ title }}
                 </h2>
-                <p :class="[
-            'transition-colors duration-300 mt-5 sm:text-sm text-xs',
-            selected ? 'text-[#FEB918]' : 'text-[#0C1A30]'
-        ]">
-                    {{ price }} TMT
-                </p>
+            </div>
+        </div>
+        
+        <!-- Region Prices Section - Only show when selected -->
+        <div v-if="selected && regionPrices && regionPrices.length > 0" class="mt-3 space-y-2">
+            <div 
+                v-for="regionPrice in regionPrices" 
+                :key="regionPrice.id"
+                class="flex justify-between items-center px-3 py-2 bg-gray-50 rounded-lg text-sm">
+                <span class="text-[#0C1A30] font-medium">
+                    {{ regionPrice.region_city_display || regionPrice.region_name }}
+                </span>
+                <span class="text-[#FEB918] font-semibold">
+                    {{ regionPrice.price }} TMT
+                </span>
             </div>
         </div>
     </article>
@@ -42,9 +51,9 @@ const props = defineProps({
         type: String,
         default: ''
     },
-    price: {
-        type: Number,
-        default: 0
+    regionPrices: {
+        type: Array,
+        default: () => []
     },
     selected: {
         type: Boolean,

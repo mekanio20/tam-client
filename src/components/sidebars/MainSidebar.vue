@@ -2,7 +2,7 @@
   <div class="flex">
     <!-- Sidebar -->
     <div
-      class="fixed left-0 sm:top-[112px] top-[95px] sm:h-[calc(100vh-112px)] h-[calc(100vh-95px)] bg-white shadow-lg border-r border-gray-200 transition-transform duration-300 ease-in-out z-40 flex flex-col"
+      class="fixed left-0 sm:top-[112px] top-[95px] sm:h-[calc(100vh-112px)] h-[calc(100vh-95px)] bg-white shadow-lg border-r border-gray-200 transition-transform duration-300 ease-in-out z-20 flex flex-col"
       :class="[
         isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full',
         'w-full md:w-72'
@@ -10,9 +10,9 @@
 
       <!-- Menu Categories -->
       <div class="flex-1 py-4 overflow-y-auto sidebar-scroll">
-        <div class="space-y-1 px-3">
+        <div class="space-y-1 px-3 pb-20">
           <!-- Search -->
-          <SearchBar class="mb-6" v-if="isMobile" v-model="searchQuery" :placeholder="'Haryt ady boýunça gözle...'"
+          <SearchBar class="mb-4" v-if="isMobile" v-model="searchQuery" :placeholder="'Haryt ady boýunça gözle...'"
             @search="handleSearch" />
           <!-- Categories -->
           <div v-for="(category, index) in categories" :key="category.id"
@@ -24,17 +24,17 @@
             <div @click="handleCategoryClick(category)" @mouseenter="onCategoryMouseEnter(category)"
               class="group flex items-center justify-between px-4 py-3 text-[#0C1A30] rounded-lg hover:bg-gray-50 transition-all duration-200 ease-in-out transform hover:scale-[1.02] hover:shadow-sm cursor-pointer"
               :class="{
-        'bg-[#FEB9181F] text-[#FFBA19]': selectedCategory === category.id
+        'bg-[#FEB9181F] text-[#FFBA19]': selectedCategory === category?.id
       }">
               <div class="">
                 <div v-if="category?.image?.path" class="w-[20px] h-[20px] mr-2">
                   <img class="w-full h-full object-cover" :src="category.image.path">
                 </div>
                 <span class="font-medium group-hover:translate-x-1 transition-transform duration-200 sm:text-base text-sm">
-                  {{ category.name }}
+                  {{ category?.name }}
                 </span>
               </div>
-              <div v-if="category.children.length > 0">
+              <div v-if="category?.children?.length > 0">
                 <chevron_right-icon />
               </div>
             </div>

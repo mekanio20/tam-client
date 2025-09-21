@@ -22,25 +22,29 @@
                         </button>
                     </div>
 
-                    <div class="flex flex-col space-y-10">
-                        <div class="flex flex-col space-y-3">
+                    <div v-if="loading" class="flex items-center justify-center py-8">
+                        <div class="text-gray-500">Salgylar ýüklenýär...</div>
+                    </div>
+                    <div v-else class="flex flex-col space-y-10">
+                        <div v-if="fixedAddress?.id" class="flex flex-col space-y-3">
                             <h4 class="text-sm text-[#838589]">
                                 Hemişelik salgy
                             </h4>
                             <div class="flex items-center justify-between rounded-lg border p-3 cursor-pointer"
                                 @click="selectAddress(fixedAddress?.id)"
-                                :class="fixedAddress?.id === avtiveAddress.id ? 'border-[#FEB918] bg-[#FEB9180D]' : 'border-[#EDEDED]'">
+                                :class="fixedAddress?.id === selectedAddressId ? 'border-[#FEB918] bg-[#FEB9180D]' : 'border-[#EDEDED]'">
                                 <h5
-                                    :class="fixedAddress?.id === avtiveAddress.id ? 'text-[#FEB918] font-semibold' : 'text-[#0C1A30]'">
+                                    :class="fixedAddress?.id === selectedAddressId ? 'text-[#FEB918] font-semibold' : 'text-[#0C1A30]'">
                                     {{ fixedAddress.address }}</h5>
                                 <!-- Radio Circle -->
                                 <div :class="[
-            'w-[22px] h-[22px] ml-2 rounded-full transition-all duration-300 flex items-center justify-center',
-            fixedAddress.id === avtiveAddress.id
-                ? 'border-[#FEB918] border-4 bg-[#FEB9180D]'
-                : 'border-[#EDEDED] border-2 bg-white group-hover:border-[#FEB918]'
-        ]">
-                                    <div v-if="avtiveAddress?.id" class="w-2 h-2 bg-white rounded-full"></div>
+                                    'w-[22px] h-[18px] ml-2 rounded-full transition-all duration-300 flex items-center justify-center',
+                                    fixedAddress.id === selectedAddressId
+                                        ? 'border-[#FEB918] border-4 bg-[#FEB9180D]'
+                                        : 'border-[#EDEDED] border-2 bg-white group-hover:border-[#FEB918]'
+                                ]">
+                                    <div v-if="fixedAddress.id === selectedAddressId"
+                                        class="w-[8px] h-[8px] bg-white rounded-full"></div>
                                 </div>
                             </div>
                         </div>
@@ -48,20 +52,24 @@
                             <h4 class="text-sm text-[#838589]">
                                 Salgy
                             </h4>
+                            <div v-if="filteredAddress.length === 0 && !loading" class="text-center text-gray-500 py-4">
+                                Salgy ýok
+                            </div>
                             <div v-for="item in filteredAddress" :key="item.id" @click="selectAddress(item.id)"
-                                :class="item.id === avtiveAddress.id ? 'border-[#FEB918] bg-[#FEB9180D]' : 'border-[#EDEDED]'"
+                                :class="item.id === selectedAddressId ? 'border-[#FEB918] bg-[#FEB9180D]' : 'border-[#EDEDED]'"
                                 class="flex items-center justify-between rounded-lg border p-3 cursor-pointer">
                                 <h5
-                                    :class="item.id === avtiveAddress.id ? 'text-[#FEB918] font-semibold' : 'text-[#0C1A30]'">
+                                    :class="item.id === selectedAddressId ? 'text-[#FEB918] font-semibold' : 'text-[#0C1A30]'">
                                     {{ item.address }}</h5>
                                 <!-- Radio Circle -->
                                 <div :class="[
-            'w-[22px] h-[22px] ml-2 rounded-full transition-all duration-300 flex items-center justify-center',
-            item.id === avtiveAddress.id
-                ? 'border-[#FEB918] border-4 bg-[#FEB9180D]'
-                : 'border-[#EDEDED] border-2 bg-white group-hover:border-[#FEB918]'
-        ]">
-                                    <div class="w-2 h-2 bg-white rounded-full"></div>
+                                    'w-[22px] h-[18px] ml-2 rounded-full transition-all duration-300 flex items-center justify-center',
+                                    item.id === selectedAddressId
+                                        ? 'border-[#FEB918] border-4 bg-[#FEB9180D]'
+                                        : 'border-[#EDEDED] border-2 bg-white group-hover:border-[#FEB918]'
+                                ]">
+                                    <div v-if="item.id === selectedAddressId"
+                                        class="w-[8px] h-[8px] bg-white rounded-full"></div>
                                 </div>
                             </div>
                         </div>
@@ -72,12 +80,13 @@
                         <button @click="$emit('addAddress')"
                             class="flex-1 flex items-center justify-center gap-4 font-semibold border border-[#FBBF24] text-[#FBBF24] px-4 py-3 rounded-lg hover:bg-[#FFF8E1] transition">
                             <!-- Icon -->
-                           <add-icon color="#FBBF24" />
+                            <add-icon color="#FBBF24" />
                             <span>Salg y goşmak</span>
                         </button>
 
-                        <button @click="$emit('submit', avtiveAddress)" class="flex-1 bg-[#007B83] text-white font-semibold px-4 py-3 rounded-lg hover:bg-[#00666B] transition">
-                            Dowam etmek
+                        <button @click="handleSubmit" :disabled="!selectedAddressId || loading"
+                            class="flex-1 bg-[#007B83] text-white font-semibold px-4 py-3 rounded-lg hover:bg-[#00666B] transition disabled:opacity-50 disabled:cursor-not-allowed">
+                            {{ loading ? 'Ýüklenýär...' : 'Dowam etmek' }}
                         </button>
                     </div>
                 </div>
@@ -94,35 +103,50 @@ const props = defineProps({
         default: false
     }
 })
-const addresses = ref([
-    { id: 1, address: 'Tashkent', isFixed: true, avtive: true },
-    { id: 2, address: 'Chilonzor', isFixed: false, avtive: false },
-    { id: 3, address: 'Mirzo Ulugbek', isFixed: false, avtive: false },
-    { id: 4, address: 'Mirzo Ulugbek', isFixed: false, avtive: false },
-])
+
+// Store integration
+const addressesStore = useClientAddressesStore()
+const { addresses, loading } = storeToRefs(addressesStore)
+const { fetchAddresses } = addressesStore
+
+// Local state
+const selectedAddressId = ref(null)
+
 // Methods
 const selectAddress = (addressId) => {
-    addresses.value.forEach((item) => {
-        if (item.id === addressId) {
-            item.avtive = true
-        } else {
-            item.avtive = false
-        }
-    })
+    selectedAddressId.value = addressId
 }
+
 const handleSubmit = () => {
-    emit('submit')
+    emit('submit', avtiveAddress.value)
 }
+
 // Computed
 const avtiveAddress = computed(() => {
-    const address = addresses.value.find((address) => address.avtive === true)
+    const address = addresses.value.find((address) => address.id === selectedAddressId.value)
     return address ? address : {}
 })
+
 const fixedAddress = computed(() => {
-    const address = addresses.value.find((address) => address.isFixed === true)
+    const address = addresses.value.find((address) => address.is_primary === true)
     return address ? address : {}
 })
+
 const filteredAddress = computed(() => {
-    return addresses.value.filter((address) => address.isFixed === false)
+    return addresses.value.filter((address) => address.is_primary !== true)
+})
+
+// Lifecycle
+onMounted(async () => {
+    if (addresses.value.length === 0) {
+        await fetchAddresses()
+    }
+})
+
+// Watch for modal opening to refresh addresses
+watch(() => props.show, async (newVal) => {
+    if (newVal && addresses.value.length === 0) {
+        await fetchAddresses()
+    }
 })
 </script>
