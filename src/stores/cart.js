@@ -10,8 +10,6 @@ export const useCartStore = defineStore("cart", () => {
   const giftCard = ref(null);
   const loyaltyCard = ref(null);
   const subtotal = ref(0);
-  const discount = ref(0);
-  const couponDiscount = ref(0);
   const total = ref(0);
 
   // Toast composable
@@ -27,11 +25,10 @@ export const useCartStore = defineStore("cart", () => {
       const { data } = await api.get("/cart/");
       cartItems.value = data.items || [];
       subtotal.value = data.subtotal_amount || 0;
-      discount.value = data.discount || 0;
-      couponDiscount.value = data.coupon_discount || 0;
       total.value = data.total_amount || 0;
-      giftCard.value = data.gift_card || null;
-      loyaltyCard.value = data.loyalty_card || null;
+      giftCard.value = data.gift_card_amount_used || null;
+      loyaltyCard.value = data.loyalty_card_info || null;
+      console.log('Loyalty card info', data.loyalty_card_info);
       return data;
     } catch (err) {
       error.value = err.message || "Failed to fetch cart";
@@ -176,8 +173,6 @@ export const useCartStore = defineStore("cart", () => {
       await api.delete("/cart/clear/");
       cartItems.value = [];
       subtotal.value = 0;
-      discount.value = 0;
-      couponDiscount.value = 0;
       total.value = 0;
       giftCard.value = null;
       loyaltyCard.value = null;
@@ -255,8 +250,6 @@ export const useCartStore = defineStore("cart", () => {
     giftCard,
     loyaltyCard,
     subtotal,
-    discount,
-    couponDiscount,
     total,
     // Actions
     fetchCart,

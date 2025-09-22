@@ -41,14 +41,20 @@
                                             <div class="flex-1">
                                                 <div class="flex items-center space-x-2 mb-2">
                                                     <div class="w-2 h-2 bg-[#FEB918] rounded-full"></div>
-                                                    <span class="text-sm font-medium text-[#0C1A30]">Saýlanan salgy</span>
+                                                    <span class="text-sm font-medium text-[#0C1A30]">Saýlanan
+                                                        salgy</span>
                                                 </div>
-                                                <p class="text-[#0C1A30] text-sm leading-relaxed">{{ formData.address }}</p>
+                                                <p class="text-[#0C1A30] text-sm leading-relaxed">{{ formData.address }}
+                                                </p>
                                             </div>
                                             <button @click="showAddressAddModal = true"
                                                 class="ml-3 p-2 text-[#037D84] hover:bg-[#E6F7F8] rounded-lg transition-colors">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                                    </path>
                                                 </svg>
                                             </button>
                                         </div>
@@ -82,24 +88,22 @@
                             </div>
                             <div v-else class="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-4">
                                 <OrderTypeCard v-for="item in deliveryMethods" :key="item.id" :title="item.name"
-                                    :regionPrices="item.region_prices || []" :selected="selectedDeliveryMethod?.id === item.id"
+                                    :regionPrices="item.region_prices || []"
+                                    :selected="selectedDeliveryMethod?.id === item.id"
                                     @toggle="selectDeliveryMethod(item)" />
                             </div>
-                            
+
                             <!-- Time Slots Section -->
                             <div v-if="selectedDeliveryMethod?.time_slots?.length > 0" class="pt-6 space-y-4">
                                 <h3 class="text-md font-medium text-[#0C1A30]">Wagt aralygy</h3>
                                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                                    <button
-                                        v-for="slot in selectedDeliveryMethod.time_slots"
-                                        :key="slot.id"
-                                        @click="selectedTimeSlot = slot"
-                                        :class="[
-                                            'p-3 rounded-lg border text-sm font-medium transition-all duration-200',
-                                            selectedTimeSlot?.id === slot.id
-                                                ? 'border-[#FEB918] bg-[#FEB9180D] text-[#FEB918]'
-                                                : 'border-[#EDEDED] bg-white text-[#0C1A30] hover:border-[#FEB918]'
-                                        ]">
+                                    <button v-for="slot in selectedDeliveryMethod.time_slots" :key="slot.id"
+                                        @click="selectedTimeSlot = slot" :class="[
+                    'p-3 rounded-lg border text-sm font-medium transition-all duration-200',
+                    selectedTimeSlot?.id === slot.id
+                        ? 'border-[#FEB918] bg-[#FEB9180D] text-[#FEB918]'
+                        : 'border-[#EDEDED] bg-white text-[#0C1A30] hover:border-[#FEB918]'
+                ]">
                                         {{ slot.time_slot }}
                                     </button>
                                 </div>
@@ -110,69 +114,25 @@
                                 <h3 class="text-lg font-medium text-[#0C1A30]">Eltip bermek senesi</h3>
                                 <FormGroup>
                                     <FormTitle :id="'delivery_date'" :title="'Senäni saýlaň'" />
-                                    <input
-                                        v-model="preferredDeliveryDate"
-                                        type="date"
-                                        id="delivery_date"
+                                    <input v-model="preferredDeliveryDate" type="date" id="delivery_date"
                                         class="w-full px-5 py-4 bg-[#F6F7F9] border-0 rounded-[10px] focus:ring-1 focus:ring-[#FEB918] focus:bg-white outline-none transition-all duration-200"
                                         :min="new Date().toISOString().split('T')[0]">
                                 </FormGroup>
                             </div>
                         </div>
+                        <div class="border-t border-[#EDEDED] mt-5">
+                            <div class="py-4 flex justify-between items-center">
+                                <span class="font-medium text-2xl text-[#0C1A30]">Jemi:</span>
+                                <span class="font-bold text-2xl text-[#037D84]">{{ total }} TMT</span>
+                            </div>
+    
+                            <!-- Checkout Button -->
+                            <button @click="checkout" :disabled="cartItems.length === 0 || loading"
+                                class="w-full bg-[#FEB918] text-white font-semibold py-3 px-4 rounded-lg hover:bg-yellow-500 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors transform">
+                                {{ loading ? 'Sargyt edilýär...' : 'Sargyt etmek' }}
+                            </button>
+                        </div>
                     </FormSection>
-                </div>
-
-                <!-- Order Summary -->
-                <div class="lg:w-[370px] w-full py-6 p-8 bg-white rounded-xl sticky top-32">
-                    <!-- Promo Code Section -->
-                    <div class="mb-4">
-                        <div class="flex items-center space-x-2 p-3 bg-[#F6F7F9] rounded-lg mb-4">
-                            <div class="w-7 h-7 bg-[#037D841F] rounded-full flex items-center justify-center">
-                                <discount_circle-icon />
-                            </div>
-                            <span class="text-sm text-[#838589]">Promokod giriziň</span>
-                        </div>
-
-                        <div class="flex items-center space-x-2 p-3 bg-[#F6F7F9] rounded-lg mb-4">
-                            <div class="w-7 h-7 bg-[#FEB91826] rounded-full flex items-center justify-center">
-                                <star-icon />
-                            </div>
-                            <span class="text-sm text-[#0C1A30]">Arzanladyş kartyny ulan</span>
-                        </div>
-                    </div>
-
-                    <!-- Price Breakdown -->
-                    <div class="space-y-3 mb-6">
-                        <div class="py-6 space-y-3">
-                            <div class="flex justify-between items-center">
-                                <span class="text-[#0C1A30]">Jemi:</span>
-                                <span class="font-medium text-[#0C1A30]">{{ subtotal }} TMT</span>
-                            </div>
-
-                            <div class="flex justify-between items-center">
-                                <span class="text-[#0C1A30]">Promo kody:</span>
-                                <span class="font-medium text-[#037D84]">-{{ discount }} TMT</span>
-                            </div>
-
-                            <div class="flex justify-between items-center">
-                                <span class="text-[#0C1A30]">Arzanladyş kupony:</span>
-                                <span class="font-medium text-[#FEB918]">-{{ couponDiscount }} TMT</span>
-                            </div>
-                        </div>
-
-                        <div class="border-t border-[#EDEDED] pt-3">
-                            <div class="flex justify-between items-center pt-4">
-                                <span class="font-medium text-[#0C1A30]">Jemi:</span>
-                                <span class="font-bold text-[#037D84]">{{ total }} TMT</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Checkout Button -->
-                    <button @click="checkout" :disabled="cartItems.length === 0 || loading"
-                        class="w-full bg-[#FEB918] text-white font-semibold py-3 px-4 rounded-lg hover:bg-yellow-500 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors transform">
-                        {{ loading ? 'Sargyt edilýär...' : 'Sargyt etmek' }}
-                    </button>
                 </div>
             </div>
         </MainContainer>
@@ -236,18 +196,18 @@ const _toggleFavorite = (id) => {
 
 const checkout = async () => {
     if (cartItems.value.length === 0) return
-    
+
     // Validation
     if (!selectedCard.value) {
         toastError('Şowsuz boldy', 'Töleg görnüşini saýlaň')
         return
     }
-    
+
     if (!selectedDeliveryMethod.value) {
         toastError('Şowsuz boldy', 'Eltip bermek hyzmatyny saýlaň')
         return
     }
-    
+
     if (!formData.value.address) {
         toastError('Şowsuz boldy', 'Salgyňyzy giriziň')
         return
@@ -266,7 +226,7 @@ const checkout = async () => {
 
         // Use cart store checkout function
         await cartStore.checkout(checkoutData)
-        
+
         // Reset form after successful checkout
         formData.value = {
             fullname: '',
@@ -278,10 +238,10 @@ const checkout = async () => {
         selectedDeliveryMethod.value = null
         selectedTimeSlot.value = null
         preferredDeliveryDate.value = ''
-        
+
         // Navigate to success page or orders page
         router.push({ name: 'Orders' }) // Uncomment if you want to redirect
-        
+
     } catch (error) {
         console.error('Checkout error:', error)
         // Error handling is already done in cart store

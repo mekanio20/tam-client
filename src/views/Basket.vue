@@ -110,7 +110,7 @@
                             <div class="w-7 h-7 bg-[#037D841F] rounded-full flex items-center justify-center">
                                 <discount_circle-icon />
                             </div>
-                            <span class="text-sm text-[#838589]">Promokod giriziň</span>
+                            <span class="text-sm text-[#838589]">Gift Card giriziň</span>
                         </div>
                         <div v-else class="flex items-center justify-between p-3 bg-[#E8F4F8] rounded-lg mb-4">
                             <div class="flex items-center space-x-2">
@@ -125,20 +125,20 @@
                         </div>
 
                         <!-- Loyalty Card -->
-                        <div v-if="!cartStore.loyaltyCard"
+                        <div v-if="!loyaltyCard"
                             class="flex items-center space-x-2 p-3 bg-[#F6F7F9] rounded-lg mb-4 cursor-pointer hover:bg-[#FEF3E2] transition-colors"
                             @click="showLoyaltyCardModal = true">
                             <div class="w-7 h-7 bg-[#FEB91826] rounded-full flex items-center justify-center">
                                 <star-icon />
                             </div>
-                            <span class="text-sm text-[#0C1A30]">Arzanladyş kartyny ulan</span>
+                            <span class="text-sm text-[#0C1A30]">Loyalty Card ulan</span>
                         </div>
                         <div v-else class="flex items-center justify-between p-3 bg-[#FEF3E2] rounded-lg mb-4">
                             <div class="flex items-center space-x-2">
                                 <div class="w-7 h-7 bg-[#FEB91826] rounded-full flex items-center justify-center">
                                     <star-icon />
                                 </div>
-                                <span class="text-sm text-[#0C1A30]">Loyalty Card: {{ cartStore.loyaltyCard.number
+                                <span class="text-sm text-[#0C1A30]">Loyalty Card: {{ loyaltyCard.number
                                     }}</span>
                             </div>
                             <button @click="handleRemoveLoyaltyCard" class="text-red-500 hover:text-red-700">
@@ -156,8 +156,13 @@
                             </div>
 
                             <div class="flex justify-between items-center">
-                                <span class="text-[#0C1A30]">Arzanladyş kupony:</span>
-                                <span class="font-medium text-[#FEB918]">-{{ couponDiscount }} TMT</span>
+                                <span class="text-[#0C1A30]">Gift Card kupony:</span>
+                                <span class="font-medium text-[#037D84]"><span v-if="giftCard">-</span>{{ giftCard || 0 }} TMT</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center">
+                                <span class="text-[#0C1A30]">Loyalty Card kupony:</span>
+                                <span class="font-medium text-[#FEB918]"><span v-if="loyaltyCard">-</span>{{ loyaltyCard?.cashback_used || 0 }} TMT</span>
                             </div>
                         </div>
 
@@ -205,11 +210,21 @@
             class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
             @click="showLoyaltyCardModal = false">
             <div class="bg-white rounded-lg p-6 w-96 max-w-md mx-4" @click.stop>
-                <h3 class="text-lg font-semibold mb-4">Loyalty Card Giriziň</h3>
-                <input v-model="loyaltyCardId" type="number" placeholder="Loyalty card ID"
-                    class="w-full p-3 border border-gray-300 rounded-lg mb-4" />
+                <h3 class="text-lg font-semibold mb-4">Arzanladyş kartyny seçiň</h3>
+                <div v-if="loyaltyCardOptions.length === 0" class="text-center py-4">
+                    <p class="text-gray-500">Arzanladyş kartyňyz ýok</p>
+                </div>
+                <div v-else class="mb-4">
+                    <select v-model="selectedLoyaltyCardId" 
+                        class="w-full p-3 border border-gray-300 rounded-lg mb-4 outline-none">
+                        <option value="" disabled>Kart seçiň</option>
+                        <option v-for="card in loyaltyCardOptions" :key="card.id" :value="card.id">
+                            {{ card.name }} - {{ card.balance }} TMT
+                        </option>
+                    </select>
+                </div>
                 <div class="flex space-x-3">
-                    <button @click="handleApplyLoyaltyCard" :disabled="cartStore.loading"
+                    <button @click="handleApplyLoyaltyCard" :disabled="cartStore.loading || !selectedLoyaltyCardId || loyaltyCardOptions.length === 0"
                         class="flex-1 bg-[#FEB918] text-white py-2 px-4 rounded-lg hover:bg-[#E6A500] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                         {{ cartStore.loading ? 'Ulanýar...' : 'Ulan' }}
                     </button>
@@ -227,25 +242,40 @@
 const cartStore = useCartStore()
 const productStore = useProductsStore()
 const likesStore = useLikesStore()
+const clientStore = useClientStore()
 const { products } = storeToRefs(productStore)
+const { fetchAccount } = clientStore
+const { account } = storeToRefs(clientStore)
 const { fetchNewestProducts } = productStore
-const { cartItems, total, subtotal, couponDiscount, loading } = storeToRefs(cartStore)
+const { cartItems, total, subtotal, giftCard, loyaltyCard } = storeToRefs(cartStore)
+const { applyGiftCard, applyLoyaltyCard, removeGiftCard, removeLoyaltyCard } = cartStore
 const { fetchLikes, createLike, deleteLike } = likesStore
 const { likes } = storeToRefs(likesStore)
-const { applyGiftCard, applyLoyaltyCard, removeGiftCard, removeLoyaltyCard } = cartStore
 const router = useRouter()
 
 // Modal states
 const showGiftCardModal = ref(false)
 const showLoyaltyCardModal = ref(false)
 const giftCardNumber = ref('')
-const loyaltyCardId = ref(null)
+const selectedLoyaltyCardId = ref(null)
+
+// Computed properties
+const loyaltyCardOptions = computed(() => {
+    if (!account.value?.loyalty_card) {
+        return []
+    }
+    return [{
+        id: account.value.loyalty_card.id,
+        name: account.value.loyalty_card.card_name || `Loyalty Card ${account.value.loyalty_card.id}`,
+        balance: account.value.loyalty_card.cashback_balance || 0
+    }]
+})
 
 // Fetch cart data on component mount
 onMounted(async () => {
     try {
-        const cart = await cartStore.fetchCart()
-        console.log('Cart loaded:', cart);
+        await fetchAccount()
+        await cartStore.fetchCart()
         // Fetch recommended products
         await fetchNewestProducts()
         await fetchLikes()
@@ -306,12 +336,12 @@ const handleApplyGiftCard = async () => {
 }
 
 const handleApplyLoyaltyCard = async () => {
-    if (!loyaltyCardId.value) return
+    if (!selectedLoyaltyCardId.value) return
 
     try {
-        await applyLoyaltyCard(loyaltyCardId.value)
+        await applyLoyaltyCard(selectedLoyaltyCardId.value)
         showLoyaltyCardModal.value = false
-        loyaltyCardId.value = null
+        selectedLoyaltyCardId.value = null
     } catch (error) {
         console.error('Error applying loyalty card:', error)
     }
@@ -328,6 +358,7 @@ const handleRemoveGiftCard = async () => {
 const handleRemoveLoyaltyCard = async () => {
     try {
         await removeLoyaltyCard()
+        loyaltyCard.value = null
     } catch (error) {
         console.error('Error removing loyalty card:', error)
     }

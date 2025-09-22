@@ -2,8 +2,8 @@
     <div class="w-full">
         <!-- Navigation Tabs -->
         <div class="mb-8" role="tablist">
-            <div class="flex flex-wrap gap-2 sm:gap-0 sm:space-x-2">
-                <button v-for="(tab, index) in tabs" :key="index" @click="activeTab = tab.id" :class="[
+            <div class="flex flex-wrap gap-2">
+                <button v-for="(tab, index) in tabs" :key="index" @click="handleTabChange(tab)" :class="[
                     'px-6 py-2 sm:text-base text-sm rounded-lg transition-all duration-200',
                     activeTab === tab.id
                         ? 'bg-[#FEB918] text-white font-semibold'
@@ -31,12 +31,12 @@
                         <tr v-for="(row, rowIndex) in filteredData" :key="rowIndex"
                             class="hover:bg-gray-50 transition-colors duration-150 group">
                             <td class="px-6 py-4">
-                                <span :class="getStatusClass(row.status)" class="px-5 py-2 text-sm rounded-full text-nowrap">
+                                <span :class="getStatusClass(row.originalStatus)" class="px-5 py-2 text-sm rounded-full text-nowrap">
                                     {{ row.status }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 sm:text-base text-sm font-medium text-[#0C1A30]">
-                                {{ row.document }}
+                                #{{ row.id }}
                             </td>
                             <td class="px-6 py-4 sm:text-base text-sm font-medium text-[#0C1A30]">
                                 {{ row.date }}
@@ -45,18 +45,19 @@
                                 {{ row.paymentType }}
                             </td>
                             <td class="px-6 py-4 sm:text-base text-sm font-medium text-[#0C1A30]">
-                                {{ row.amount }}
+                                {{ row.amount }} {{ row.currency || 'TMT' }}
                             </td>
                             <td class="px-6 py-4">
-                                <button v-if="row.status !== 'Garaşylýar'"
+                                <button v-if="row.originalStatus !== 'pending'"
                                     class="px-4 py-2 bg-gray-200 text-gray-500 text-sm font-medium rounded-lg cursor-not-allowed"
                                     disabled>
                                     Goýbolsun etmek
                                 </button>
                                 <button v-else
-                                    class="px-4 py-2 bg-[#FA004C] text-white text-sm font-medium rounded-lg hover:bg-red-600 transition-all duration-200 transform hover:-translate-y-0.5 focus:outline-none"
+                                    class="px-4 py-2 bg-[#FA004C] text-white text-sm font-medium rounded-lg hover:bg-red-600 transition-all duration-200 transform hover:-translate-y-0.5 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                                    :disabled="loading"
                                     @click="cancelItem(row.id)">
-                                    Goýbolsun etmek
+                                    {{ loading ? 'Ulanýar...' : 'Goýbolsun etmek' }}
                                 </button>
                             </td>
                             <td class="px-6 py-4">
@@ -76,10 +77,10 @@
                 <div v-for="(row, index) in filteredData" :key="index"
                     class="bg-white border border-gray-200 rounded-lg p-4 space-y-3 hover:shadow-md transition-shadow duration-200">
                     <div class="flex justify-between items-start">
-                        <span :class="getStatusClass(row.status)" class="px-3 py-1 text-xs rounded-full">
+                        <span :class="getStatusClass(row.originalStatus)" class="px-3 py-1 text-xs rounded-full">
                             {{ row.status }}
                         </span>
-                        <span class="text-base font-medium text-[#0C1A30]">{{ row.document }}</span>
+                        <span class="text-base font-medium text-[#0C1A30]">#{{ row.id }}</span>
                     </div>
 
                     <div class="space-y-2">
@@ -98,15 +99,16 @@
                     </div>
 
                     <div class="flex gap-2 pt-3">
-                        <button v-if="row.status !== 'Garaşylýar'"
+                        <button v-if="row.originalStatus !== 'pending'"
                             class="flex-1 px-3 py-2 bg-gray-200 text-gray-500 text-xs font-medium rounded-lg cursor-not-allowed"
                             disabled>
                             Goýbolsun etmek
                         </button>
                         <button v-else
-                            class="flex-1 px-3 py-2 bg-red-500 text-white text-xs font-medium rounded-lg hover:bg-red-600 transition-all duration-200"
+                            class="flex-1 px-3 py-2 bg-red-500 text-white text-xs font-medium rounded-lg hover:bg-red-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                            :disabled="loading"
                             @click="cancelItem(row.id)">
-                            Goýbolsun etmek
+                            {{ loading ? 'Goýbolsun etmek...' : 'Goýbolsun etmek' }}
                         </button>
                         <button
                             class="flex-1 px-3 py-2 border-2 border-orange-300 text-orange-600 text-xs font-medium rounded-lg hover:bg-orange-50 transition-all duration-200"
@@ -121,20 +123,32 @@
 </template>
 
 <script setup>
+const router = useRouter()
 const props = defineProps({
     rows: {
         type: Array,
         default: () => []
     }
 })
+
+const emit = defineEmits(['statusChange'])
+
+// Store
+const ordersStore = useOrdersStore()
+const { updateOrder } = ordersStore
+const { loading } = storeToRefs(ordersStore)
+
 // Reactive data
-const activeTab = ref(1)
+const activeTab = ref('all')
 
 const tabs = ref([
-    { id: 1, name: 'Ählisi' },
-    { id: 2, name: 'Garaşylýanlar' },
-    { id: 3, name: 'Kabul edilenler' },
-    { id: 4, name: 'Goýbolsun edilenler' }
+    { id: 'all', name: 'Ählisi', status: null },
+    { id: 'pending', name: 'Garaşylýanlar', status: 'pending' },
+    { id: 'accepted', name: 'Kabul edilenler', status: 'accepted' },
+    { id: 'delivering', name: 'Ýolda', status: 'delivering' },
+    { id: 'delivered', name: 'Gowşurylan', status: 'delivered' },
+    { id: 'completed', name: 'Tamamlanan', status: 'completed' },
+    { id: 'canceled', name: 'Goýbolsun edilenler', status: 'canceled' }
 ])
 
 const columns = ref([
@@ -147,108 +161,53 @@ const columns = ref([
     { key: 'view', label: 'Görmek' }
 ])
 
-const data = ref([
-    {
-        id: 1,
-        status: 'Garaşylýar',
-        document: '0012',
-        date: '29.07.2025 - 16:05:20',
-        paymentType: 'Nagt',
-        amount: '2500 TMT'
-    },
-    {
-        id: 2,
-        status: 'Kabul edildi',
-        document: '0012',
-        date: '29.07.2025 - 16:05:20',
-        paymentType: 'Nagt',
-        amount: '2500 TMT'
-    },
-    {
-        id: 3,
-        status: 'Goýbolsun edildi',
-        document: '0012',
-        date: '29.07.2025 - 16:05:20',
-        paymentType: 'Nagt',
-        amount: '2500 TMT'
-    },
-    {
-        id: 4,
-        status: 'Kabul edildi',
-        document: '0012',
-        date: '29.07.2025 - 16:05:20',
-        paymentType: 'Nagt',
-        amount: '2500 TMT'
-    },
-    {
-        id: 5,
-        status: 'Goýbolsun edildi',
-        document: '0012',
-        date: '29.07.2025 - 16:05:20',
-        paymentType: 'Nagt',
-        amount: '2500 TMT'
-    },
-    {
-        id: 6,
-        status: 'Goýbolsun edildi',
-        document: '0012',
-        date: '29.07.2025 - 16:05:20',
-        paymentType: 'Nagt',
-        amount: '2500 TMT'
-    },
-    {
-        id: 7,
-        status: 'Kabul edildi',
-        document: '0012',
-        date: '29.07.2025 - 16:05:20',
-        paymentType: 'Nagt',
-        amount: '2500 TMT'
-    },
-    {
-        id: 8,
-        status: 'Goýbolsun edildi',
-        document: '0012',
-        date: '29.07.2025 - 16:05:20',
-        paymentType: 'Nagt',
-        amount: '2500 TMT'
-    }
-])
-
 // Computed properties
-const sourceRows = computed(() => props.rows && props.rows.length ? props.rows : data.value)
+const sourceRows = computed(() => props.rows)
 
 const filteredData = computed(() => {
-    if (activeTab.value === 'ahlisi') return sourceRows.value
-    if (activeTab.value === 'garasiylanlar') return sourceRows.value.filter(item => item.status === 'Garaşylýar')
-    if (activeTab.value === 'kabul') return sourceRows.value.filter(item => item.status === 'Kabul edildi')
-    if (activeTab.value === 'goybolsun') return sourceRows.value.filter(item => item.status === 'Goýbolsun edildi')
     return sourceRows.value
 })
 
 // Methods
+const handleTabChange = (tab) => {
+    activeTab.value = tab.id
+    emit('statusChange', tab.status)
+}
 const getStatusClass = (status) => {
     switch (status) {
-        case 'Garaşylýar':
+        case 'pending':
             return 'bg-[#FEB9181A] text-[#FEB918]'
-        case 'Kabul edildi':
+        case 'accepted':
             return 'bg-[#037D841F] text-[#037D84]'
-        case 'Goýbolsun edildi':
+        case 'assigned_to_courier':
+            return 'bg-[#037D841F] text-[#037D84]'
+        case 'delivering':
+            return 'bg-[#037D841F] text-[#037D84]'
+        case 'delivered':
+            return 'bg-[#037D841F] text-[#037D84]'
+        case 'completed':
+            return 'bg-[#037D841F] text-[#037D84]'
+        case 'rejected':
+            return 'bg-[#FA004C1F] text-[#FA004C]'
+        case 'canceled':
             return 'bg-[#FA004C1F] text-[#FA004C]'
         default:
             return 'bg-gray-100 text-gray-800'
     }
 }
-
-const cancelItem = (id) => {
-    const item = data.value.find(item => item.id === id)
-    if (item) {
-        item.status = 'Goýbolsun edildi'
+const cancelItem = async (id) => {
+    try {
+        await updateOrder(id, { status: 'canceled' })
+        // Emit event to refresh orders in parent component
+        emit('statusChange', null) // This will fetch all orders to refresh the list
+    } catch (error) {
+        console.error('Error canceling order:', error)
     }
 }
 
 const viewItem = (id) => {
-    console.log('Viewing item:', id)
-    // Add your view logic here
+    // Navigate to order detail page
+    router.push({ name: "OrderDetail", params: { id } })
 }
 
 // Lifecycle hooks
