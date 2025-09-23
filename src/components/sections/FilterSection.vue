@@ -31,11 +31,11 @@
             <!-- Sort Options Menu -->
             <Transition name="dropdown">
                 <div v-if="isSortOpen"
-                    class="absolute top-full left-0 mt-2 w-full bg-white shadow-xl border border-[#F6F7F9] min-w-[250px] rounded-lg z-50">
+                    class="absolute top-full left-0 mt-2 bg-white shadow-xl border border-[#F6F7F9] sm:min-w-[250px] w-[200px] rounded-lg z-50">
                     <div v-for="(option, index) in options" :key="index" @click="selectSort(option)"
                         class="flex items-center px-4 py-3 cursor-pointer transition-all duration-200 hover:bg-gray-50">
                         <!-- Radio Button -->
-                        <div class="flex items-center justify-center mr-4">
+                        <div class="flex items-center justify-center sm:mr-4 mr-2">
                             <div v-if="selectedSort.id === option.id"
                                 class="w-5 h-5 bg-[#037D84] rounded-full flex items-center justify-center">
                                 <check-icon />
@@ -44,7 +44,7 @@
                         </div>
 
                         <!-- Option Text -->
-                        <span class="text-[#0C1A30] font-normal">
+                        <span class="text-[#0C1A30] sm:text-base text-sm font-normal">
                             {{ option.name }}
                         </span>
                     </div>

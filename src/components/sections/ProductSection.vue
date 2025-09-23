@@ -2,7 +2,7 @@
     <div class="bg-white mt-5">
         <MainContainer>
             <SectionHeaderGroup>
-                <SectionTitle v-if="sectionTitle" :title="sectionTitle" />
+                <h3 v-if="sectionTitle" class="font-semibold lg:text-[30px] leading-[100%] sm:text-[30px] text-lg text-[#0C1A30]">{{ sectionTitle }}</h3>
                 <ViewAllLink v-if="isRedirectLink" :title="linkTitle" :to="link" />
             </SectionHeaderGroup>
             <Swiper :slides-per-view="slidesPerView" :breakpoints="{
@@ -47,7 +47,7 @@ defineProps({
     },
     link: {
         type: String,
-        default: '/'
+        default: '/product/list'
     }
 })
 // No longer needed since ProductCard handles addToCart directly

@@ -74,6 +74,12 @@ const routes = [
     name: "Coupons",
     component: () => import("@/views/Coupons.vue"),
   },
+  // CONTACT
+  {
+    path: "/contact",
+    name: "Contact",
+    component: () => import("@/views/Contact.vue"),
+  },
   // FAQ
   {
     path: "/faq",
@@ -85,12 +91,19 @@ const routes = [
     path: "/:catchAll(.*)",
     name: "NotFound",
     component: () => import("@/views/NotFound.vue"),
-  }
+  },
 ];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    } else {
+      return { top: 0 };
+    }
+  },
 });
 
 export default router;

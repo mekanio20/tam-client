@@ -1,9 +1,7 @@
 <template>
     <div class="bg-white">
-        <MainContainer class="-mb-5">
-            <div class="pt-6">
-                <LinkGroup :items="[{ label: 'Bölümler', to: '/categories' }]" />
-            </div>
+        <MainContainer class="-mb-10">
+            <LinkGroup :items="[{ label: 'Bölümler', to: '/categories' }]" />
         </MainContainer>
         <div class="bg-white mt-5 pb-10">
             <MainContainer>

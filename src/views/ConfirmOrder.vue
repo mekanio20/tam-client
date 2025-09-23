@@ -2,27 +2,20 @@
     <div class="min-h-screen">
         <!-- Header -->
         <MainContainer>
-            <div class="pt-6">
-                <LinkGroup :items="[{ label: 'Sebet', to: '/account/basket' }]" />
-            </div>
+            <LinkGroup :items="[{ label: 'Sebet', to: '/account/basket' }]" />
             <!-- Title -->
-            <div class="py-8 lg:w-[950px]">
+            <div class="py-8">
                 <div class="flex items-center justify-between">
-                    <div class="flex items-end space-x-5">
+                    <div class="flex sm:flex-row flex-col sm:items-end sm:space-x-5">
                         <h1 class="text-[30px] font-semibold text-[#0C1A30]">Sargydy tassyklamak</h1>
                         <span class="text-[#838589] text-sm pb-2">{{ cartItems.length }} haryt</span>
                     </div>
-                    <button @click="cartStore.clearCart"
-                        class="border border-[#838589] rounded-md py-2 px-4 text-sm flex items-center space-x-2 hover:bg-gray-50 transition-colors">
-                        <arrow_right-icon class="rotate-180" color="black" />
-                        <span class="text-[#838589]">Yza</span>
-                    </button>
                 </div>
             </div>
             <!-- Content -->
             <div class="w-full flex lg:flex-row flex-col items-start lg:space-x-6 lg:space-y-0 space-y-6 mb-10">
                 <!-- Cart Items -->
-                <div class="lg:w-[950px] w-full space-y-4 sm:p-8 py-8 px-3 bg-white rounded-xl overflow-hidden">
+                <div class="w-full space-y-4 sm:p-8 py-8 px-3 bg-white rounded-xl overflow-hidden">
                     <h1 class="text-lg font-medium text-[#0C1A30]">Maglumatlaryňyzy giriziň</h1>
                     <!-- Form -->
                     <FormSection class="w-full">
@@ -69,7 +62,8 @@
                         </div>
                         <div class="pb-4 pt-10 space-y-8">
                             <h2 class="text-lg font-medium text-[#0C1A30]">Töleg görnüşi</h2>
-                            <div class="sm:max-w-[600px] max-w-[324px] grid grid-cols-3 gap-4">
+                            <div
+                                class="sm:max-w-[600px] max-w-[324px] grid lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4">
                                 <PaymentTypeCard title="Nagt töleg"
                                     :icon="{ name: 'bank_note-icon', bg_color: '#FA004C14' }"
                                     :selected="selectedCard === 'cash'" @toggle="selectPayment('cash')" />
@@ -99,11 +93,11 @@
                                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                                     <button v-for="slot in selectedDeliveryMethod.time_slots" :key="slot.id"
                                         @click="selectedTimeSlot = slot" :class="[
-                    'p-3 rounded-lg border text-sm font-medium transition-all duration-200',
-                    selectedTimeSlot?.id === slot.id
-                        ? 'border-[#FEB918] bg-[#FEB9180D] text-[#FEB918]'
-                        : 'border-[#EDEDED] bg-white text-[#0C1A30] hover:border-[#FEB918]'
-                ]">
+                'p-3 rounded-lg border text-sm font-medium transition-all duration-200',
+                selectedTimeSlot?.id === slot.id
+                    ? 'border-[#FEB918] bg-[#FEB9180D] text-[#FEB918]'
+                    : 'border-[#EDEDED] bg-white text-[#0C1A30] hover:border-[#FEB918]'
+            ]">
                                         {{ slot.time_slot }}
                                     </button>
                                 </div>
@@ -125,7 +119,7 @@
                                 <span class="font-medium text-2xl text-[#0C1A30]">Jemi:</span>
                                 <span class="font-bold text-2xl text-[#037D84]">{{ total }} TMT</span>
                             </div>
-    
+
                             <!-- Checkout Button -->
                             <button @click="checkout" :disabled="cartItems.length === 0 || loading"
                                 class="w-full bg-[#FEB918] text-white font-semibold py-3 px-4 rounded-lg hover:bg-yellow-500 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors transform">

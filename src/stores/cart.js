@@ -242,6 +242,14 @@ export const useCartStore = defineStore("cart", () => {
     return cartItems.value.reduce((total, item) => total + item.quantity, 0);
   };
 
+  const isInCart = (productId) => {
+    return cartItems.value.some(item => item.product === productId);
+  };
+
+  const getCartItem = (productId) => {
+    return cartItems.value.find(item => item.product === productId);
+  };
+
   return {
     // State
     cartItems,
@@ -265,6 +273,8 @@ export const useCartStore = defineStore("cart", () => {
     // Helpers
     increaseQuantity,
     decreaseQuantity,
-    getItemCount
+    getItemCount,
+    isInCart,
+    getCartItem
   };
 });

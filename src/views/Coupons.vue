@@ -1,9 +1,7 @@
 <template>
     <div class="min-h-screen bg-white py-8 px-4">
         <MainContainer>
-            <div class="pt-6">
-                <LinkGroup :items="[{ label: 'Kuponlar', to: '/coupons' }]" />
-            </div>
+            <LinkGroup :items="[{ label: 'Kuponlar', to: '/coupons' }]" />
         </MainContainer>
         <div class="max-w-4xl mx-auto">
             <!-- Header -->

@@ -1,11 +1,10 @@
 <template>
     <div class="bg-white">
-        <MainContainer class="-mb-5">
-            <div class="pt-6">
-                <LinkGroup :items="[{ label: 'Gözleg netijesi', to: '' }]" />
-            </div>
+        <MainContainer class="-mb-10">
+            <LinkGroup :items="[{ label: 'Gözleg netijesi', to: '' }]" />
         </MainContainer>
-        <NoDataSection v-if="!searchedProducts.length && !loading" image="/icons/search.png" desc="Siziň gözleýän harydyňyz tapylmady" />
+        <NoDataSection v-if="!searchedProducts.length && !loading" image="/icons/search.png"
+            desc="Siziň gözleýän harydyňyz tapylmady" />
         <ProductSection v-else :isRedirectLink="false" :sectionTitle="searchQuery" :products="searchedProducts" />
     </div>
 </template>

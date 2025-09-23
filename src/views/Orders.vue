@@ -1,9 +1,7 @@
 <template>
     <div class="bg-white">
         <MainContainer>
-            <div class="py-6">
-                <LinkGroup :items="[{ label: 'Sargytlar', to: '/account/orders' }]" />
-            </div>
+            <LinkGroup :items="[{ label: 'Sargytlar', to: '/account/orders' }]" />
             <SectionTitle title="Sargytlar" />
         </MainContainer>
         <!-- <NoDataSection v-if="!orders.length && !loading" image="/images/box.png" desc="Sargytlaryňyzyň sanawy boş" /> -->

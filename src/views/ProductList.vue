@@ -2,10 +2,8 @@
     <div class="bg-white">
         <FilterSidebar :showSidebar="showSidebar" @close="showSidebar = false" @applyFilters="applyFilters">
             <MainContainer>
-                <div class="sm:py-6 pt-6">
-                    <LinkGroup :items="[{ label: categoryName, to: `/product/list` }]" />
-                </div>
-                <div class="py-8 flex sm:flex-row flex-col sm:items-end sm:space-x-5 sm:space-y-0 space-y-4">
+                <LinkGroup :items="[{ label: categoryName, to: `/product/list` }]" />
+                <div class="py-4 flex sm:flex-row flex-col sm:items-end sm:space-x-5 sm:space-y-0 space-y-4">
                     <h1 class="font-semibold sm:text-[30px] text-xl leading-[25px] text-[#0C1A30]">
                         {{ categoryName }}
                     </h1>
@@ -84,7 +82,11 @@ const getCategoryName = async () => {
 watch(
     () => [route.query.category, route.query.subcategory],
     async () => {
+        let query = null
+        if (route.query.category) query = { category: route.query.category }
+        if (route.query.subcategory) query = { subcategory: route.query.subcategory }
         await getCategoryName()
+        await productsStore.fetchProducts(query)
     }
 )
 

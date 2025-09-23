@@ -1,20 +1,19 @@
 <template>
     <div class="min-h-screen bg-white">
         <MainContainer>
-            <div class="py-6">
-                <LinkGroup :items="[{ label: 'Hasap', to: '/account' }]" />
-            </div>
+            <LinkGroup :items="[{ label: 'Hasap', to: '/account' }]" />
             <SectionTitle title="Hasap maglumatlary" />
 
             <!-- Main Content -->
-            <div class="grid lg:grid-cols-2 gap-8 py-10">
+            <div class="grid lg:grid-cols-2 gap-8 sm:py-10 py-6">
                 <!-- Left Column - Account Information -->
                 <section class="rounded-[10px] border border-[#EDEDED] p-8">
                     <div class="flex items-center sm:space-x-6 space-x-3 mb-10">
-                        <div class="sm:w-[50px] w-[40px] sm:h-[50px] h-[40px] rounded-full bg-[#FEB91833] flex items-center justify-center">
+                        <div
+                            class="sm:w-[50px] w-[40px] sm:h-[50px] h-[40px] rounded-full bg-[#FEB91833] flex items-center justify-center">
                             <user-icon color="#FEB918" :size="isMobile ? 21 : 24" />
                         </div>
-                        <h2 class="sm:text-lg font-semibold text-[#0C1A30]">Hasap maglumatlaryny</h2>
+                        <h2 class="sm:text-lg font-semibold text-[#0C1A30]">Hasap maglumatlary</h2>
                     </div>
 
                     <div class="flex flex-col sm:space-y-10 space-y-4">
@@ -51,8 +50,7 @@
                         <!-- Save Button -->
                         <button
                             class="sm:w-[353px] w-full mx-auto !sm:mt-16 !mt-10 bg-[#037D84] text-white font-medium py-3 px-4 rounded-lg hover:bg-teal-700 active:bg-teal-800 transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 sm:text-base text-sm disabled:opacity-60 disabled:cursor-not-allowed"
-                            :disabled="clientStore.loading"
-                            @click="saveAccount">
+                            :disabled="clientStore.loading" @click="saveAccount">
                             {{ clientStore.loading ? 'Ýatda saklaýar…' : 'Ýatda sakla' }}
                         </button>
                     </div>
@@ -61,7 +59,8 @@
                 <!-- Right Column - Addresses -->
                 <section class="rounded-[10px] border border-[#EDEDED] p-8">
                     <div class="flex items-center sm:space-x-6 space-x-3 mb-10">
-                        <div class="sm:w-[50px] w-[40px] sm:h-[50px] h-[40px] rounded-full bg-[#DF3DFF33] flex items-center justify-center">
+                        <div
+                            class="sm:w-[50px] w-[40px] sm:h-[50px] h-[40px] rounded-full bg-[#DF3DFF33] flex items-center justify-center">
                             <map_pin-icon color="#DF3DFF" :size="isMobile ? 18 : 24" />
                         </div>
                         <h2 class="sm:text-lg font-semibold text-[#0C1A30]">Salgylarym</h2>
@@ -82,7 +81,8 @@
                             </label>
                             <input :id="`address` + index" type="text" v-model="item.address"
                                 class="border-none outline-none p-3 pr-10 sm:text-base text-sm bg-[#F6F7F9] rounded-md">
-                            <delete-icon @click="removeAddress(item.id)" class="absolute right-3 top-[43px] transform -translate-y-1/2 cursor-pointer" />
+                            <delete-icon @click="removeAddress(item.id)"
+                                class="absolute right-3 top-[43px] transform -translate-y-1/2 cursor-pointer" />
                         </div>
                     </div>
 
@@ -111,8 +111,7 @@
 
                 <button
                     class="flex items-center space-x-4 bg-[#FA004C1A] text-[#FA004C] py-3 px-6 rounded-[10px] transform hover:scale-[1.02] transition-all duration-200"
-                    :disabled="authStore.loading"
-                    @click="logoutUser">
+                    :disabled="authStore.loading" @click="logoutUser">
                     <div class="w-[35px] h-[35px] rounded-full bg-white flex items-center justify-center">
                         <logout_circle-icon />
                     </div>
@@ -124,7 +123,7 @@
         </MainContainer>
         <!-- Address Modal -->
         <AddressAddModal :show="showModal" @submit="addAddress" @close="showModal = false" />
-        
+
         <!-- Password Update Modal -->
         <PasswordUpdateModal :show="showPasswordModal" @submit="updatePassword" @close="showPasswordModal = false" />
     </div>
@@ -195,7 +194,7 @@ const updatePassword = async (success) => {
     }
 }
 
-const logoutUser = async() => {
+const logoutUser = async () => {
     await logout()
     router.push({ name: "Home", query: { refresh: true } });
 }

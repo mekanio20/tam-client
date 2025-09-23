@@ -91,12 +91,14 @@ export const useToast = () => {
 
   // Handle API errors
   const handleApiError = (err, customMessage = 'Error occurred') => {
-
+    
     const message = err?.response?.data?.message || 
                    err?.response?.data?.error || 
                    err?.message || 
                    customMessage
-    error('Error', message)
+    if (err?.response?.status !== 400) {
+      error('Error', message)
+    }
   }
 
   return {

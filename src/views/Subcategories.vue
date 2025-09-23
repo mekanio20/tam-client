@@ -1,19 +1,16 @@
 <template>
     <div class="bg-white">
-        <MainContainer class="-mb-5">
-            <div class="pt-6">
-                <LinkGroup :items="[
-                    { label: 'Bölümler', to: '/categories' },
-                    { label: categoryTitle || 'Subcategory', to: '' }
-                ]" />
-            </div>
+        <MainContainer class="-mb-10">
+            <LinkGroup :items="[
+                { label: 'Bölümler', to: '/categories' },
+                { label: categoryTitle || 'Subcategory', to: '' }
+            ]" />
         </MainContainer>
 
         <div class="bg-white mt-10 pb-10">
             <div class="space-y-5">
-                <ProductSection :sectionTitle="categoryTitle || 'Harytlar'" :products="products"
-                    :isRedirectLink="true" :linkTitle="'Ählisini görmek'" :link="'/product/list'"
-                    @toggleFavorite="toggleFavorite" />
+                <ProductSection :sectionTitle="categoryTitle || 'Harytlar'" :products="products" :isRedirectLink="true"
+                    :linkTitle="'Ählisini görmek'" :link="'/product/list'" @toggleFavorite="toggleFavorite" />
             </div>
         </div>
     </div>

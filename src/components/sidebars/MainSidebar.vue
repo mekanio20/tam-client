@@ -26,8 +26,8 @@
               :class="{
         'bg-[#FEB9181F] text-[#FFBA19]': selectedCategory === category?.id
       }">
-              <div class="">
-                <div v-if="category?.image?.path" class="w-[20px] h-[20px] mr-2">
+              <div class="flex items-center space-x-2">
+                <div v-if="category?.image?.path" class="w-[30px] h-[30px]">
                   <img class="w-full h-full object-cover" :src="category.image.path">
                 </div>
                 <span class="font-medium group-hover:translate-x-1 transition-transform duration-200 sm:text-base text-sm">
@@ -45,7 +45,7 @@
 
     <!-- Right Submenu (desktop only) -->
     <div v-if="isMobileMenuOpen && isSubmenuOpen && submenuItems.length > 0"
-      class="fixed left-0 md:left-72 top-[95px] w-full md:w-64 h-[calc(100vh-95px)] bg-white  z-40 flex flex-col"
+      class="fixed left-0 md:left-72 sm:top-[112px] top-[95px] sm:h-[calc(100vh-112px)] h-[calc(100vh-95px)] w-full md:w-64 bg-white z-40 flex flex-col"
       @mouseenter="cancelCloseSubmenu" @mouseleave="scheduleCloseSubmenu">
       <!-- Back button for mobile -->
       <div class="md:hidden flex items-center px-4 py-3 border-b border-gray-200">

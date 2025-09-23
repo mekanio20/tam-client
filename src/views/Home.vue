@@ -48,7 +48,7 @@ const categoriesWithProducts = computed(() => {
 })
 
 // Ensure modal visibility reflects authentication state on load and updates
-const syncRegisterModal = () => {
+const syncRegisterModal = async () => {
     isRegisterModal.value = !authStore.isAuthenticated
 }
 
@@ -80,8 +80,8 @@ const fetchData = async (isTrue) => {
 
 onMounted(async () => {
     // Load tokens
-    authStore.loadTokens()
-    syncRegisterModal()
+    await authStore.loadTokens()
+    await syncRegisterModal()
     // Fetch data
     await fetchData(true)
 })

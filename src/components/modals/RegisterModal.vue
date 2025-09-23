@@ -99,11 +99,11 @@ import { useAuthStore } from '@/stores/auth'
 const auth = useAuthStore()
 
 // Form state
-const phoneNumber = ref('+993 63755727')
+const phoneNumber = ref('')
 const showPassword = ref(false)
-const password = ref('adminadmin')
-const firstname = ref('Mekan')
-const lastname = ref('Baylyyew')
+const password = ref('')
+const firstname = ref('')
+const lastname = ref('')
 
 // Computed properties
 const isFormValid = computed(() => {

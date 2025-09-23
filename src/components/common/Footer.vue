@@ -1,12 +1,12 @@
 <template>
-    <footer class="w-full bg-white pt-10 mt-10 relative">
+    <footer class="bg-white pt-10 mt-10 relative">
         <div class="absolute left-0 bottom-0">
             <img src="/icons/footer-1.png" />
         </div>
         <div class="absolute right-0 -top-3">
             <img src="/icons/footer-2.png" />
         </div>
-        <MainContainer>
+        <MainContainer class="max-w-7xl mx-auto ">
             <div class="relative z-10">
                 <div class="w-full flex lg:flex-row flex-col-reverse gap-8 items-start justify-between">
 
@@ -41,18 +41,6 @@
                             <FooterLinkTitle title="Market" />
                             <ul class="space-y-3">
                                 <li>
-                                    <FooterLink to="#" title="Kategoriýalar" />
-                                </li>
-                                <li>
-                                    <FooterLink to="#" title="Brandler" />
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div class="space-y-4">
-                            <FooterLinkTitle title="Market" />
-                            <ul class="space-y-3">
-                                <li>
                                     <FooterLink to="#" title="Kategoriýa" />
                                 </li>
                                 <li>
@@ -65,10 +53,10 @@
                             <FooterLinkTitle title="Kömek" />
                             <ul class="space-y-3">
                                 <li>
-                                    <FooterLink to="#" title="Sorag - jogap" />
+                                    <FooterLink to="/faq" title="Sorag - jogap" />
                                 </li>
                                 <li>
-                                    <FooterLink to="#" title="Habarlaşmak" />
+                                    <FooterLink to="/contact" title="Habarlaşmak" />
                                 </li>
                             </ul>
                         </div>

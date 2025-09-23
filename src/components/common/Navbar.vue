@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white overflow-visible no-scrollbar rounded-none sm:rounded-b-3xl relative">
+    <div class="max-w-7xl mx-auto bg-[#F7F7F9]">
         <MainContainer class="flex items-center justify-between">
             <router-link to="/" class="w-[150px] flex-shrink-0">
                 <logo-icon />
@@ -18,12 +18,12 @@
                 </div>
                 <div class="flex items-end space-x-4">
                     <LanguageButton />
-                    <router-link v-for="item in items" :key="item.id" :to="item.link" @mouseenter="hovered = item.id" @mouseleave="hovered = null"
+                    <router-link v-for="item in items" :key="item.id" :to="item.link" @mouseenter="hovered = item.id"
+                        @mouseleave="hovered = null"
                         class="sm:flex items-center space-x-20 pb-[8px] group hidden transition-colors duration-300">
                         <div class="flex flex-col items-center space-y-1">
                             <component :is="icons[item?.icon]" :color="hovered === item.id ? '#FEB918' : '#0C1A30'" />
-                            <span
-                                class="text-[12px] text-[#0C1A30] group-hover:text-[#FEB918]">{{
+                            <span class="text-[12px] text-[#0C1A30] group-hover:text-[#FEB918]">{{
                     item.name }}</span>
                         </div>
                     </router-link>
@@ -34,17 +34,17 @@
         <!-- Mobile Bottom Navigation -->
         <div class="sm:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 !z-50">
             <div class="flex items-center justify-evenly py-2">
-                <button type="button" @click="toggleMobileMenu" @mouseenter="hovered = 'categories'" @mouseleave="hovered = null"
+                <button type="button" @click="toggleMobileMenu" @mouseenter="hovered = 'categories'"
+                    @mouseleave="hovered = null"
                     class="flex flex-col items-center space-y-1 py-2 px-3 rounded-lg group transition-colors duration-300">
                     <grid-icon :color="hovered === 'categories' ? '#FEB918' : '#0C1A30'" :size="24" />
-                    <span
-                        class="text-[10px] text-[#0C1A30] group-hover:text-[#FEB918]">Bölümler</span>
+                    <span class="text-[10px] text-[#0C1A30] group-hover:text-[#FEB918]">Bölümler</span>
                 </button>
-                <router-link v-for="item in items" :key="item.id" :to="item.link" @mouseenter="hovered = item.id" @mouseleave="hovered = null"
+                <router-link v-for="item in items" :key="item.id" :to="item.link" @mouseenter="hovered = item.id"
+                    @mouseleave="hovered = null"
                     class="flex flex-col items-center space-y-1 py-2 px-3 rounded-lg group transition-colors duration-300">
                     <component :is="icons[item?.icon]" :color="hovered === item.id ? '#FEB918' : '#0C1A30'" />
-                    <span
-                        class="text-[10px] text-[#0C1A30] group-hover:text-[#FEB918]">{{
+                    <span class="text-[10px] text-[#0C1A30] group-hover:text-[#FEB918]">{{
                     item.name }}</span>
                 </router-link>
             </div>

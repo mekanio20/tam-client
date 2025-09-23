@@ -1,5 +1,5 @@
 <template>
-    <div class="flex items-center sm:space-x-4 space-x-2">
+    <div class="flex items-center sm:space-x-4 space-x-2 sm:py-6 pt-6">
         <router-link to="/">
             <home-icon />
         </router-link>

@@ -54,7 +54,7 @@
                                     Goýbolsun etmek
                                 </button>
                                 <button v-else
-                                    class="px-4 py-2 bg-[#FA004C] text-white text-sm font-medium rounded-lg hover:bg-red-600 transition-all duration-200 transform hover:-translate-y-0.5 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                                    class="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-500 transition-all duration-200 transform hover:-translate-y-0.5 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                                     :disabled="loading"
                                     @click="cancelItem(row.id)">
                                     {{ loading ? 'Ulanýar...' : 'Goýbolsun etmek' }}

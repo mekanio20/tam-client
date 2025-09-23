@@ -80,7 +80,7 @@ defineProps({
 const emit = defineEmits(['update:modelValue', 'success'])
 
 // Form state
-const phoneNumber = ref('+993 63755727')
+const phoneNumber = ref('')
 const code = ref('')
 const newPassword = ref('')
 const showPassword = ref(false)

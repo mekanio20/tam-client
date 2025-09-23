@@ -2,18 +2,16 @@
     <div class="min-h-screen">
         <!-- Header -->
         <MainContainer>
-            <div class="sm:py-6 pt-6">
-                <LinkGroup :items="[{ label: 'Sebet', to: '/account/basket' }]" />
-            </div>
+            <LinkGroup :items="[{ label: 'Sebet', to: '/account/basket' }]" />
             <!-- Title -->
-            <div class="py-8 lg:w-[950px]">
+            <div class="pb-8 sm:pt-4 pt-6">
                 <div class="flex items-center justify-between">
                     <div class="flex items-end space-x-5">
-                        <h1 class="sm:text-[30px] text-[26px] leading-[100%] font-semibold text-[#0C1A30]">Sebet</h1>
+                        <h3 class="font-semibold lg:text-[30px] leading-[100%] sm:text-[30px] text-lg text-[#0C1A30]">Sebet</h3>
                         <span class="text-[#838589] text-sm">{{ cartStore.getItemCount() }} haryt</span>
                     </div>
                     <button @click="clearCart"
-                        class="flex items-center space-x-2 bg-[#FA004C] text-white px-4 py-2 rounded-lg font-medium hover:opacity-60 transition-opacity duration-300">
+                        class="flex items-center space-x-2 bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:opacity-60 transition-opacity duration-300">
                         <delete-icon :size="18" color="white" />
                         <span class="sm:text-base text-sm">Arassala</span>
                     </button>
@@ -46,7 +44,7 @@
                                         <h3 class="text-base font-medium text-[#0C1A30] mb-1">
                                             {{ item.product_name }}
                                         </h3>
-                                        <div class="flex items-center space-x-4">
+                                        <div class="flex items-center space-x-2">
                                             <button @click="toggleLike(item.product)"
                                                 class="w-[33px] h-[33px] bg-[#F6F7F9] rounded-full flex items-center justify-center cursor-pointer">
                                                 <favorite-icon :size="16" :color="item.is_liked ? '#FA004C' : '#A9A9A9'"
@@ -71,9 +69,10 @@
                                                 -
                                             </button>
 
-                                            <span class="w-8 text-center font-medium text-[#0C1A30]">
-                                                {{ item.quantity }}
-                                            </span>
+                                            <div class="w-8 text-center font-medium text-[#0C1A30]">
+                                                <div v-if="loading" class="animate-spin rounded-full h-3 w-3 border border-gray-300 border-t-[#0C1A30] mx-auto"></div>
+                                                <span v-else>{{ item.quantity }}</span>
+                                            </div>
 
                                             <button @click="increaseQuantity(item.id)"
                                                 class="w-8 h-8 flex items-center justify-center rounded-full bg-[#F5F5F5] text-gray-600 hover:bg-gray-200 transition-colors">
@@ -157,12 +156,14 @@
 
                             <div class="flex justify-between items-center">
                                 <span class="text-[#0C1A30]">Gift Card kupony:</span>
-                                <span class="font-medium text-[#037D84]"><span v-if="giftCard">-</span>{{ giftCard || 0 }} TMT</span>
+                                <span class="font-medium text-[#037D84]"><span v-if="giftCard">-</span>{{ giftCard || 0
+                                    }} TMT</span>
                             </div>
-                            
+
                             <div class="flex justify-between items-center">
                                 <span class="text-[#0C1A30]">Loyalty Card kupony:</span>
-                                <span class="font-medium text-[#FEB918]"><span v-if="loyaltyCard">-</span>{{ loyaltyCard?.cashback_used || 0 }} TMT</span>
+                                <span class="font-medium text-[#FEB918]"><span v-if="loyaltyCard">-</span>{{
+                loyaltyCard?.cashback_used || 0 }} TMT</span>
                             </div>
                         </div>
 
@@ -193,9 +194,9 @@
                 <input v-model="giftCardNumber" type="text" placeholder="Gift card number"
                     class="w-full p-3 border border-gray-300 rounded-lg mb-4" />
                 <div class="flex space-x-3">
-                    <button @click="handleApplyGiftCard" :disabled="cartStore.loading"
+                    <button @click="handleApplyGiftCard" :disabled="loading"
                         class="flex-1 bg-[#037D84] text-white py-2 px-4 rounded-lg hover:bg-[#036A70] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                        {{ cartStore.loading ? 'Ulanýar...' : 'Ulan' }}
+                        {{ loading ? 'Ulanýar...' : 'Ulan' }}
                     </button>
                     <button @click="showGiftCardModal = false"
                         class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors">
@@ -215,7 +216,7 @@
                     <p class="text-gray-500">Arzanladyş kartyňyz ýok</p>
                 </div>
                 <div v-else class="mb-4">
-                    <select v-model="selectedLoyaltyCardId" 
+                    <select v-model="selectedLoyaltyCardId"
                         class="w-full p-3 border border-gray-300 rounded-lg mb-4 outline-none">
                         <option value="" disabled>Kart seçiň</option>
                         <option v-for="card in loyaltyCardOptions" :key="card.id" :value="card.id">
@@ -224,9 +225,10 @@
                     </select>
                 </div>
                 <div class="flex space-x-3">
-                    <button @click="handleApplyLoyaltyCard" :disabled="cartStore.loading || !selectedLoyaltyCardId || loyaltyCardOptions.length === 0"
+                    <button @click="handleApplyLoyaltyCard"
+                        :disabled="loading || !selectedLoyaltyCardId || loyaltyCardOptions.length === 0"
                         class="flex-1 bg-[#FEB918] text-white py-2 px-4 rounded-lg hover:bg-[#E6A500] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                        {{ cartStore.loading ? 'Ulanýar...' : 'Ulan' }}
+                        {{ loading ? 'Ulanýar...' : 'Ulan' }}
                     </button>
                     <button @click="showLoyaltyCardModal = false"
                         class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors">
@@ -247,7 +249,7 @@ const { products } = storeToRefs(productStore)
 const { fetchAccount } = clientStore
 const { account } = storeToRefs(clientStore)
 const { fetchNewestProducts } = productStore
-const { cartItems, total, subtotal, giftCard, loyaltyCard } = storeToRefs(cartStore)
+const { cartItems, total, subtotal, giftCard, loyaltyCard, loading } = storeToRefs(cartStore)
 const { applyGiftCard, applyLoyaltyCard, removeGiftCard, removeLoyaltyCard } = cartStore
 const { fetchLikes, createLike, deleteLike } = likesStore
 const { likes } = storeToRefs(likesStore)

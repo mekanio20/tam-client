@@ -136,8 +136,8 @@ const emit = defineEmits(['update:modelValue', 'success', 'forgot_password', 're
 const activeTab = ref('phone')
 
 // Form state
-const phoneNumber = ref('+993 63755727')
-const password = ref('adminadmin')
+const phoneNumber = ref('')
+const password = ref('')
 const email = ref('')
 const showPassword = ref(false)
 
