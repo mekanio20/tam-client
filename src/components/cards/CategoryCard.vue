@@ -3,7 +3,7 @@
         class="sm:h-[230px] h-[175px] relative overflow-hidden rounded-[10px]"
         :style="{ backgroundColor: category.bg_color }">
         <h3 class="text-[#0C1A30] text-lg absolute top-4 left-5">
-            {{ category.title }}
+            {{ category.name }}
         </h3>
         <div class="w-[100px] absolute z-20 bottom-0 right-0">
             <img :src="category?.image?.path || '/images/box.png'" class="w-full h-full object-cover" />
