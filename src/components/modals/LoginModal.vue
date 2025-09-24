@@ -77,7 +77,7 @@
 
                 <!-- Email Tab Content (placeholder) -->
                 <FormSection v-else @submit="handleSubmit" class="space-y-6">
-                    <!-- Phone Number Field -->
+                    <!-- Email Field -->
                     <FormGroup class="pb-3">
                         <FormTitle :id="'email'" :title="'E-poçta salgysy'" />
                         <FormInput v-model="email" :label="'email'" :type="'email'" :placeholder="'example@.com'" />

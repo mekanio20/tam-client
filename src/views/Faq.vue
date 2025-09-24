@@ -5,7 +5,7 @@
             <LinkGroup :items="[{ label: 'Sorag-jogap', to: '/faq' }]" />
             <!-- Header -->
             <div class="bg-white">
-                <div class="sm:max-w-6xl mx-auto px-4 py-6">
+                <div class="sm:max-w-[1500px] mx-auto px-4 py-6">
                     <h1 class="text-[30px] font-semibold text-[#0C1A30] text-center transition-all duration-700"
                         :class="{ 'opacity-100 translate-y-0': isVisible, 'opacity-0 translate-y-4': !isVisible }">
                         Sorag-jogap

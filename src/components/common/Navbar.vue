@@ -1,5 +1,5 @@
 <template>
-    <div class="max-w-7xl mx-auto bg-[#F7F7F9]">
+    <div class="max-w-[1500px] mx-auto bg-[#F7F7F9]">
         <MainContainer class="flex items-center justify-between">
             <router-link to="/" class="w-[150px] flex-shrink-0">
                 <logo-icon />
@@ -21,7 +21,10 @@
                     <router-link v-for="item in items" :key="item.id" :to="item.link" @mouseenter="hovered = item.id"
                         @mouseleave="hovered = null"
                         class="sm:flex items-center space-x-20 pb-[8px] group hidden transition-colors duration-300">
-                        <div class="flex flex-col items-center space-y-1">
+                        <div class="flex flex-col items-center space-y-1 relative">
+                            <div v-if="item.name === 'Sebet' && getItemCount() > 0" class="absolute top-0 right-0 w-4 h-4 rounded-full bg-[#037D84] flex items-center justify-center text-[9px] font-semibold text-white">
+                                {{ getItemCount() }}
+                            </div>
                             <component :is="icons[item?.icon]" :color="hovered === item.id ? '#FEB918' : '#0C1A30'" />
                             <span class="text-[12px] text-[#0C1A30] group-hover:text-[#FEB918]">{{
                     item.name }}</span>
@@ -56,11 +59,13 @@
 const emit = defineEmits(['openSidebar'])
 const props = defineProps({ isMobileMenuOpen: Boolean })
 const { icons, loadIcons } = useIcons()
-onMounted(() => { loadIcons() })
+onMounted(() => loadIcons())
 
 const router = useRouter()
 const searchQuery = ref('');
 const hovered = ref(null)
+const cartStore = useCartStore()
+const { getItemCount } = cartStore
 const items = ref([
     { id: 1, link: '/account', name: 'Hasap', icon: 'user-icon' },
     { id: 2, link: '/account/basket', name: 'Sebet', icon: 'shopping_cart-icon' },

@@ -13,7 +13,7 @@
                 <div v-show="show" class="bg-white w-[500px] overflow-y-auto px-8 py-4 rounded-[14px] flex flex-col relative" @click.stop>
                     <!-- Header -->
                     <div class="flex items-center justify-center pt-4 pb-5">
-                        <h2 class="text-[22px] text-center font-medium text-[#0C1A30]">Açar sözlük täzelemek</h2>
+                        <h2 class="text-[22px] text-center font-medium text-[#0C1A30]">Açar sözüni täzelemek</h2>
                         <button @click="$emit('close')"
                             class="absolute top-8 right-5 flex items-center justify-center bg-[#F6F7F9] rounded-full hover:bg-gray-100">
                             <close-icon />

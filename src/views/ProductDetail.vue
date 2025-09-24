@@ -10,10 +10,11 @@
 
                     <!-- Left Side - Images -->
                     <div class="flex lg:flex-row flex-col-reverse gap-y-4 sm:mt-0 mt-6"
-                    :class="[product_info.image_urls.length > 0 ? 'lg:gap-x-4' : '']">
+                        :class="[product_info?.image_urls?.length > 0 ? 'lg:gap-x-4' : '']">
 
                         <!-- Thumbnail Images -->
-                        <div v-if="product_info.image_urls" class="flex items-start lg:flex-col flex-row lg:space-y-2 lg:space-x-0 space-x-2 overflow-auto">
+                        <div v-if="product_info.image_urls"
+                            class="flex items-start lg:flex-col flex-row lg:space-y-2 lg:space-x-0 space-x-2 overflow-auto">
                             <div v-for="(image, index) in product_info.image_urls" :key="index"
                                 @click="selectedImage = image"
                                 class="w-[100px] h-[100px] rounded-lg bg-[#F6F7F9] border-[1px] transition-all duration-200 hover:border-[#FEB918] cursor-pointer"
@@ -23,7 +24,8 @@
                         </div>
 
                         <!-- Main Image -->
-                        <div class="h-[540px] bg-[#F6F7F9] rounded-lg overflow-hidden relative group" :class="[product_info.image_urls.length > 0 ? 'md:w-[420px]' : 'w-[570px]']">
+                        <div class="h-[540px] bg-[#F6F7F9] rounded-lg overflow-hidden relative group"
+                            :class="[product_info?.image_urls?.length > 0 ? 'md:w-[420px]' : 'w-[570px]']">
                             <img :src="selectedImage || product_info?.preview?.path || '/images/box.png'"
                                 class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                                 loading="eager">
@@ -78,15 +80,18 @@
                                 class="flex-1 bg-[#FEB918] hover:bg-[#ffcf5f] text-white py-4 px-8 rounded-[10px] transition-all duration-200 font-semibold text-[20px] disabled:opacity-60 disabled:cursor-not-allowed">
                                 {{ cartLoading ? 'Goşulýar...' : 'Sebede goş' }}
                             </button>
-                            
+
                             <!-- Quantity Controls -->
-                            <div v-else class="flex-1 flex items-center justify-center space-x-4 bg-[#FEB918] rounded-[10px] py-4 px-8">
+                            <div v-else
+                                class="flex-1 flex items-center justify-center space-x-4 bg-[#FEB918] rounded-[10px] py-4 px-8">
                                 <button @click="decreaseQuantity" :disabled="cartLoading"
                                     class="w-8 h-8 flex items-center justify-center rounded-full bg-white text-[#FEB918] hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold">
                                     -
                                 </button>
                                 <div class="text-center font-semibold text-white text-[20px] min-w-[40px]">
-                                    <div v-if="cartLoading" class="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mx-auto"></div>
+                                    <div v-if="cartLoading"
+                                        class="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mx-auto">
+                                    </div>
                                     <span v-else>{{ cartItem?.quantity || 0 }}</span>
                                 </div>
                                 <button @click="increaseQuantity" :disabled="cartLoading"
@@ -94,7 +99,7 @@
                                     +
                                 </button>
                             </div>
-                            
+
                             <button @click="toggleFavorite(product_info.id)"
                                 class="p-4 bg-[#FEB91829] rounded-[10px] transition-all duration-200">
                                 <favorite-icon color="#FEB918" :fill="isLiked ? '#FEB918' : 'none'" />
@@ -113,6 +118,7 @@
             </div>
         </MainContainer>
         <!-- Related Products -->
+        <ProductSection :sectionTitle="'Siziň üçin harytlar'" :products="products" />
     </div>
 </template>
 
@@ -121,8 +127,8 @@ const route = useRoute()
 const likesStore = useLikesStore()
 const productsStore = useProductsStore()
 const cartStore = useCartStore()
-const { fetchProductDetail } = productsStore
-const { product_info } = storeToRefs(productsStore)
+const { fetchProductDetail, fetchProducts } = productsStore
+const { product_info, products } = storeToRefs(productsStore)
 const { createLike, deleteLike, fetchLikes } = likesStore
 const { addItem, loading: cartLoading, isInCart: checkIsInCart, getCartItem, increaseQuantity: cartIncreaseQuantity, decreaseQuantity: cartDecreaseQuantity } = cartStore
 const selectedImage = ref(null)
@@ -131,7 +137,6 @@ const isLiked = ref(false)
 // Computed properties
 const cartIsInCart = computed(() => product_info.value?.id ? checkIsInCart(product_info.value.id) : false)
 const cartItem = computed(() => product_info.value?.id ? getCartItem(product_info.value.id) : null)
-
 
 const toggleFavorite = async (id) => {
     try {
@@ -174,6 +179,7 @@ const decreaseQuantity = async () => {
 }
 
 onMounted(async () => {
+    await fetchProducts()
     const product = await fetchProductDetail(route.params.id)
     isLiked.value = product.is_liked
 })

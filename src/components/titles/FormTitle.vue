@@ -1,5 +1,5 @@
 <template>
-    <label :for="id" class="inline-block mb-3 text-[#838589]">
+    <label :for="id" class="inline-block mb-3 text-[#838589] sm:text-base text-sm">
         {{ title }}
     </label>
 </template>

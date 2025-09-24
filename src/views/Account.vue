@@ -105,7 +105,7 @@
                         <shield-icon />
                     </div>
                     <span class="font-medium sm:text-base text-sm">
-                        Açar sözlük täzelemek
+                        Açar sözüni täzelemek
                     </span>
                 </button>
 
@@ -187,10 +187,10 @@ const openDictionary = () => {
 
 const updatePassword = async (success) => {
     if (success) {
-        success('Üstünlikli', 'Açar sözlük üstünlikli täzelendi')
+        success('Üstünlikli', 'Açar sözü üstünlikli täzelendi')
         showPasswordModal.value = false
     } else {
-        toastError('Şowsuz boldy', 'Açar sözlük täzelenmedi')
+        toastError('Şowsuz boldy', 'Açar sözüni täzelenmedi')
     }
 }
 

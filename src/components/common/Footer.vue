@@ -6,7 +6,7 @@
         <div class="absolute right-0 -top-3">
             <img src="/icons/footer-2.png" />
         </div>
-        <MainContainer class="max-w-7xl mx-auto ">
+        <MainContainer class="max-w-[1500px] mx-auto ">
             <div class="relative z-10">
                 <div class="w-full flex lg:flex-row flex-col-reverse gap-8 items-start justify-between">
 
