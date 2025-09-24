@@ -15,13 +15,7 @@ export const useFaqStore = defineStore("faqs", () => {
     error.value = null;
     try {
       const { data } = await api.get("/faq/questions/");
-      faqs.value = data.results.map((item) => ({
-        ...item,
-        questions: item.questions.map((q) => ({
-          ...q,
-          isOpen: false,
-        })),
-      }));
+      faqs.value = data.results;
       return data.results;
     } catch (err) {
       error.value = err.message || "Failed to fetch likes";

@@ -1,12 +1,12 @@
 <template>
-    <div class="min-h-screen bg-white">
+    <div class="bg-white">
         <!-- Main Content -->
         <MainContainer>
             <LinkGroup :items="[{ label: 'Sorag-jogap', to: '/faq' }]" />
             <!-- Header -->
             <div class="bg-white">
                 <div class="sm:max-w-[1500px] mx-auto px-4 py-6">
-                    <h1 class="text-[30px] font-semibold text-[#0C1A30] text-center transition-all duration-700"
+                    <h1 class="lg:text-[30px] leading-[100%] sm:text-[30px] text-lg font-semibold text-[#0C1A30] text-center transition-all duration-700"
                         :class="{ 'opacity-100 translate-y-0': isVisible, 'opacity-0 translate-y-4': !isVisible }">
                         Sorag-jogap
                     </h1>
@@ -29,18 +29,18 @@
 
                 <!-- FAQ Accordion -->
                 <section class="space-y-6">
-                    <div v-for="(item, index) in faqs?.questions" :key="item.id"
+                    <div v-for="(item, index) in activeObj" :key="item.id"
                         class="bg-[#F6F7F9] rounded-[10px] overflow-hidden transition-all duration-500" :class="{
                 'opacity-100 translate-y-0': isVisible,
                 'opacity-0 translate-y-8': !isVisible
             }" :style="{ transitionDelay: `${300 + index * 100}ms` }">
                         <!-- Question Header -->
                         <button @click="toggleAccordion(item.id)"
-                            class="w-full px-6 py-5 text-left flex items-center justify-between transition-colors duration-200 group">
-                            <h3 class="text-base font-medium text-[#0C1A30]">
+                            class="w-full px-6 sm:py-5 py-4 text-left flex items-center justify-between transition-colors duration-200 group">
+                            <h3 class="sm:text-base text-sm font-medium text-[#0C1A30]">
                                 {{ item.text }}
                             </h3>
-                            <svg class="w-5 h-5 text-[#0C1A30] transition-transform duration-300 group-hover:text-gray-700"
+                            <svg class="sm:w-5 w-4 sm:h-5 h-4 text-[#0C1A30] transition-transform duration-300 group-hover:text-gray-700"
                                 :class="{ 'rotate-180': openAccordion === item.id }" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -55,17 +55,14 @@
                     : 'max-h-0 opacity-0'
             ]">
                             <div class="px-6 pb-5">
-                                <div class="sm:pt-4">
-                                    <p v-if="item.answer"
-                                        class="text-[#838589] leading-relaxed transition-all duration-300"
-                                        :class="{ 'translate-y-0 opacity-100': openAccordion === item.id, 'translate-y-2 opacity-0': openAccordion !== item.id }">
-                                        {{ item.answer }}
-                                    </p>
-                                    <p v-else class="text-[#838589] italic transition-all duration-300"
-                                        :class="{ 'translate-y-0 opacity-100': openAccordion === item.id, 'translate-y-2 opacity-0': openAccordion !== item.id }">
-                                        Bu sorag üçin jogap heniz goşulmadyk.
-                                    </p>
-                                </div>
+                                <p v-if="item.answer" class="text-[#838589] sm:text-base text-sm leading-relaxed transition-all duration-300"
+                                    :class="{ 'translate-y-0 opacity-100': openAccordion === item.id, 'translate-y-2 opacity-0': openAccordion !== item.id }">
+                                    {{ item.answer }}
+                                </p>
+                                <p v-else class="text-[#838589] italic transition-all duration-300"
+                                    :class="{ 'translate-y-0 opacity-100': openAccordion === item.id, 'translate-y-2 opacity-0': openAccordion !== item.id }">
+                                    Bu sorag üçin jogap heniz goşulmadyk.
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -80,46 +77,18 @@ const faqStore = useFaqStore()
 const { faqs } = storeToRefs(faqStore)
 const { fethcFaqs } = faqStore
 const activeTab = ref(1)
-const openAccordion = ref(0)
+const openAccordion = ref(null)
 const isVisible = ref(false)
-
-const tabs = ref([
-    {
-        id: 1,
-        name: 'Ählisi'
-    },
-    {
-        id: 2,
-        name: 'Kargo hyzmatlary'
-    },
-    {
-        id: 3,
-        name: 'Howpsuzlyk'
-    },
-    {
-        id: 4,
-        name: 'Sargyt'
-    },
-    {
-        id: 5,
-        name: 'Kargo hyzmatlary'
-    },
-    {
-        id: 6,
-        name: 'Howpsuzlyk'
-    },
-    {
-        id: 7,
-        name: 'Sargyt'
-    }
-])
 
 onMounted(async () => {
     await fethcFaqs()
-    console.log('Faq -> ', faqs.value);
     setTimeout(() => {
         isVisible.value = true
     }, 100)
+})
+
+const activeObj = computed(() => {
+    return faqs.value.find(item => item.id === activeTab.value)?.questions
 })
 
 const toggleAccordion = (id) => {
@@ -128,5 +97,6 @@ const toggleAccordion = (id) => {
     } else {
         openAccordion.value = id
     }
+    console.log('Open accordion -> ', openAccordion.value);
 }
 </script>
