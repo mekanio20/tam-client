@@ -5,14 +5,8 @@
         <close-icon />
       </button>
 
-      <div class="absolute top-16 right-0 -z-10 overflow-hidden rounded-tr-2xl">
-        <div class="w-[100px]">
-          <img src="/icons/bg-1.png" />
-        </div>
-      </div>
-
       <div class="px-6 pt-8 pb-6 text-center">
-        <ModalTitle :title="title" />
+        <ModalTitle :title="title" class="mb-4" />
       </div>
 
       <div class="px-6 pb-6">

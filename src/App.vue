@@ -26,9 +26,7 @@ const route = useRoute()
 const cities = ref([])
 const showCityModal = ref(false)
 const productStore = useProductsStore()
-const authStore = useAuthStore()
 const { fetchAvailableCities } = productStore
-const { isAuthenticated } = authStore
 
 const layouts = {
   'base-layout': baseLayout,
@@ -43,11 +41,9 @@ onMounted(async () => {
 
 const fetchCities = async () => {
   cities.value = await fetchAvailableCities()
-  console.log('Available cities -> ', cities.value);
   const storedCity = localStorage.getItem('city')
-  if (!storedCity && isAuthenticated) {
-    showCityModal.value = true
-  }
+  if (cities.value.length === 1) handleCitySelect(cities.value[0])
+  if (!storedCity && cities.value.length > 1) showCityModal.value = true
 }
 
 const handleCitySelect = (selected) => {

@@ -1,5 +1,5 @@
 <template>
-    <h1 class="text-[22px] font-medium text-[#0C1A30] mb-14">
+    <h1 class="sm:text-[22px] text-lg font-medium text-[#0C1A30] mb-14">
         {{ title }}
     </h1>
 </template>
