@@ -4,7 +4,7 @@
             <LinkGroup :items="[{ label: 'Sargytlar', to: '/account/orders' }]" />
             <SectionTitle title="Sargytlar" />
         </MainContainer>
-        <!-- <NoDataSection v-if="!orders.length && !loading" image="/images/box.png" desc="Sargytlaryňyzyň sanawy boş" /> -->
+        <!-- <NoDataSection v-if="!orders.length && !loading" image="/icons/default.webp" desc="Sargytlaryňyzyň sanawy boş" /> -->
         <!-- Orders Table -->
         <MainContainer class="mt-5">
             <OrdersTable :rows="tableRows" @statusChange="handleStatusChange" />

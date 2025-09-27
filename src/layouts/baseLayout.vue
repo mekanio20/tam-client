@@ -5,8 +5,10 @@
             <Navbar @openSidebar="toggleSidebar" :isMobileMenuOpen="sidebar" />
         </div>
         <MainSidebar :isMobileMenuOpen="sidebar" @toggleMobileMenu="toggleMenu" />
-        <div class="bg-[rgb(247,247,249)] mt-[100px] w-full max-w-[1500px] mx-auto " :class="sidebar ? 'blur-sm' : ''">
-            <router-view />
+        <div class="bg-[rgb(247,247,249)] mt-[100px]" :class="sidebar ? 'blur-sm' : ''">
+            <div class="w-full max-w-[1500px] mx-auto">
+                <router-view />
+            </div>
         </div>
         <Footer />
     </main>

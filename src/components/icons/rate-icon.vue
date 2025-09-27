@@ -6,7 +6,6 @@
     </svg>
 </template>
 
-
 <script setup>
 defineProps({
     size: {

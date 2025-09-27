@@ -25,8 +25,8 @@
 
                         <!-- Main Image -->
                         <div class="h-[540px] bg-[#F6F7F9] rounded-lg overflow-hidden relative group"
-                            :class="[product_info?.image_urls?.length > 0 ? 'md:w-[420px]' : 'w-[570px]']">
-                            <img :src="selectedImage || product_info?.preview?.path || '/images/box.png'"
+                            :class="[product_info?.image_urls?.length > 0 ? 'md:w-[420px]' : 'sm:w-[570px]']">
+                            <img :src="selectedImage || product_info?.preview?.path || '/icons/default.webp'"
                                 class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                                 loading="eager">
                         </div>
@@ -68,43 +68,63 @@
 
                         <!-- Price -->
                         <div class="py-6">
-                            <div class="text-[32px] font-bold text-[#0C1A30]">
+                            <div class="sm:text-[32px] text-xl font-bold text-[#0C1A30]">
                                 {{ product_info.price }} TMT
                             </div>
                         </div>
 
                         <!-- Add to Cart Button / Quantity Controls -->
-                        <div class="flex space-x-3">
+                        <div
+                            class="flex flex-col sm:flex-row sm:items-center justify-center sm:space-x-3 space-y-3 sm:space-y-0 w-full">
                             <!-- Add to Cart Button -->
-                            <button v-if="!cartIsInCart" @click="addToCart" :disabled="cartLoading"
-                                class="flex-1 bg-[#FEB918] hover:bg-[#ffcf5f] text-white py-4 px-8 rounded-[10px] transition-all duration-200 font-semibold text-[20px] disabled:opacity-60 disabled:cursor-not-allowed">
+                            <button v-if="!cartIsInCart" @click="addToCart" :disabled="cartLoading" class="flex-1 w-full bg-[#FEB918] hover:bg-[#ffcf5f] text-white
+      py-3 sm:py-4 px-6 sm:px-8
+      rounded-[12px] transition-all duration-200 font-semibold
+      text-[16px] sm:text-[18px]
+      disabled:opacity-60 disabled:cursor-not-allowed">
                                 {{ cartLoading ? 'Goşulýar...' : 'Sebede goş' }}
                             </button>
 
-                            <!-- Quantity Controls -->
+                            <!-- If already in cart -->
                             <div v-else
-                                class="flex-1 flex items-center justify-center space-x-4 bg-[#FEB918] rounded-[10px] py-4 px-8">
-                                <button @click="decreaseQuantity" :disabled="cartLoading"
-                                    class="w-8 h-8 flex items-center justify-center rounded-full bg-white text-[#FEB918] hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold">
-                                    -
+                                class="flex flex-col sm:flex-row w-full sm:items-center sm:space-x-3 space-y-3 sm:space-y-0">
+                                <!-- Come to Cart -->
+                                <button @click="comeToCart" :disabled="cartLoading" class="flex-1 bg-[#037D84] hover:bg-[#0e9ea5] text-white py-2 sm:py-3 px-6 sm:px-8 rounded-[10px] transition-all duration-200 font-medium
+        text-[16px] sm:text-[18px]
+        disabled:opacity-60 disabled:cursor-not-allowed">
+                                    Sebede Git
                                 </button>
-                                <div class="text-center font-semibold text-white text-[20px] min-w-[40px]">
-                                    <div v-if="cartLoading"
-                                        class="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mx-auto">
+
+                                <!-- Quantity Controls -->
+                                <div class="flex flex-row items-center justify-center flex-1 space-x-4">
+                                    <!-- Decrease -->
+                                    <button @click="decreaseQuantity" :disabled="cartLoading" class="p-2 sm:p-3 rounded-[10px] bg-[#FEB918] hover:bg-[#ffcf5f]
+          flex items-center justify-center
+          disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200">
+                                        <minus-icon :size="isMobile ? 18 : 27" />
+                                    </button>
+
+                                    <!-- Quantity Display -->
+                                    <div class="text-center text-[#0C1A30] font-semibold text-lg sm:text-xl">
+                                        <span>{{ cartItem?.quantity || 0 }}</span>
                                     </div>
-                                    <span v-else>{{ cartItem?.quantity || 0 }}</span>
+
+                                    <!-- Increase -->
+                                    <button @click="increaseQuantity" :disabled="cartLoading" class="p-2 sm:p-3 rounded-[10px] bg-[#FEB918] hover:bg-[#ffcf5f]
+          flex items-center justify-center
+          disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200">
+                                        <plus-icon :size="isMobile ? 18 : 27" />
+                                    </button>
                                 </div>
-                                <button @click="increaseQuantity" :disabled="cartLoading"
-                                    class="w-8 h-8 flex items-center justify-center rounded-full bg-white text-[#FEB918] hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold">
-                                    +
-                                </button>
                             </div>
 
+                            <!-- Favorite Button -->
                             <button @click="toggleFavorite(product_info.id)"
-                                class="p-4 bg-[#FEB91829] rounded-[10px] transition-all duration-200">
+                                class="w-full sm:w-fit sm:p-3 p-2 bg-[#FEB91829] rounded-[10px] transition-all duration-200 flex justify-center">
                                 <favorite-icon color="#FEB918" :fill="isLiked ? '#FEB918' : 'none'" />
                             </button>
                         </div>
+
                     </div>
                 </div>
 
@@ -123,6 +143,7 @@
 </template>
 
 <script setup>
+const isMobile = ref(false)
 const route = useRoute()
 const likesStore = useLikesStore()
 const productsStore = useProductsStore()
@@ -182,5 +203,15 @@ onMounted(async () => {
     await fetchProducts()
     const product = await fetchProductDetail(route.params.id)
     isLiked.value = product.is_liked
+    checkScreenSize()
+    window.addEventListener('resize', checkScreenSize)
+})
+
+const checkScreenSize = () => {
+    isMobile.value = window.innerWidth < 640
+}
+
+onUnmounted(() => {
+    window.removeEventListener('resize', checkScreenSize)
 })
 </script>

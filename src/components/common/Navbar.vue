@@ -1,5 +1,5 @@
 <template>
-    <div class="max-w-[1500px] mx-auto bg-[#F7F7F9]">
+    <div class="max-w-[1500px] mx-auto bg-white">
         <MainContainer class="flex items-center justify-between">
             <router-link to="/" class="w-[150px] flex-shrink-0">
                 <logo-icon />

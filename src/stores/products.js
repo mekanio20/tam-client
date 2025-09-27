@@ -108,6 +108,7 @@ export const useProductsStore = defineStore("products", () => {
   const fetchAvailableCities = async () => {
     try {
       const { data } = await api.get("/catalog/client/available_cities/");
+      console.log(data);
       return data.cities;
     } catch (err) {
       error.value = err.message || "Product not found";

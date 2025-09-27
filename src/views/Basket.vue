@@ -35,12 +35,12 @@
                                 <!-- Product Image -->
                                 <div class="w-[100px] h-[100px] flex-shrink-0">
                                     <img class="w-full h-full object-cover rounded-[10px]"
-                                        :src="item.product_image || '/images/box.png'" alt="Product Image">
+                                        :src="item.product_image || '/icons/default.webp'" alt="Product Image">
                                 </div>
 
                                 <!-- Product Info -->
                                 <div class="flex-1 flex items-center space-x-8 min-w-0 pr-6">
-                                    <div class="w-[238px] h-[105px] flex flex-col justify-between flex-shrink-0">
+                                    <div class="w-[238px] h-[80px] flex flex-col justify-between flex-shrink-0">
                                         <h3 class="text-base font-medium text-[#0C1A30] mb-1">
                                             {{ item.product_name }}
                                         </h3>
@@ -276,11 +276,11 @@ const loyaltyCardOptions = computed(() => {
 // Fetch cart data on component mount
 onMounted(async () => {
     try {
-        await fetchAccount()
+        // await fetchAccount()
         await cartStore.fetchCart()
         // Fetch recommended products
         await fetchNewestProducts()
-        await fetchLikes()
+        // await fetchLikes()
     } catch (error) {
         console.error('Error loading cart:', error)
     }

@@ -6,9 +6,9 @@
             <!-- Title -->
             <div class="py-8">
                 <div class="flex items-center justify-between">
-                    <div class="flex sm:flex-row flex-col sm:items-end sm:space-x-5">
-                        <h1 class="text-[30px] font-semibold text-[#0C1A30]">Sargydy tassyklamak</h1>
-                        <span class="text-[#838589] text-sm pb-2">{{ cartItems.length }} haryt</span>
+                    <div class="flex sm:flex-row flex-col sm:items-end sm:space-x-5 sm:space-y-0 space-y-2">
+                        <h1 class="lg:text-[30px] leading-[100%] sm:text-[30px] text-lg font-semibold text-[#0C1A30]">Sargydy tassyklamak</h1>
+                        <span class="text-[#838589] text-sm">{{ cartItems.length }} haryt</span>
                     </div>
                 </div>
             </div>

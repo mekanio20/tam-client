@@ -70,15 +70,27 @@ const routes = [
     component: () => import("@/views/OrderDetail.vue"),
   },
   {
+    path: "/receipt/:id",
+    name: "Invoice",
+    component: () => import("@/views/Invoice.vue"),
+  },
+  {
     path: "/account/coupons",
     name: "Coupons",
     component: () => import("@/views/Coupons.vue"),
   },
+
   // CONTACT
   {
     path: "/contact",
     name: "Contact",
     component: () => import("@/views/Contact.vue"),
+  },
+  // ABOUT
+  {
+    path: "/about",
+    name: "About",
+    component: () => import("@/views/About.vue"),
   },
   // FAQ
   {

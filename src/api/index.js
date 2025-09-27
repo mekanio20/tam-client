@@ -17,9 +17,7 @@ const api = axios.create({
     "Content-Type": "application/json",
     "Accept-Language": localStorage.getItem("lang") || "TK",
   },
-  xhrFields: {
-    withCredentials: true,
-  },
+  withCredentials: true,
 });
 
 api.interceptors.request.use(

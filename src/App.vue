@@ -1,22 +1,13 @@
 <template>
   <component :is="layout"></component>
-  
+
   <!-- Toast Container -->
   <div class="fixed top-4 right-4 z-50 space-y-2">
-    <Toast
-      v-for="toast in toasts"
-      :key="toast.id"
-      :toast="toast"
-      @close="removeToast(toast.id)"
-    />
+    <Toast v-for="toast in toasts" :key="toast.id" :toast="toast" @close="removeToast(toast.id)" />
   </div>
 
   <!-- City Select Modal -->
-  <CitySelectModal
-    v-model="showCityModal"
-    :cities="cities"
-    @select="handleCitySelect"
-  />
+  <CitySelectModal v-model="showCityModal" :cities="cities" @select="handleCitySelect" />
 </template>
 
 <script setup>
@@ -36,11 +27,12 @@ const layout = computed(() => {
 })
 
 onMounted(async () => {
-  fetchCities()
+  await fetchCities()
 })
 
 const fetchCities = async () => {
   cities.value = await fetchAvailableCities()
+  console.log('Cities', cities.value);
   const storedCity = localStorage.getItem('city')
   if (cities.value.length === 1) handleCitySelect(cities.value[0])
   if (!storedCity && cities.value.length > 1) showCityModal.value = true

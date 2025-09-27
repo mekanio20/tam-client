@@ -41,10 +41,10 @@
                             <FooterLinkTitle title="Market" />
                             <ul class="space-y-3">
                                 <li>
-                                    <FooterLink to="#" title="Kategoriýa" />
+                                    <FooterLink to="/categories" title="Bölümler" />
                                 </li>
                                 <li>
-                                    <FooterLink to="#" title="Brandler" />
+                                    <FooterLink to="/product/list" title="Harytlar" />
                                 </li>
                             </ul>
                         </div>
@@ -65,13 +65,13 @@
                             <FooterLinkTitle title="Biz barada" />
                             <ul class="space-y-3">
                                 <li>
-                                    <FooterLink to="#" title="Biz barada" />
+                                    <FooterLink to="/about" title="Biz barada" />
                                 </li>
                                 <li>
-                                    <FooterLink to="#" title="Eltip bermek we töleg" />
+                                    <FooterLink to="/faq" title="Eltip bermek we töleg" />
                                 </li>
                                 <li>
-                                    <FooterLink to="#" title="Sargyt etmek hakynda" />
+                                    <FooterLink to="/faq" title="Sargyt etmek hakynda" />
                                 </li>
                             </ul>
                         </div>

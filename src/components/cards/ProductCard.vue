@@ -4,7 +4,7 @@
             class="bg-[#F6F7F9] group-hover:bg-[#DCE7FF] rounded-[10px] overflow-hidden duration-300 sm:h-[300px] h-[220px]">
             <div class="relative w-full h-full flex items-center justify-center">
                 <!-- Product Image -->
-                <img :src="product?.preview?.path || '/images/box.png'" class="w-full h-full object-cover">
+                <img :src="product?.preview?.path || '/icons/default.webp'" class="w-full h-full object-cover">
 
                 <!-- Favorite -->
                 <button type="button" @click.stop="toggleLike" class="absolute right-2 top-2">

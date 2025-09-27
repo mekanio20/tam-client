@@ -22,14 +22,16 @@ export const useCartStore = defineStore("cart", () => {
     loading.value = true;
     error.value = null;
     try {
-      const { data } = await api.get("/cart/");
-      cartItems.value = data.items || [];
-      subtotal.value = data.subtotal_amount || 0;
-      total.value = data.total_amount || 0;
-      giftCard.value = data.gift_card_amount_used || null;
-      loyaltyCard.value = data.loyalty_card_info || null;
-      console.log('Loyalty card info', data.loyalty_card_info);
-      return data;
+      const response = await api.get("/cart/");
+      const key = response.headers['x-session-key'] || response.headers['X-Session-Key'] || null
+      console.log('KEY -> ', key);
+      cartItems.value = response.data.items || [];
+      subtotal.value = response.data.subtotal_amount || 0;
+      total.value = response.data.total_amount || 0;
+      giftCard.value = response.data.gift_card_amount_used || null;
+      loyaltyCard.value = response.data.loyalty_card_info || null;
+      
+      return response.data;
     } catch (err) {
       error.value = err.message || "Failed to fetch cart";
       handleApiError(err, "Failed to fetch cart");
@@ -49,7 +51,7 @@ export const useCartStore = defineStore("cart", () => {
         city: localStorage.getItem("city"),
         quantity: quantity
       });
-      await fetchCart(); // Refresh cart data
+      const sessionId = await fetchCart(); // Refresh cart data
       success("Added to Cart", "Product has been added to your cart");
       return data;
     } catch (err) {
@@ -233,7 +235,7 @@ export const useCartStore = defineStore("cart", () => {
 
   const decreaseQuantity = async (itemId) => {
     const item = cartItems.value.find(item => item.id === itemId);
-    if (item && item.quantity > 1) {
+    if (item) {
       await updateItemQuantity(itemId, item.quantity - 1);
     }
   };

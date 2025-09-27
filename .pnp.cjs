@@ -36,6 +36,7 @@ const RAW_RUNTIME_STATE =
           ["@vueuse/core", "virtual:5b389c15d923e749166a72b6dd23cfc35f0a88940355f3be9e4cb0900baadf3e2a7c1f58dca10216d90ffd779e684ff0a98ef4e79bb9b966effc9417e4cb069d#npm:13.6.0"],\
           ["autoprefixer", "virtual:5b389c15d923e749166a72b6dd23cfc35f0a88940355f3be9e4cb0900baadf3e2a7c1f58dca10216d90ffd779e684ff0a98ef4e79bb9b966effc9417e4cb069d#npm:10.4.21"],\
           ["axios", "npm:1.11.0"],\
+          ["js-cookie", "npm:3.0.5"],\
           ["jwt-decode", "npm:4.0.0"],\
           ["leaflet", "npm:1.9.4"],\
           ["maplibre-gl", "npm:5.7.0"],\
@@ -5519,6 +5520,15 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["js-cookie", [\
+      ["npm:3.0.5", {\
+        "packageLocation": "../../.yarn/berry/cache/js-cookie-npm-3.0.5-8fc8fcc9b4-10c0.zip/node_modules/js-cookie/",\
+        "packageDependencies": [\
+          ["js-cookie", "npm:3.0.5"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["js-tokens", [\
       ["npm:9.0.1", {\
         "packageLocation": "../../.yarn/berry/cache/js-tokens-npm-9.0.1-3ed793c0c1-10c0.zip/node_modules/js-tokens/",\
@@ -6988,6 +6998,7 @@ const RAW_RUNTIME_STATE =
           ["@vueuse/core", "virtual:5b389c15d923e749166a72b6dd23cfc35f0a88940355f3be9e4cb0900baadf3e2a7c1f58dca10216d90ffd779e684ff0a98ef4e79bb9b966effc9417e4cb069d#npm:13.6.0"],\
           ["autoprefixer", "virtual:5b389c15d923e749166a72b6dd23cfc35f0a88940355f3be9e4cb0900baadf3e2a7c1f58dca10216d90ffd779e684ff0a98ef4e79bb9b966effc9417e4cb069d#npm:10.4.21"],\
           ["axios", "npm:1.11.0"],\
+          ["js-cookie", "npm:3.0.5"],\
           ["jwt-decode", "npm:4.0.0"],\
           ["leaflet", "npm:1.9.4"],\
           ["maplibre-gl", "npm:5.7.0"],\

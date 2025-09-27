@@ -7,9 +7,10 @@
             <!-- Title -->
             <div class="pb-8 sm:pt-4 pt-6 w-full">
                 <div class="flex items-center justify-between">
-                    <div class="flex items-end space-x-5">
-                        <h1 class="text-[30px] font-semibold text-[#0C1A30]">#{{ orderId }}</h1>
-                        <span class="text-[#838589] text-sm pb-2">{{ orderItems.length }} haryt</span>
+                    <div class="flex items-center space-x-5">
+                        <h1 class="lg:text-[30px] leading-[100%] sm:text-[30px] text-lg font-semibold text-[#0C1A30]">
+                            #{{ orderId }}</h1>
+                        <span class="text-[#838589] text-sm">{{ orderItems.length }} haryt</span>
                     </div>
                     <div v-if="orderStatus" :class="getStatusClass(orderStatus)" class="px-5 py-2 text-sm rounded-full">
                         {{ orderStatus }}
@@ -62,15 +63,18 @@
                                         Sebede goş
                                     </button>
                                 </div>
-                                
+
                                 <!-- Quantity Controls -->
-                                <div v-else class="flex items-center space-x-2 flex-shrink-0 border border-[#FEB918] rounded-md px-4 py-2">
+                                <div v-else
+                                    class="flex items-center space-x-2 flex-shrink-0 border border-[#FEB918] rounded-md px-4 py-2">
                                     <button @click="decreaseQuantity(item.product)" :disabled="cartLoading"
                                         class="w-6 h-6 flex items-center justify-center rounded-full bg-[#F5F5F5] text-gray-600 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-xs">
                                         -
                                     </button>
                                     <div class="text-center font-medium text-[#0C1A30] min-w-[20px]">
-                                        <div v-if="cartLoading" class="animate-spin rounded-full h-3 w-3 border border-gray-300 border-t-[#0C1A30] mx-auto"></div>
+                                        <div v-if="cartLoading"
+                                            class="animate-spin rounded-full h-3 w-3 border border-gray-300 border-t-[#0C1A30] mx-auto">
+                                        </div>
                                         <span v-else>{{ getCartItem(item.product)?.quantity || 0 }}</span>
                                     </div>
                                     <button @click="increaseQuantity(item.product)" :disabled="cartLoading"
@@ -178,7 +182,8 @@
 
                     <!-- Price Breakdown -->
                     <div class="space-y-3">
-                        <div v-if="orderDetails.gift_card_info?.amount_used || orderDetails.loyalty_card_info?.amount_used" class="py-6 space-y-3">
+                        <div v-if="orderDetails.gift_card_info?.amount_used || orderDetails.loyalty_card_info?.amount_used"
+                            class="py-6 space-y-3">
                             <div v-if="orderDetails.gift_card_info?.amount_used"
                                 class="flex justify-between items-center">
                                 <span class="text-[#0C1A30]">Gift Card arzanladyşy:</span>

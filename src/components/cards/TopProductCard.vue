@@ -9,7 +9,7 @@
         <div class="h-full flex items-center space-x-4">
             <!-- Product Image -->
             <div class="w-[40%] h-full bg-pink-100 rounded-md flex items-center justify-center shrink-0">
-                <img :src="product?.image_urls[0] || '/images/box.png'" class="w-full h-full object-cover" />
+                <img :src="product?.image_urls[0] || '/icons/default.webp'" class="w-full h-full object-cover" />
             </div>
 
             <!-- Content -->

@@ -10,10 +10,10 @@
         :link="`/product/list?category=${category.id}`"
     />
     <!-- Login -->
-    <LoginModal v-model="isLoginModal" @forgot_password="openResetPassword" @register="openRegister" @success="fetchData" />
+    <!-- <LoginModal v-model="isLoginModal" @forgot_password="openResetPassword" @register="openRegister" @success="fetchData" />
     <RegisterModal v-model="isRegisterModal" @send_otp="send_otp" @login="openLogin" />
     <OtpModal v-model="isOtpModal" :data="otpData" @success="fetchData" />
-    <ResetPasswordModal v-model="isResetPasswordModal" @success="fetchData" />
+    <ResetPasswordModal v-model="isResetPasswordModal" @success="fetchData" /> -->
 </template>
 
 <script setup>
@@ -56,10 +56,8 @@ const fetchData = async (isTrue) => {
     if (isTrue) {
         // Fetch categories and their products
         await fetchCategories()
-        await fetchLikes()
+        // await fetchLikes()
         mostPurchasedProducts.value = await fetchMostPurchasedProducts()
-        console.log('Most Purchased Products:', mostPurchasedProducts.value);
-        
         // Fetch products for each category
         if (categories.value && categories.value.length > 0) {
             let counter = 0
